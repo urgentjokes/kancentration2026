@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,38 +53,34 @@ fun GameOverBanner(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = containerColor),
             border = BorderStroke(1.5.dp, borderColor),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 4.dp)
+                .fillMaxSize()
+                .padding(horizontal = 12.dp, vertical = 2.dp)
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 10.dp)
+                    .fillMaxSize()
+                    .padding(horizontal = 14.dp, vertical = 6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // Main Header Message
                 Text(
                     text = "$emoji ${uiState.gameOverMessage}",
-                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = titleColor
+                    color = titleColor,
+                    maxLines = 1
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
-
-                // Detailed stats line
-                Text(
-                    text = if (uiState.isTwoPlayer) {
-                        "Player 1: ${uiState.player1Score} matches • Player 2: ${uiState.player2Score} matches"
-                    } else if (isTimeUp) {
-                        "Total Moves: ${uiState.totalMoves}"
-                    } else {
-                        "Moves: ${uiState.totalMoves} • Time: ${uiState.formattedTimer}"
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = subtitleColor
-                )
+                if (uiState.isTwoPlayer) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "Player 1: ${uiState.player1Score} matches • Player 2: ${uiState.player2Score} matches",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = subtitleColor
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(6.dp))
 

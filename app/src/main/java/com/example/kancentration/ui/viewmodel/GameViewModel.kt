@@ -11,6 +11,7 @@ import com.example.kancentration.data.model.GameSettings
 import com.example.kancentration.data.model.GameType
 import com.example.kancentration.data.model.KanjiData
 import com.example.kancentration.data.repository.KanjiRepository
+import com.example.kancentration.data.repository.SettingsRepository
 import com.example.kancentration.domain.SoundManager
 import com.example.kancentration.domain.TimerManager
 import kotlinx.coroutines.delay
@@ -23,15 +24,18 @@ import kotlinx.coroutines.launch
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = KanjiRepository(application)
+    private val settingsRepository = SettingsRepository(application)
     val dlcManager = FirebaseStorageDlcManager(application)
     val soundManager = SoundManager(application)
     private val timerManager = TimerManager(viewModelScope)
 
-    private val _uiState = MutableStateFlow(GameUiState())
+    private val _uiState = MutableStateFlow(GameUiState(settings = settingsRepository.loadSettings()))
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     init {
-        startNewGame()
+        val initialSettings = settingsRepository.loadSettings()
+        soundManager.isMuted = !initialSettings.soundEnabled
+        startNewGame(initialSettings)
         observeTimer()
     }
 
@@ -57,7 +61,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun cycleBoardDimension() {
         val nextDimension = _uiState.value.settings.dimension.next()
-        startNewGame(_uiState.value.settings.copy(dimension = nextDimension))
+        val newSettings = _uiState.value.settings.copy(dimension = nextDimension)
+        settingsRepository.saveSettings(newSettings)
+        startNewGame(newSettings)
     }
 
     fun applySettings(newSettings: GameSettings) {
@@ -65,6 +71,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val requiresRestart = newSettings.dimension != currentSettings.dimension ||
                 newSettings.gameType != currentSettings.gameType
 
+        settingsRepository.saveSettings(newSettings)
         soundManager.isMuted = !newSettings.soundEnabled
 
         if (requiresRestart) {
@@ -238,7 +245,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                             else if (newP2Score > newP1Score) "Player 2 Wins!"
                             else "It's a Tie!"
                         } else {
-                            "Board Cleared in ${_uiState.value.formattedTimer} (${_uiState.value.totalMoves} moves)!"
+                            "Cleared in ${_uiState.value.formattedTimer} (${_uiState.value.totalMoves} moves)!"
                         }
 
                         _uiState.update {

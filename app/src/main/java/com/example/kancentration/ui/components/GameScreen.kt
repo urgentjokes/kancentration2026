@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -53,12 +55,20 @@ fun GameScreen(
                 onCycleDimensionClick = { viewModel.cycleBoardDimension() }
             )
 
-            // Non-obtrusive Victory Banner when game finishes (board remains 100% visible)
-            if (uiState.isGameOver) {
-                GameOverBanner(
-                    uiState = uiState,
-                    onRestart = { viewModel.startNewGame() }
-                )
+            // Fixed Victory Banner slot so game board position is fixed lower and never moves
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(76.dp),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                if (uiState.isGameOver) {
+                    GameOverBanner(
+                        uiState = uiState,
+                        onRestart = { viewModel.startNewGame() },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
 
             // Board Grid (Flexible center area - ALWAYS FULLY VISIBLE!)
