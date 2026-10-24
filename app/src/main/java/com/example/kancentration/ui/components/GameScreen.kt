@@ -55,11 +55,11 @@ fun GameScreen(
                 onCycleDimensionClick = { viewModel.cycleBoardDimension() }
             )
 
-            // Fixed Victory Banner slot so game board position is fixed lower and never moves
+            // Proportionate Victory Banner slot (never causes board to move)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(76.dp),
+                    .weight(0.10f),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
                 if (uiState.isGameOver) {
@@ -71,11 +71,11 @@ fun GameScreen(
                 }
             }
 
-            // Board Grid (Flexible center area - ALWAYS FULLY VISIBLE!)
+            // Board Grid (63% of flexible height - scales dynamically to screen)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(0.63f)
             ) {
                 BoardGrid(
                     cards = uiState.cards,
@@ -86,10 +86,13 @@ fun GameScreen(
                 )
             }
 
-            // Bottom Kanji Inspector
+            // Bottom Kanji Inspector (27% of flexible height - proportionate & static)
             KanjiInspector(
                 kanji = uiState.selectedKanjiForInspector,
-                onWiktionaryClick = { viewModel.onOpenWiktionary() }
+                onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.27f)
             )
         }
 

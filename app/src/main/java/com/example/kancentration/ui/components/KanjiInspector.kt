@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,7 +52,6 @@ fun KanjiInspector(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .fillMaxWidth()
-            .height(210.dp)
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         if (kanji == null) {
@@ -75,7 +76,8 @@ fun KanjiInspector(
                     border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                     shadowElevation = 2.dp,
                     modifier = Modifier
-                        .size(112.dp)
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
                         .clip(RoundedCornerShape(12.dp))
                         .clickable {
                             onWiktionaryClick?.invoke()
