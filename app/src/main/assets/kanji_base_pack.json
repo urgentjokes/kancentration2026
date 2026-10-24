@@ -1,0 +1,392 @@
+{
+  "packId": "base_pack",
+  "title": "Base Confusables (16 Quads)",
+  "description": "The foundational set of 16 confusable pairs of pairs (32 unique Kanji, 64 cards total).",
+  "version": 1,
+  "quads": [
+    {
+      "id": "quad_01_sun_say",
+      "category": "Proportions & Framing",
+      "pairA": {
+        "id": "kanji_hi_sun",
+        "character": "日",
+        "meanings": ["day", "sun", "Japan", "counter for days"],
+        "onReadings": ["ニチ", "ジツ"],
+        "kunReadings": ["ひ", "-び", "-か"],
+        "strokeCount": 4,
+        "distinctionTip": "Taller, narrower rectangle. Inner bar connects both sides cleanly.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%97%A5"
+      },
+      "pairB": {
+        "id": "kanji_iwaku_say",
+        "character": "曰",
+        "meanings": ["say", "speak", "reason"],
+        "onReadings": ["エツ"],
+        "kunReadings": ["いわく"],
+        "strokeCount": 4,
+        "distinctionTip": "Wider, squatter rectangle. Slightly wider proportions than 日.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9B%B0"
+      }
+    },
+    {
+      "id": "quad_02_hold_special",
+      "category": "Radical Nuance",
+      "pairA": {
+        "id": "kanji_motsu_hold",
+        "character": "持",
+        "meanings": ["hold", "have", "possess"],
+        "onReadings": ["ジ"],
+        "kunReadings": ["も.つ", "も.てる"],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is 扌 (hand / te-hen).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8C%81"
+      },
+      "pairB": {
+        "id": "kanji_toku_special",
+        "character": "特",
+        "meanings": ["special", "unique"],
+        "onReadings": ["トク"],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Left radical is 牛 (cow / ushi-hen).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%89%B9"
+      }
+    },
+    {
+      "id": "quad_03_person_enter",
+      "category": "Stroke Angle & Overlap",
+      "pairA": {
+        "id": "kanji_hito_person",
+        "character": "人",
+        "meanings": ["person", "human", "people"],
+        "onReadings": ["ジン", "ニン"],
+        "kunReadings": ["ひと", "-り", "-と"],
+        "strokeCount": 2,
+        "distinctionTip": "Left stroke is drawn first and stands taller; right stroke leans on it.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BA%BA"
+      },
+      "pairB": {
+        "id": "kanji_iru_enter",
+        "character": "入",
+        "meanings": ["enter", "insert"],
+        "onReadings": ["ニュウ"],
+        "kunReadings": ["い.る", "はい.る"],
+        "strokeCount": 2,
+        "distinctionTip": "Right stroke starts higher and sweeps down; left stroke tucks underneath.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%85%A5"
+      }
+    },
+    {
+      "id": "quad_04_earth_scholar",
+      "category": "Stroke Length Balance",
+      "pairA": {
+        "id": "kanji_tsuchi_earth",
+        "character": "土",
+        "meanings": ["earth", "soil", "ground", "Saturday"],
+        "onReadings": ["ド", "ト"],
+        "kunReadings": ["つち"],
+        "strokeCount": 3,
+        "distinctionTip": "Bottom horizontal stroke is noticeably LONGER than the top horizontal stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9C%9F"
+      },
+      "pairB": {
+        "id": "kanji_shi_scholar",
+        "character": "士",
+        "meanings": ["scholar", "samurai", "gentleman"],
+        "onReadings": ["シ"],
+        "kunReadings": ["さむらい"],
+        "strokeCount": 3,
+        "distinctionTip": "Top horizontal stroke is noticeably LONGER than the bottom horizontal stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A3%AB"
+      }
+    },
+    {
+      "id": "quad_05_end_notyet",
+      "category": "Horizontal Stroke Dominance",
+      "pairA": {
+        "id": "kanji_sue_end",
+        "character": "末",
+        "meanings": ["end", "tip", "extremity", "future"],
+        "onReadings": ["マツ", "バツ"],
+        "kunReadings": ["すえ"],
+        "strokeCount": 5,
+        "distinctionTip": "TOP horizontal line is noticeably longer than the lower horizontal line.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AB"
+      },
+      "pairB": {
+        "id": "kanji_hitsuji_notyet",
+        "character": "未",
+        "meanings": ["not yet", "un-", "even now"],
+        "onReadings": ["ミ", "ビ"],
+        "kunReadings": ["いま.だ", "ま.だ"],
+        "strokeCount": 5,
+        "distinctionTip": "BOTTOM horizontal line is noticeably longer than the top horizontal line.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AA"
+      }
+    },
+    {
+      "id": "quad_06_right_left",
+      "category": "Lower Component Distinction",
+      "pairA": {
+        "id": "kanji_migi_right",
+        "character": "右",
+        "meanings": ["right", "right-hand"],
+        "onReadings": ["ウ", "ユウ"],
+        "kunReadings": ["みぎ"],
+        "strokeCount": 5,
+        "distinctionTip": "Slanted stroke is drawn first; bottom component is 口 (mouth).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8F%B3"
+      },
+      "pairB": {
+        "id": "kanji_hidari_left",
+        "character": "左",
+        "meanings": ["left", "left-hand"],
+        "onReadings": ["サ", "シャ"],
+        "kunReadings": ["ひだり"],
+        "strokeCount": 5,
+        "distinctionTip": "Horizontal stroke is drawn first; bottom component is 工 (craft).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B7%A6"
+      }
+    },
+    {
+      "id": "quad_07_thousand_dry",
+      "category": "Top Stroke Angle",
+      "pairA": {
+        "id": "kanji_sen_thousand",
+        "character": "千",
+        "meanings": ["thousand"],
+        "onReadings": ["セン"],
+        "kunReadings": ["ち"],
+        "strokeCount": 3,
+        "distinctionTip": "Top stroke is a slanted down-left sweep.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8D%83"
+      },
+      "pairB": {
+        "id": "kanji_kan_dry",
+        "character": "干",
+        "meanings": ["dry", "parch", "interfere"],
+        "onReadings": ["カン"],
+        "kunReadings": ["ほ.す", "ひ.る"],
+        "strokeCount": 3,
+        "distinctionTip": "Top stroke is a purely horizontal bar.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B9%B2"
+      }
+    },
+    {
+      "id": "quad_08_heaven_arrow",
+      "category": "Head Break-through",
+      "pairA": {
+        "id": "kanji_ten_heaven",
+        "character": "天",
+        "meanings": ["heaven", "sky", "imperial"],
+        "onReadings": ["テン"],
+        "kunReadings": ["あま-", "あめ"],
+        "strokeCount": 4,
+        "distinctionTip": "Central vertical stroke does NOT poke above the top horizontal bar.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A4%A9"
+      },
+      "pairB": {
+        "id": "kanji_ya_arrow",
+        "character": "矢",
+        "meanings": ["arrow", "dart"],
+        "onReadings": ["シ"],
+        "kunReadings": ["や"],
+        "strokeCount": 5,
+        "distinctionTip": "Top slanted stroke PIERCES through the top horizontal line.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9F%A2"
+      }
+    },
+    {
+      "id": "quad_09_buy_sell",
+      "category": "Upper Crown Accent",
+      "pairA": {
+        "id": "kanji_kau_buy",
+        "character": "買",
+        "meanings": ["buy", "purchase"],
+        "onReadings": ["バイ"],
+        "kunReadings": ["か.う"],
+        "strokeCount": 12,
+        "distinctionTip": "Crown radical is 罒 (net) directly above 貝 (shell/money).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B2%B7"
+      },
+      "pairB": {
+        "id": "kanji_uru_sell",
+        "character": "賣",
+        "meanings": ["sell", "betray"],
+        "onReadings": ["バイ", "マイ"],
+        "kunReadings": ["う.る"],
+        "strokeCount": 15,
+        "distinctionTip": "Adds a 士 (scholar) topper above 罒 and 貝.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B3%A3"
+      }
+    },
+    {
+      "id": "quad_10_sword_blade",
+      "category": "Internal Slash Accent",
+      "pairA": {
+        "id": "kanji_katana_sword",
+        "character": "刀",
+        "meanings": ["sword", "knife", "saber"],
+        "onReadings": ["トウ"],
+        "kunReadings": ["かたな"],
+        "strokeCount": 2,
+        "distinctionTip": "No interior dot or notch; smooth curving stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%88%80"
+      },
+      "pairB": {
+        "id": "kanji_ha_blade",
+        "character": "刃",
+        "meanings": ["blade", "edge", "sword"],
+        "onReadings": ["ジン", "ニン"],
+        "kunReadings": ["は", "やいば"],
+        "strokeCount": 3,
+        "distinctionTip": "Features an extra interior dot stroke indicating the sharp edge of the blade.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%88%83"
+      }
+    },
+    {
+      "id": "quad_11_wait_samurai",
+      "category": "Left Radical Count",
+      "pairA": {
+        "id": "kanji_matsu_wait",
+        "character": "待",
+        "meanings": ["wait", "depend on"],
+        "onReadings": ["タイ"],
+        "kunReadings": ["ま.つ"],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is 彳 (step/road, two diagonal slashes).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%BE%85"
+      },
+      "pairB": {
+        "id": "kanji_samurai_retainer",
+        "character": "侍",
+        "meanings": ["wait upon", "retainer", "samurai"],
+        "onReadings": ["ジ", "シ"],
+        "kunReadings": ["さむらい"],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is 亻 (person, single diagonal slash).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BE%8D"
+      }
+    },
+    {
+      "id": "quad_12_stone_right",
+      "category": "Stroke Intersect & Overhang",
+      "pairA": {
+        "id": "kanji_ishi_stone",
+        "character": "石",
+        "meanings": ["stone", "rock"],
+        "onReadings": ["セキ", "シャク", "コク"],
+        "kunReadings": ["いし"],
+        "strokeCount": 5,
+        "distinctionTip": "Slanted line starts from under the top horizontal bar and extends left.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9F%B3"
+      },
+      "pairB": {
+        "id": "kanji_migi_alt_right",
+        "character": "右",
+        "meanings": ["right", "rightward"],
+        "onReadings": ["ウ", "ユウ"],
+        "kunReadings": ["みぎ"],
+        "strokeCount": 5,
+        "distinctionTip": "Slanted stroke starts from the very top peak and cuts through the horizontal bar.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8F%B3"
+      }
+    },
+    {
+      "id": "quad_13_shell_see",
+      "category": "Base Legs Shape",
+      "pairA": {
+        "id": "kanji_kai_shell",
+        "character": "貝",
+        "meanings": ["shellfish", "shell"],
+        "onReadings": ["バイ"],
+        "kunReadings": ["かい"],
+        "strokeCount": 7,
+        "distinctionTip": "Bottom legs are two distinct outward-angled dots (八 shape).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B2%9D"
+      },
+      "pairB": {
+        "id": "kanji_miru_see",
+        "character": "見",
+        "meanings": ["see", "look", "visible"],
+        "onReadings": ["ケン"],
+        "kunReadings": ["み.る", "み.える", "み.せる"],
+        "strokeCount": 7,
+        "distinctionTip": "Bottom legs are human legs (儿) with a hooked right sweep.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%A6%8B"
+      }
+    },
+    {
+      "id": "quad_14_white_hundred",
+      "category": "Top Bar Addition",
+      "pairA": {
+        "id": "kanji_shiro_white",
+        "character": "白",
+        "meanings": ["white"],
+        "onReadings": ["ハク", "ビャク"],
+        "kunReadings": ["しろ", "しろ.い"],
+        "strokeCount": 5,
+        "distinctionTip": "Starts with a single short diagonal tick at the very top.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%99%BD"
+      },
+      "pairB": {
+        "id": "kanji_hyaku_hundred",
+        "character": "百",
+        "meanings": ["hundred"],
+        "onReadings": ["ヒャク", "ビャク"],
+        "kunReadings": ["もも"],
+        "strokeCount": 6,
+        "distinctionTip": "Features an overarching horizontal stroke (一) at the very top above the tick.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%99%BE"
+      }
+    },
+    {
+      "id": "quad_15_cow_noon",
+      "category": "Vertical Pierce",
+      "pairA": {
+        "id": "kanji_ushi_cow",
+        "character": "牛",
+        "meanings": ["cow", "bull", "ox", "beef"],
+        "onReadings": ["ギュウ"],
+        "kunReadings": ["うし"],
+        "strokeCount": 4,
+        "distinctionTip": "Central vertical stroke pierces all the way up through the top horizontal line.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%89%9B"
+      },
+      "pairB": {
+        "id": "kanji_hiru_noon",
+        "character": "午",
+        "meanings": ["noon", "sign of the horse"],
+        "onReadings": ["ゴ"],
+        "kunReadings": ["うま"],
+        "strokeCount": 4,
+        "distinctionTip": "Central vertical stroke stops flush at the top horizontal line (does not pierce).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8D%88"
+      }
+    },
+    {
+      "id": "quad_16_bird_crow",
+      "category": "Eye Horizontal Line",
+      "pairA": {
+        "id": "kanji_tori_bird",
+        "character": "鳥",
+        "meanings": ["bird", "chicken"],
+        "onReadings": ["チョウ"],
+        "kunReadings": ["とり"],
+        "strokeCount": 11,
+        "distinctionTip": "Contains the inner horizontal line representing the bird's eye.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%B3%A5"
+      },
+      "pairB": {
+        "id": "kanji_karasu_crow",
+        "character": "烏",
+        "meanings": ["crow", "raven", "black"],
+        "onReadings": ["ウ", "オ"],
+        "kunReadings": ["からす", "いずくんぞ"],
+        "strokeCount": 10,
+        "distinctionTip": "Missing the eye stroke (legend: a crow is so jet black its eyes cannot be seen!).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%83%8F"
+      }
+    }
+  ]
+}
