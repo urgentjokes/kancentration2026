@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -49,14 +50,15 @@ fun KanjiInspector(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .fillMaxWidth()
+            .heightIn(min = 132.dp)
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         if (kanji == null) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(88.dp)
-                    .padding(10.dp)
+                    .height(132.dp)
+                    .padding(12.dp)
             ) {
                 // Blank on game start
             }
@@ -64,18 +66,19 @@ fun KanjiInspector(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    .heightIn(min = 132.dp)
+                    .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Tappable Kanji Character Box (takes to Wiktionary)
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.primaryContainer,
                     border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                     shadowElevation = 2.dp,
                     modifier = Modifier
-                        .size(68.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(10.dp))
                         .clickable {
                             onWiktionaryClick?.invoke()
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kanji.wiktionaryUrl))
@@ -88,7 +91,7 @@ fun KanjiInspector(
                     ) {
                         Text(
                             text = kanji.character,
-                            fontSize = 38.sp,
+                            fontSize = 44.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Serif,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -100,7 +103,10 @@ fun KanjiInspector(
 
                 // Information Column
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 2.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
                     // Meanings
                     Text(
@@ -112,7 +118,7 @@ fun KanjiInspector(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
 
                     // Readings (on-yomi & kun-yomi with romaji)
                     val onRomaji = kanji.onReadings.map { com.example.kancentration.util.KanaConverter.toRomaji(it) }
@@ -151,16 +157,17 @@ fun KanjiInspector(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(3.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
 
-                    // Confusion clue / tip
+                    // Confusion clue / tip (Expanded to 4 lines with generous spacing)
                     if (kanji.distinctionTip.isNotEmpty()) {
                         Text(
                             text = "💡 ${kanji.distinctionTip}",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis,
+                            lineHeight = 17.sp
                         )
                     }
                 }
