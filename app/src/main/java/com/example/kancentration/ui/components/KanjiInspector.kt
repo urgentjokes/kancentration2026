@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,41 +44,39 @@ fun KanjiInspector(
     val context = LocalContext.current
 
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 132.dp)
+            .height(210.dp)
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         if (kanji == null) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(132.dp)
-                    .padding(12.dp)
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
                 // Blank on game start
             }
         } else {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 132.dp)
-                    .padding(12.dp),
+                    .fillMaxSize()
+                    .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Tappable Kanji Character Box (takes to Wiktionary)
                 Surface(
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.primaryContainer,
                     border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                     shadowElevation = 2.dp,
                     modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(10.dp))
+                        .size(112.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .clickable {
                             onWiktionaryClick?.invoke()
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kanji.wiktionaryUrl))
@@ -86,12 +84,12 @@ fun KanjiInspector(
                         }
                 ) {
                     Box(
-                        modifier = Modifier.padding(2.dp),
+                        modifier = Modifier.padding(4.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = kanji.character,
-                            fontSize = 44.sp,
+                            fontSize = 62.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Serif,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -99,13 +97,13 @@ fun KanjiInspector(
                     }
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
                 // Information Column
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(vertical = 2.dp),
+                        .padding(vertical = 4.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     // Meanings

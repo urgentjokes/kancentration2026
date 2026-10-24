@@ -49,7 +49,8 @@ fun GameScreen(
                 uiState = uiState,
                 onSettingsClick = { viewModel.setShowSettingsDialog(true) },
                 onDlcStoreClick = { viewModel.setShowDlcStoreDialog(true) },
-                onRestartClick = { viewModel.startNewGame() }
+                onRestartClick = { viewModel.startNewGame() },
+                onCycleDimensionClick = { viewModel.cycleBoardDimension() }
             )
 
             // Non-obtrusive Victory Banner when game finishes (board remains 100% visible)

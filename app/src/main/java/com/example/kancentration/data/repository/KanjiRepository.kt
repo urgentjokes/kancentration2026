@@ -52,16 +52,36 @@ class KanjiRepository(private val context: Context) {
     /**
      * Generates a randomized deck of cards for the given board dimension.
      * Each quad provides 2 pairs (4 cards total): 2 of PairA and 2 of PairB.
+     * Guarantees that no kanji character or pair appears more than once on a single game board.
      */
     fun generateDeck(dimension: BoardDimension): List<BoardCard> {
         val requiredQuads = dimension.requiredQuads
         val allQuads = getAllAvailableQuads().shuffled()
 
-        val selectedQuads = if (allQuads.size >= requiredQuads) {
-            allQuads.take(requiredQuads)
-        } else {
-            // If more quads are needed than available, repeat
-            generateSequence { allQuads }.flatten().take(requiredQuads).toList()
+        val selectedQuads = mutableListOf<KanjiQuad>()
+        val seenKanjiCharacters = mutableSetOf<String>()
+
+        for (quad in allQuads) {
+            val charA = quad.pairA.character
+            val charB = quad.pairB.character
+            if (charA !in seenKanjiCharacters && charB !in seenKanjiCharacters) {
+                selectedQuads.add(quad)
+                seenKanjiCharacters.add(charA)
+                seenKanjiCharacters.add(charB)
+                if (selectedQuads.size == requiredQuads) {
+                    break
+                }
+            }
+        }
+
+        // Fallback in case not enough strictly disjoint quads exist
+        if (selectedQuads.size < requiredQuads) {
+            for (quad in allQuads) {
+                if (!selectedQuads.contains(quad)) {
+                    selectedQuads.add(quad)
+                    if (selectedQuads.size == requiredQuads) break
+                }
+            }
         }
 
         val cards = mutableListOf<BoardCard>()

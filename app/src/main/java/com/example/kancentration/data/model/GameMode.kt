@@ -8,6 +8,12 @@ enum class BoardDimension(val size: Int) {
     val totalCards: Int get() = size * size
     val requiredPairs: Int get() = totalCards / 2
     val requiredQuads: Int get() = totalCards / 4
+
+    fun next(): BoardDimension = when (this) {
+        FOUR_BY_FOUR -> SIX_BY_SIX
+        SIX_BY_SIX -> EIGHT_BY_EIGHT
+        EIGHT_BY_EIGHT -> FOUR_BY_FOUR
+    }
 }
 
 sealed interface GameType {

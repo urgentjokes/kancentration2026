@@ -55,6 +55,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     var hasStartedTimer = false
         private set
 
+    fun cycleBoardDimension() {
+        val nextDimension = _uiState.value.settings.dimension.next()
+        startNewGame(_uiState.value.settings.copy(dimension = nextDimension))
+    }
+
     fun applySettings(newSettings: GameSettings) {
         val currentSettings = _uiState.value.settings
         val requiresRestart = newSettings.dimension != currentSettings.dimension ||
