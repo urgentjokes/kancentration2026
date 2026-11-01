@@ -35,7 +35,7 @@ fun GameOverBanner(
     onRestart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isTimeUp = uiState.gameOverMessage.contains("Time's Up", ignoreCase = true)
+    val isTimeUp = uiState.isTimeExpired || uiState.gameOverMessage.contains("Time's Up", ignoreCase = true)
     val emoji = if (isTimeUp) "🛑" else "🎉"
 
     val containerColor = if (isTimeUp) Color(0xFFFFF0F0) else Color(0xFFF1F8E9)

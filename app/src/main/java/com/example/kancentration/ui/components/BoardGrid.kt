@@ -17,25 +17,45 @@ import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.BoardCard
 import com.example.kancentration.data.model.BoardDimension
 
+/**
+ * Responsive BoardGrid calculating dynamic tile scales and typography for
+ * 4x4, 6x6, and 8x8 setups while maintaining a square aspect ratio and
+ * zero layout jitter across small mobile screens up to full tablet layouts.
+ */
 @Composable
 fun BoardGrid(
     cards: List<BoardCard>,
     dimension: BoardDimension,
-    tileColor: Long = 0xFFFFFFFFL,
-    kanjiColor: Long = 0xFFD4AF37L,
+    tileColor: Long = 0xFF1E3A5FL,
+    kanjiColor: Long = 0xFFE0B44CL,
+    useSerifFont: Boolean = true,
     onCardClick: (BoardCard) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val size = dimension.size
+
+    // Spacing scale per dimension conforming to DESIGN_PLAN.md:
+    // 4x4 -> 8dp, 6x6 -> 5dp, 8x8 -> 3dp
     val spacing = when (dimension) {
+        BoardDimension.FOUR_BY_FOUR -> 8.dp
+        BoardDimension.SIX_BY_SIX -> 5.dp
         BoardDimension.EIGHT_BY_EIGHT -> 3.dp
-        BoardDimension.SIX_BY_SIX -> 4.dp
-        BoardDimension.FOUR_BY_FOUR -> 6.dp
     }
-    val kanjiFontSize = when (dimension) {
-        BoardDimension.FOUR_BY_FOUR -> 36.sp
-        BoardDimension.SIX_BY_SIX -> 24.sp
-        BoardDimension.EIGHT_BY_EIGHT -> 16.sp
+
+    // Corner radius per dimension conforming to DESIGN_PLAN.md:
+    // 4x4 -> 12dp, 6x6 -> 8dp, 8x8 -> 6dp
+    val cornerRadius = when (dimension) {
+        BoardDimension.FOUR_BY_FOUR -> 12.dp
+        BoardDimension.SIX_BY_SIX -> 8.dp
+        BoardDimension.EIGHT_BY_EIGHT -> 6.dp
+    }
+
+    // Adaptive grid density base font sizes conforming to Section 2:
+    // 4x4 -> 38sp, 6x6 -> 25sp, 8x8 -> 17sp
+    val baseFontSize = when (dimension) {
+        BoardDimension.FOUR_BY_FOUR -> 38.sp
+        BoardDimension.SIX_BY_SIX -> 25.sp
+        BoardDimension.EIGHT_BY_EIGHT -> 17.sp
     }
 
     BoxWithConstraints(
@@ -45,10 +65,22 @@ fun BoardGrid(
         contentAlignment = Alignment.Center
     ) {
         val totalSpacing = spacing * (size - 1)
-        val availableWidth = maxWidth - 16.dp
-        val availableHeight = maxHeight - 16.dp
-        val boardSize = minOf(availableWidth, availableHeight)
-        val cardSize = (boardSize - totalSpacing) / size
+        val availableWidth = maxWidth - 8.dp
+        val availableHeight = maxHeight - 8.dp
+        val boardSize = minOf(availableWidth, availableHeight).coerceAtLeast(0.dp)
+        val cardSize = if (size > 0) ((boardSize - totalSpacing) / size).coerceAtLeast(0.dp) else 0.dp
+
+        // Font scaling rules:
+        // When adaptive grid density changes text sizes (38sp, 25sp, 17sp),
+        // ensure characters fill ~75% of tile height without truncation.
+        val maxSafeFontSize = (cardSize.value * 0.75f)
+        val responsiveFontSize = if (cardSize.value < 36f) {
+            minOf(baseFontSize.value, maxSafeFontSize).sp
+        } else if (cardSize.value > 65f) {
+            maxOf(baseFontSize.value, maxSafeFontSize * 0.96f).sp
+        } else {
+            baseFontSize
+        }
 
         Column(
             modifier = Modifier.size(boardSize),
@@ -69,9 +101,11 @@ fun BoardGrid(
                                 card = card,
                                 onClick = { onCardClick(card) },
                                 modifier = Modifier.size(cardSize),
-                                fontSize = kanjiFontSize,
+                                fontSize = responsiveFontSize,
                                 tileColor = tileColor,
-                                kanjiColor = kanjiColor
+                                kanjiColor = kanjiColor,
+                                useSerifFont = useSerifFont,
+                                cornerRadius = cornerRadius
                             )
                         } else {
                             Box(modifier = Modifier.size(cardSize))

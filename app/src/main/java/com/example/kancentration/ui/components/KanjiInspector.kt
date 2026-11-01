@@ -3,7 +3,6 @@ package com.example.kancentration.ui.components
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -28,109 +26,175 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.KanjiData
+import com.example.kancentration.theme.AizomeIndigo
+import com.example.kancentration.theme.SumiCharcoal
+import com.example.kancentration.util.KanaConverter
 
+/**
+ * Stateless fixed-height bottom lexicon box presenting Kanji details,
+ * distinction tips, Kana/Romaji readings, and a clickable Wiktionary intent link.
+ */
 @Composable
 fun KanjiInspector(
     kanji: KanjiData?,
     modifier: Modifier = Modifier,
+    showRomaji: Boolean = false,
+    useSerifFont: Boolean = true,
     onWiktionaryClick: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
 
     Card(
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
         if (kanji == null) {
+            // Calm zen placeholder state
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
-                // Blank on game start
+                Text(
+                    text = "🎴 Flip cards to inspect Kanji readings, meanings & Twin-Trap clues",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
+                    textAlign = TextAlign.Center
+                )
             }
         } else {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(14.dp),
+                    .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Tappable Kanji Character Box (takes to Wiktionary)
+                // Left Hanko Seal Tile: Tappable Wiktionary Link
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
+                    color = AizomeIndigo.copy(alpha = 0.08f),
+                    border = BorderStroke(1.5.dp, AizomeIndigo),
                     shadowElevation = 2.dp,
                     modifier = Modifier
+                        .width(96.dp)
                         .fillMaxHeight()
-                        .aspectRatio(1f)
                         .clip(RoundedCornerShape(12.dp))
-                        .clickable {
+                        .clickable(
+                            role = androidx.compose.ui.semantics.Role.Button,
+                            onClickLabel = "Open Wiktionary entry in browser"
+                        ) {
                             onWiktionaryClick?.invoke()
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kanji.wiktionaryUrl))
-                            context.startActivity(intent)
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kanji.wiktionaryUrl)).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
                 ) {
                     Box(
-                        modifier = Modifier.padding(4.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(2.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = kanji.character,
-                            fontSize = 62.sp,
+                            fontSize = 54.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Serif,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
+                            color = AizomeIndigo
+                        )
+
+                        Text(
+                            text = "Wiktionary ↗",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = AizomeIndigo.copy(alpha = 0.85f),
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 2.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-                // Information Column
+                // Right Information Column
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(vertical = 4.dp),
-                    verticalArrangement = Arrangement.Center
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Meanings
-                    Text(
-                        text = kanji.meanings.joinToString(", ").ifEmpty { "Kanji" },
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    // Meanings and Stroke Count Header
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = kanji.meanings.joinToString(", ").ifEmpty { "Kanji" },
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
 
-                    Spacer(modifier = Modifier.height(3.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
 
-                    // Readings (on-yomi & kun-yomi with romaji)
-                    val onRomaji = kanji.onReadings.map { com.example.kancentration.util.KanaConverter.toRomaji(it) }
-                    val kunRomaji = kanji.kunReadings.map { com.example.kancentration.util.KanaConverter.toRomaji(it) }
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                        ) {
+                            Text(
+                                text = "${kanji.strokeCount}画",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+
+                    // On-yomi & Kun-yomi Readings (with optional Romaji)
+                    val onReadingsFormatted = if (showRomaji) {
+                        kanji.onReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
+                    } else {
+                        kanji.onReadings
+                    }
+                    val kunReadingsFormatted = if (showRomaji) {
+                        kanji.kunReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
+                    } else {
+                        kanji.kunReadings
+                    }
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        if (onRomaji.isNotEmpty()) {
+                        if (onReadingsFormatted.isNotEmpty()) {
                             Text(
-                                text = "on: ${onRomaji.joinToString(", ")}",
+                                text = "on: ${onReadingsFormatted.joinToString(", ")}",
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.primary,
@@ -138,16 +202,16 @@ fun KanjiInspector(
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        if (onRomaji.isNotEmpty() && kunRomaji.isNotEmpty()) {
+                        if (onReadingsFormatted.isNotEmpty() && kunReadingsFormatted.isNotEmpty()) {
                             Text(
                                 text = " • ",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.outline
                             )
                         }
-                        if (kunRomaji.isNotEmpty()) {
+                        if (kunReadingsFormatted.isNotEmpty()) {
                             Text(
-                                text = "kun: ${kunRomaji.joinToString(", ")}",
+                                text = "kun: ${kunReadingsFormatted.joinToString(", ")}",
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.secondary,
@@ -157,17 +221,22 @@ fun KanjiInspector(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    // Confusion clue / tip (Expanded to 4 lines with generous spacing)
+                    // Distinction Tip / Clue
                     if (kanji.distinctionTip.isNotEmpty()) {
                         Text(
                             text = "💡 ${kanji.distinctionTip}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 4,
+                            maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
-                            lineHeight = 17.sp
+                            lineHeight = 16.sp
+                        )
+                    } else {
+                        Text(
+                            text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            maxLines = 1
                         )
                     }
                 }

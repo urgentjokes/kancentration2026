@@ -5,7 +5,7 @@
   "version": 2,
   "quads": [
     {
-      "id": "quad_01_sun_eye",
+      "id": "quad_01_sun_say",
       "category": "Proportions & Framing",
       "pairA": {
         "id": "kanji_hi_sun",
@@ -25,29 +25,26 @@
           "-か"
         ],
         "strokeCount": 4,
-        "distinctionTip": "Contains 1 inner horizontal stroke (4 strokes total).",
+        "distinctionTip": "Tall, narrow vertical rectangle frame (aspect ratio > 1).",
         "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%97%A5"
       },
       "pairB": {
-        "id": "kanji_me_eye",
-        "character": "目",
+        "id": "kanji_iwaku_say",
+        "character": "曰",
         "meanings": [
-          "eye",
-          "look",
-          "insight"
+          "say",
+          "speak",
+          "declare"
         ],
         "onReadings": [
-          "モク",
-          "ボク"
+          "エツ"
         ],
         "kunReadings": [
-          "め",
-          "-め",
-          "ま-"
+          "いわ.く"
         ],
-        "strokeCount": 5,
-        "distinctionTip": "Contains 2 inner horizontal strokes (5 strokes total) rather than 1.",
-        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9B%AE"
+        "strokeCount": 4,
+        "distinctionTip": "Wide, flat horizontal rectangle frame (aspect ratio < 1); flatter frame.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9B%B0"
       }
     },
     {
@@ -743,85 +740,85 @@
       }
     },
     {
-      "id": "quad_19_govern_smelt",
-      "category": "Water Drops Count",
+      "id": "quad_19_tree_book",
+      "category": "Root Stroke Distinction",
       "pairA": {
-        "id": "kanji_osameru_govern",
-        "character": "治",
+        "id": "kanji_ki_tree",
+        "character": "木",
         "meanings": [
-          "govern",
-          "cure",
-          "heal"
+          "tree",
+          "wood"
         ],
         "onReadings": [
-          "ジ",
-          "チ"
+          "モク",
+          "ボク"
         ],
         "kunReadings": [
-          "おさ.める",
-          "なお.る",
-          "なお.す"
+          "き",
+          "こ-"
         ],
-        "strokeCount": 8,
-        "distinctionTip": "Left radical is 氵 (three water drops / sanzui).",
-        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B2%BB"
+        "strokeCount": 4,
+        "distinctionTip": "Main vertical trunk has no lower horizontal mark (4 strokes).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%A8"
       },
       "pairB": {
-        "id": "kanji_ya_metallurgy",
-        "character": "冶",
+        "id": "kanji_hon_book",
+        "character": "本",
         "meanings": [
-          "smelt",
-          "metal casting",
-          "melting"
+          "book",
+          "origin",
+          "main"
         ],
         "onReadings": [
-          "ヤ"
+          "ホン"
         ],
-        "kunReadings": [],
-        "strokeCount": 7,
-        "distinctionTip": "Left radical is 冫 (two ice drops / nisui).",
-        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%86%B6"
+        "kunReadings": [
+          "もと"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Features an extra short horizontal stroke crossing the lower trunk marking the root.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AC"
       }
     },
     {
-      "id": "quad_20_slope_board",
-      "category": "Left Material Radical",
+      "id": "quad_20_great_differ",
+      "category": "Person vs Movement Radical",
       "pairA": {
-        "id": "kanji_saka_slope",
-        "character": "坂",
+        "id": "kanji_erai_great",
+        "character": "偉",
         "meanings": [
-          "slope",
-          "hill",
-          "incline"
+          "admirable",
+          "great",
+          "distinguished"
         ],
         "onReadings": [
-          "ハン"
+          "イ"
         ],
         "kunReadings": [
-          "さか"
+          "えら.い"
         ],
-        "strokeCount": 7,
-        "distinctionTip": "Left radical is 土 (earth / ground, tsuchi-hen).",
-        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9D%82"
+        "strokeCount": 12,
+        "distinctionTip": "Left radical is 亻 (person / nin-ben) alongside 韋.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%81%89"
       },
       "pairB": {
-        "id": "kanji_ita_board",
-        "character": "板",
+        "id": "kanji_chigau_differ",
+        "character": "違",
         "meanings": [
-          "board",
-          "plank",
-          "plate"
+          "differ",
+          "mistake",
+          "vary"
         ],
         "onReadings": [
-          "ハン",
-          "バン"
+          "イ"
         ],
         "kunReadings": [
-          "いた"
+          "ちが.う",
+          "ちが.い"
         ],
-        "strokeCount": 8,
-        "distinctionTip": "Left radical is 木 (tree / wood, ki-hen).",
-        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9D%BF"
+        "strokeCount": 13,
+        "distinctionTip": "Left and bottom radical is 辶 (road/movement / shin-nyou) wrapping around 韋.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%81%95"
       }
     }
   ]

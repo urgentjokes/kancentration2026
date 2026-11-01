@@ -1,5 +1,6 @@
 package com.example.kancentration.domain
 
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -105,6 +106,17 @@ class TimerManager(private val scope: CoroutineScope) {
         timerJob?.cancel()
         timerJob = null
         _isPaused.value = false
+    }
+
+    /**
+     * Completely disposes all in-flight timer coroutines, unregisters callbacks,
+     * and cancels the underlying supervisor job if applicable.
+     */
+    fun dispose() {
+        stop()
+        onTickWarningCallback = null
+        onTimeExpiredCallback = null
+        (scope.coroutineContext[Job] as? CompletableJob)?.cancel()
     }
 
     fun formatTime(seconds: Int): String {

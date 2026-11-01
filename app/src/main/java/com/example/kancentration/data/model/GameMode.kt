@@ -28,6 +28,9 @@ data class GameSettings(
     val dimension: BoardDimension = BoardDimension.FOUR_BY_FOUR,
     val gameType: GameType = GameType.Solo,
     val bonusTurnOnMatch: Boolean = true,
+    val showTwinTrapHints: Boolean = true,
+    val showRomaji: Boolean = false,
+    val useSerifFont: Boolean = true,
     val soundEnabled: Boolean = true,
     val tileColor: Long = 0xFFFFFFFFL,      // Default White
     val kanjiColor: Long = 0xFFD4AF37L       // Default Gold (#D4AF37)

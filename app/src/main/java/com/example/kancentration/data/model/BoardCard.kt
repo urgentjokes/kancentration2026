@@ -4,7 +4,9 @@ data class BoardCard(
     val instanceId: String,
     val kanji: KanjiData,
     val quadId: String,
+    val confusableTwinCharacter: String = "",
     val isFaceUp: Boolean = false,
     val isMatched: Boolean = false,
-    val matchedByPlayer: Int? = null // 1 or 2
+    val matchedByPlayer: Int? = null, // 1 or 2
+    val isTwinTrapHighlight: Boolean = false
 )

@@ -11,15 +11,15 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
 
-class FirebaseStorageDlcManager(private val context: Context) {
+class FirebaseStorageDlcManager(private val context: Context) : DlcManager {
 
     private val dlcDir = File(context.filesDir, "dlc_packs").apply { if (!exists()) mkdirs() }
 
     private val _catalogPacks = MutableStateFlow<List<DlcPackItem>>(emptyList())
-    val catalogPacks: StateFlow<List<DlcPackItem>> = _catalogPacks.asStateFlow()
+    override val catalogPacks: StateFlow<List<DlcPackItem>> = _catalogPacks.asStateFlow()
 
     private val _downloadState = MutableStateFlow<DlcDownloadState>(DlcDownloadState.Idle)
-    val downloadState: StateFlow<DlcDownloadState> = _downloadState.asStateFlow()
+    override val downloadState: StateFlow<DlcDownloadState> = _downloadState.asStateFlow()
 
     init {
         loadCatalog()
@@ -35,6 +35,7 @@ class FirebaseStorageDlcManager(private val context: Context) {
                 priceFormatted = "$0.99",
                 storagePath = "dlc_packs/radical_rivals/pack.json",
                 quadCount = 16,
+                sampleQuadPreview = "社 vs 初 • 持 vs 特",
                 isInstalled = isPackInstalled("dlc_radical_rivals")
             ),
             DlcPackItem(
@@ -44,18 +45,29 @@ class FirebaseStorageDlcManager(private val context: Context) {
                 priceFormatted = "$1.49",
                 storagePath = "dlc_packs/jlpt_n1/pack.json",
                 quadCount = 16,
+                sampleQuadPreview = "崇 vs 祟 • 壺 vs 壷",
                 isInstalled = isPackInstalled("dlc_jlpt_n1")
+            ),
+            DlcPackItem(
+                id = "dlc_joyo_essentials",
+                title = "Everyday Joyo Traps",
+                description = "Frequent confusion pairs in standard vocabulary (e.g. 末 vs 未, 栗 vs 粟).",
+                priceFormatted = "Free",
+                storagePath = "dlc_packs/joyo_essentials/pack.json",
+                quadCount = 16,
+                sampleQuadPreview = "末 vs 未 • 栗 vs 粟",
+                isInstalled = isPackInstalled("dlc_joyo_essentials")
             )
         )
         _catalogPacks.value = defaultPacks
     }
 
-    fun isPackInstalled(packId: String): Boolean {
+    override fun isPackInstalled(packId: String): Boolean {
         val file = File(dlcDir, "$packId.json")
         return file.exists() && file.length() > 0
     }
 
-    suspend fun downloadPack(pack: DlcPackItem, onComplete: (Boolean) -> Unit) = withContext(Dispatchers.IO) {
+    override suspend fun downloadPack(pack: DlcPackItem, onComplete: (Boolean) -> Unit) = withContext(Dispatchers.IO) {
         _downloadState.value = DlcDownloadState.Downloading(pack.id, 0.1f)
 
         try {

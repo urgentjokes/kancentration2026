@@ -22,12 +22,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,7 +50,16 @@ import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.BoardDimension
 import com.example.kancentration.data.model.GameSettings
 import com.example.kancentration.data.model.GameType
+import com.example.kancentration.theme.AizomeIndigo
+import com.example.kancentration.theme.KinpakuGold
 
+/**
+ * Redesigned Settings modal sheet featuring:
+ * - Segmented controls for Kanji Typography (Mincho/Serif vs Gothic/Sans-Serif)
+ * - Segmented switches for Board Dimensions (4x4, 6x6, 8x8)
+ * - Learning preference switches (Confusable Twin Alerts, Show Romaji, Extra Turn)
+ * - Traditional palette presets (Aizome Indigo, Washi Ivory, Bamboo Green) with live preview
+ */
 @Composable
 fun SettingsDialog(
     currentSettings: GameSettings,
@@ -57,6 +69,9 @@ fun SettingsDialog(
     var selectedDimension by remember { mutableStateOf(currentSettings.dimension) }
     var selectedGameType by remember { mutableStateOf(currentSettings.gameType) }
     var bonusTurn by remember { mutableStateOf(currentSettings.bonusTurnOnMatch) }
+    var twinTrapHints by remember { mutableStateOf(currentSettings.showTwinTrapHints) }
+    var showRomaji by remember { mutableStateOf(currentSettings.showRomaji) }
+    var useSerifFont by remember { mutableStateOf(currentSettings.useSerifFont) }
     var soundEnabled by remember { mutableStateOf(currentSettings.soundEnabled) }
     var selectedTileColor by remember { mutableStateOf(currentSettings.tileColor) }
     var selectedKanjiColor by remember { mutableStateOf(currentSettings.kanjiColor) }
@@ -67,15 +82,32 @@ fun SettingsDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Game Settings", style = MaterialTheme.typography.titleLarge) },
+        title = {
+            Column {
+                Text(
+                    text = "Game Settings",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Customization & Preferences (設定)",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        },
         text = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
             ) {
-                // Board Dimension
-                Text(text = "Board Size", style = MaterialTheme.typography.titleSmall)
+                // 1. Board Dimensions Segmented Switch
+                Text(
+                    text = "Board Dimension",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -85,15 +117,79 @@ fun SettingsDialog(
                         FilterChip(
                             selected = selectedDimension == dim,
                             onClick = { selectedDimension = dim },
-                            label = { Text("${dim.size}×${dim.size}") }
+                            label = {
+                                Text(
+                                    text = "${dim.size}×${dim.size}",
+                                    fontWeight = if (selectedDimension == dim) FontWeight.Bold else FontWeight.Normal
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Game Mode
-                Text(text = "Game Mode", style = MaterialTheme.typography.titleSmall)
+                // 2. Kanji Font Style Segmented Switch (Serif/Mincho vs Sans/Gothic)
+                Text(
+                    text = "Kanji Typography",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = if (useSerifFont) "Mincho (明朝体) — Calligraphic stroke style" else "Gothic (ゴシック) — Modern geometric style",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = useSerifFont,
+                        onClick = { useSerifFont = true },
+                        label = {
+                            Text(
+                                text = "Mincho (Serif)",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = if (useSerifFont) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    )
+
+                    FilterChip(
+                        selected = !useSerifFont,
+                        onClick = { useSerifFont = false },
+                        label = {
+                            Text(
+                                text = "Gothic (Sans)",
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = if (!useSerifFont) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // 3. Game Mode Selection
+                Text(
+                    text = "Game Mode",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Solo
@@ -107,7 +203,7 @@ fun SettingsDialog(
                         selected = selectedGameType is GameType.Solo,
                         onClick = { selectedGameType = GameType.Solo }
                     )
-                    Text(text = "1-Player Solo (Casual)", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "1-Player Solo (Relaxed)", style = MaterialTheme.typography.bodyMedium)
                 }
 
                 // Two Player
@@ -131,7 +227,7 @@ fun SettingsDialog(
                         .fillMaxWidth()
                         .clickable {
                             if (selectedGameType !is GameType.TimeAttack) {
-                                selectedGameType = GameType.TimeAttack(1)
+                                selectedGameType = GameType.TimeAttack(3)
                             }
                         }
                 ) {
@@ -139,95 +235,187 @@ fun SettingsDialog(
                         selected = selectedGameType is GameType.TimeAttack,
                         onClick = {
                             if (selectedGameType !is GameType.TimeAttack) {
-                                selectedGameType = GameType.TimeAttack(1)
+                                selectedGameType = GameType.TimeAttack(3)
                             }
                         }
                     )
-                    Text(text = "Time-Attack Mode", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "Time-Attack (Countdown)", style = MaterialTheme.typography.bodyMedium)
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 32.dp, top = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    listOf(1, 3, 5).forEach { min ->
-                        val isSelected = (selectedGameType as? GameType.TimeAttack)?.durationMinutes == min
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { selectedGameType = GameType.TimeAttack(min) },
-                            label = { Text("${min}m") }
-                        )
+                if (selectedGameType is GameType.TimeAttack) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 32.dp, top = 2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        listOf(1, 3, 5).forEach { min ->
+                            val isSelected = (selectedGameType as? GameType.TimeAttack)?.durationMinutes == min
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = { selectedGameType = GameType.TimeAttack(min) },
+                                label = { Text("${min}m") }
+                            )
+                        }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Appearance: Tile & Character Colors
-                Text(text = "Tile Appearance", style = MaterialTheme.typography.titleSmall)
+                // 4. Learning Preferences Section
+                Text(
+                    text = "Learning Preferences",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Live Preview Card
-                val previewBg = Color(selectedTileColor)
-                val previewKanji = Color(selectedKanjiColor)
-                val isBgLight = (previewBg.red * 0.299f + previewBg.green * 0.587f + previewBg.blue * 0.114f) > 0.6f
-                val previewBorder = if (isBgLight) Color(0xFFCFD8DC) else Color.White.copy(alpha = 0.3f)
-
+                // Confusable Twin Alerts
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFFF7F7F7), RoundedCornerShape(10.dp))
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Card(
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = previewBg),
-                        border = BorderStroke(1.5.dp, previewBorder),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        modifier = Modifier.size(54.dp)
-                    ) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(
-                                text = "漢",
-                                color = previewKanji,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Serif
-                            )
-                        }
-                    }
-
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = "Twin-Trap Alerts (惜しい！)", style = MaterialTheme.typography.bodyMedium)
                         Text(
-                            text = "Tile Preview",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            text = "Card back in-game appearance",
+                            text = "Highlight confusable near-miss pairs from the same quad in Amber",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+                    Switch(checked = twinTrapHints, onCheckedChange = { twinTrapHints = it })
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Show Romaji Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = "Show Romaji Readings", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = "Display latin pronunciation alongside Kana in Inspector",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(checked = showRomaji, onCheckedChange = { showRomaji = it })
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Extra Turn Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = "Extra Turn on Match", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = "Scoring a match allows flipping again",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(checked = bonusTurn, onCheckedChange = { bonusTurn = it })
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Sound Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Sound Effects", style = MaterialTheme.typography.bodyMedium)
+                    Switch(checked = soundEnabled, onCheckedChange = { soundEnabled = it })
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 5. Tile Appearance & Color Presets
+                Text(
+                    text = "Tile Appearance & Presets",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Live Preview Tile
+                val previewBg = if (selectedTileColor == 0xFFFFFFFFL || selectedTileColor == 0xFF1E3A5FL) {
+                    AizomeIndigo
+                } else {
+                    Color(selectedTileColor)
+                }
+                val previewKanji = if (selectedKanjiColor == 0xFFD4AF37L || selectedKanjiColor == 0xFFE0B44CL) {
+                    KinpakuGold
+                } else {
+                    Color(selectedKanjiColor)
+                }
+
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(14.dp)
+                    ) {
+                        Card(
+                            shape = RoundedCornerShape(8.dp),
+                            colors = CardDefaults.cardColors(containerColor = previewBg),
+                            border = BorderStroke(1.5.dp, KinpakuGold.copy(alpha = 0.4f)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                            modifier = Modifier.size(54.dp)
+                        ) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = "漢",
+                                    color = previewKanji,
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif
+                                )
+                            }
+                        }
+
+                        Column {
+                            Text(
+                                text = "Live Tile Back Preview",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = "Instant update with zero layout shift",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Tile Background Color Palette
-                Text(text = "Tile Background Color", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                // Tile Background Presets
+                Text(text = "Tile Background Presets", style = MaterialTheme.typography.labelMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 ColorPaletteRow(
                     colors = listOf(
-                        0xFFFFFFFFL to "White",
-                        0xFFFFF8E7L to "Cream",
-                        0xFF263238L to "Slate",
-                        0xFF1A237EL to "Navy",
-                        0xFF1B5E20L to "Forest",
+                        0xFF1E3A5FL to "Aizome Indigo",
+                        0xFFFFF8E7L to "Washi Ivory",
+                        0xFFFFFFFFL to "Pure White",
+                        0xFF263238L to "Slate Lacquer",
+                        0xFF1B5E20L to "Bamboo Green",
                         0xFF880E4FL to "Crimson",
-                        0xFF121212L to "Black"
+                        0xFF121212L to "Midnight Ink"
                     ),
                     selectedColor = selectedTileColor,
                     onSelect = { selectedTileColor = it }
@@ -235,16 +423,16 @@ fun SettingsDialog(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // 漢 Character Color Palette
-                Text(text = "漢 Character Color", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                // 漢 Character Color Presets
+                Text(text = "漢 Character Color Presets", style = MaterialTheme.typography.labelMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 ColorPaletteRow(
                     colors = listOf(
-                        0xFFD4AF37L to "Gold",
-                        0xFFFFA000L to "Amber",
-                        0xFF263238L to "Charcoal",
-                        0xFFFFFFFFL to "White",
-                        0xFFD32F2FL to "Red",
+                        0xFFE0B44CL to "Kinpaku Gold",
+                        0xFFD4AF37L to "Kincha Gold",
+                        0xFFFFFFFFL to "Pure White",
+                        0xFF18181BL to "Sumi Ink",
+                        0xFFC83E2BL to "Vermilion",
                         0xFF2E7D32L to "Green",
                         0xFF1976D2L to "Blue"
                     ),
@@ -305,37 +493,6 @@ fun SettingsDialog(
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Turn Continuation Rule
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "Extra Turn on Match", style = MaterialTheme.typography.bodyMedium)
-                        Text(
-                            text = "Scoring grants another turn",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Switch(checked = bonusTurn, onCheckedChange = { bonusTurn = it })
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Sound Toggle
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Sound Effects", style = MaterialTheme.typography.bodyMedium)
-                    Switch(checked = soundEnabled, onCheckedChange = { soundEnabled = it })
-                }
             }
         },
         confirmButton = {
@@ -349,6 +506,9 @@ fun SettingsDialog(
                             dimension = selectedDimension,
                             gameType = selectedGameType,
                             bonusTurnOnMatch = bonusTurn,
+                            showTwinTrapHints = twinTrapHints,
+                            showRomaji = showRomaji,
+                            useSerifFont = useSerifFont,
                             soundEnabled = soundEnabled,
                             tileColor = selectedTileColor,
                             kanjiColor = selectedKanjiColor
@@ -373,40 +533,52 @@ private fun ColorPaletteRow(
     selectedColor: Long,
     onSelect: (Long) -> Unit
 ) {
-    val scrollState = rememberScrollState()
+    val scroll = rememberScrollState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .horizontalScroll(scrollState),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .horizontalScroll(scroll),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        colors.forEach { (colorValue, name) ->
-            val color = Color(colorValue)
-            val isSelected = selectedColor == colorValue
-            val isLight = (color.red * 0.299f + color.green * 0.587f + color.blue * 0.114f) > 0.6f
+        colors.forEach { (colorVal, name) ->
+            val isSelected = selectedColor == colorVal
+            val color = Color(colorVal)
 
-            Box(
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(color)
-                    .border(
-                        width = if (isSelected) 2.5.dp else 1.dp,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else (if (isLight) Color(0xFFCFD8DC) else Color.Transparent),
-                        shape = CircleShape
-                    )
-                    .clickable { onSelect(colorValue) },
-                contentAlignment = Alignment.Center
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onSelect(colorVal) }
+                    .padding(4.dp)
             ) {
-                if (isSelected) {
-                    Text(
-                        text = "✓",
-                        color = if (isLight) Color(0xFF212121) else Color.White,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .border(
+                            width = if (isSelected) 3.dp else 1.dp,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isSelected) {
+                        Text(
+                            text = "✓",
+                            color = if (colorVal == 0xFFFFFFFFL || colorVal == 0xFFFFF8E7L) Color.Black else Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = name,
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -414,10 +586,13 @@ private fun ColorPaletteRow(
 
 private fun parseHexColor(input: String): Long? {
     val clean = input.trim().removePrefix("#")
-    return when (clean.length) {
-        6 -> try { ("FF$clean").toLong(16) } catch (_: Exception) { null }
-        8 -> try { clean.toLong(16) } catch (_: Exception) { null }
-        else -> null
+    return try {
+        when (clean.length) {
+            6 -> 0xFF000000L or clean.toLong(16)
+            8 -> clean.toLong(16)
+            else -> null
+        }
+    } catch (_: Exception) {
+        null
     }
 }
-

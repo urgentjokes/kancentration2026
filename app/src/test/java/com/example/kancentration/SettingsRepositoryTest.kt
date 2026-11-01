@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.example.kancentration.data.model.BoardDimension
 import com.example.kancentration.data.model.GameSettings
 import com.example.kancentration.data.model.GameType
+import com.example.kancentration.data.repository.InMemorySettingsRepository
 import com.example.kancentration.data.repository.SettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -42,28 +43,34 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun testDefaultSettings() {
+    fun testMandatoryDefaultSettings() {
         val prefs = FakeSharedPreferences()
-        val repo = SettingsRepository(prefs)
+        val repo: SettingsRepository = SettingsRepository(prefs)
         val settings = repo.loadSettings()
 
         assertEquals(BoardDimension.FOUR_BY_FOUR, settings.dimension)
         assertEquals(GameType.Solo, settings.gameType)
-        assertTrue(settings.soundEnabled)
-        assertTrue(settings.bonusTurnOnMatch)
+        assertTrue("bonusTurnOnMatch must be true by default", settings.bonusTurnOnMatch)
+        assertTrue("showTwinTrapHints must be true by default", settings.showTwinTrapHints)
+        assertFalse("showRomaji must be false by default", settings.showRomaji)
+        assertTrue("useSerifFont must be true by default", settings.useSerifFont)
+        assertTrue("soundEnabled must be true by default", settings.soundEnabled)
         assertEquals(0xFFFFFFFFL, settings.tileColor)
         assertEquals(0xFFD4AF37L, settings.kanjiColor)
     }
 
     @Test
-    fun testSaveAndReloadSettings() {
+    fun testSaveAndReloadCustomSettings() {
         val prefs = FakeSharedPreferences()
-        val repo = SettingsRepository(prefs)
+        val repo: SettingsRepository = SettingsRepository(prefs)
 
         val customSettings = GameSettings(
             dimension = BoardDimension.EIGHT_BY_EIGHT,
             gameType = GameType.TimeAttack(5),
             bonusTurnOnMatch = false,
+            showTwinTrapHints = false,
+            showRomaji = true,
+            useSerifFont = false,
             soundEnabled = false,
             tileColor = 0xFF1E293BL,
             kanjiColor = 0xFF4CAF50L
@@ -76,8 +83,28 @@ class SettingsRepositoryTest {
         assertTrue(loaded.gameType is GameType.TimeAttack)
         assertEquals(5, (loaded.gameType as GameType.TimeAttack).durationMinutes)
         assertFalse(loaded.bonusTurnOnMatch)
+        assertFalse(loaded.showTwinTrapHints)
+        assertTrue(loaded.showRomaji)
+        assertFalse(loaded.useSerifFont)
         assertFalse(loaded.soundEnabled)
         assertEquals(0xFF1E293BL, loaded.tileColor)
         assertEquals(0xFF4CAF50L, loaded.kanjiColor)
+    }
+
+    @Test
+    fun testInMemorySettingsRepository() {
+        val repo: SettingsRepository = InMemorySettingsRepository()
+        val defaultSettings = repo.loadSettings()
+
+        assertTrue(defaultSettings.showTwinTrapHints)
+        assertFalse(defaultSettings.showRomaji)
+        assertTrue(defaultSettings.useSerifFont)
+
+        val updated = defaultSettings.copy(showRomaji = true, useSerifFont = false)
+        repo.saveSettings(updated)
+
+        val reloaded = repo.loadSettings()
+        assertTrue(reloaded.showRomaji)
+        assertFalse(reloaded.useSerifFont)
     }
 }

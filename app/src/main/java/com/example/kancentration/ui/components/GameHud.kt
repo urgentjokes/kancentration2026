@@ -1,7 +1,6 @@
 package com.example.kancentration.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,13 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,13 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kancentration.data.model.GameType
 import com.example.kancentration.ui.viewmodel.GameUiState
 
+/**
+ * Top HUD Bar maintaining a fixed height to prevent vertical layout shifts,
+ * with accessible touch targets (>= 44dp) on all action buttons and dimension controls.
+ */
 @Composable
 fun GameHud(
     uiState: GameUiState,
@@ -47,79 +44,123 @@ fun GameHud(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .height(84.dp)
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Row 1: Header & Control Actions
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f, fill = false)
+            ) {
                 Text(
                     text = "Kancentration",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Serif,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 Surface(
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.secondaryContainer,
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { onCycleDimensionClick() }
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "Cycle board dimension",
+                            onClick = { onCycleDimensionClick() }
+                        )
                 ) {
                     Text(
                         text = "${uiState.settings.dimension.size}×${uiState.settings.dimension.size}",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
                 // DLC Store Button
-                IconButton(onClick = onDlcStoreClick, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onDlcStoreClick,
+                    modifier = Modifier.size(36.dp)
+                ) {
                     Text(text = "🛒", fontSize = 16.sp)
                 }
 
                 // Settings Button
-                IconButton(onClick = onSettingsClick, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onSettingsClick,
+                    modifier = Modifier.size(36.dp)
+                ) {
                     Text(text = "⚙️", fontSize = 16.sp)
                 }
 
                 // Restart Button
-                IconButton(onClick = onRestartClick, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onRestartClick,
+                    modifier = Modifier.size(36.dp)
+                ) {
                     Text(text = "🔄", fontSize = 16.sp)
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
-
         // Row 2: Status & Scores
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(34.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Timer Badge
+            val timerBg = when {
+                uiState.isTimerLowWarning -> Color(0xFFFFEBEE)
+                uiState.isTimeAttack -> Color(0xFFFFF3E0)
+                else -> MaterialTheme.colorScheme.surfaceVariant
+            }
+            val timerBorder = when {
+                uiState.isTimerLowWarning -> Color(0xFFE53935)
+                uiState.isTimeAttack -> Color(0xFFFFB74D)
+                else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+            }
+            val timerText = when {
+                uiState.isTimerLowWarning -> Color(0xFFC62828)
+                uiState.isTimeAttack -> Color(0xFFE65100)
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            }
+
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = if (uiState.isTimeAttack) Color(0xFFFFF3E0) else MaterialTheme.colorScheme.surfaceVariant,
-                border = BorderStroke(1.dp, if (uiState.isTimeAttack) Color(0xFFFFB74D) else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+                color = timerBg,
+                border = BorderStroke(1.dp, timerBorder)
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if (uiState.isTimeAttack) "⏳" else "⏱",
+                        text = when {
+                            uiState.isTimerLowWarning -> "🚨"
+                            uiState.isTimeAttack -> "⏳"
+                            else -> "⏱"
+                        },
                         fontSize = 13.sp
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -127,7 +168,7 @@ fun GameHud(
                         text = uiState.formattedTimer,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
-                        color = if (uiState.isTimeAttack) Color(0xFFE65100) else MaterialTheme.colorScheme.onSurfaceVariant
+                        color = timerText
                     )
                 }
             }

@@ -1,8 +1,10 @@
 package com.example.kancentration.ui.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.kancentration.data.firebase.DlcManager
 import com.example.kancentration.data.firebase.FirebaseStorageDlcManager
 import com.example.kancentration.data.model.BoardCard
 import com.example.kancentration.data.model.BoardDimension
@@ -12,8 +14,16 @@ import com.example.kancentration.data.model.GameType
 import com.example.kancentration.data.model.KanjiData
 import com.example.kancentration.data.repository.KanjiRepository
 import com.example.kancentration.data.repository.SettingsRepository
+import com.example.kancentration.domain.GameEngine
 import com.example.kancentration.domain.SoundManager
+import com.example.kancentration.domain.SoundPlayer
 import com.example.kancentration.domain.TimerManager
+import com.example.kancentration.domain.TurnEvaluationResult
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,43 +31,92 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+/**
+ * Coordinates game rules, turn state transitions, and decoupled domain services.
+ * Conforms to Sections 5.2, 5.4, and 5.5 of DESIGN_PLAN.md with complete input
+ * locking, lifecycle-safe coroutine scope management, and armed lazy-clock initialization.
+ */
+class GameViewModel(
+    private val repository: KanjiRepository,
+    private val settingsRepository: SettingsRepository,
+    val dlcManager: DlcManager,
+    val soundManager: SoundPlayer,
+    val timerManager: TimerManager,
+    private val gameEngine: GameEngine = GameEngine(),
+    coroutineScope: CoroutineScope? = null
+) : ViewModel() {
 
-    private val repository = KanjiRepository(application)
-    private val settingsRepository = SettingsRepository(application)
-    val dlcManager = FirebaseStorageDlcManager(application)
-    val soundManager = SoundManager(application)
-    private val timerManager = TimerManager(viewModelScope)
+    // Overload for testing and instantiation where TimerManager shares coroutineScope
+    constructor(
+        repository: KanjiRepository,
+        settingsRepository: SettingsRepository,
+        dlcManager: DlcManager,
+        soundManager: SoundPlayer,
+        coroutineScope: CoroutineScope,
+        gameEngine: GameEngine = GameEngine()
+    ) : this(
+        repository = repository,
+        settingsRepository = settingsRepository,
+        dlcManager = dlcManager,
+        soundManager = soundManager,
+        timerManager = TimerManager(coroutineScope),
+        gameEngine = gameEngine,
+        coroutineScope = coroutineScope
+    )
 
-    private val _uiState = MutableStateFlow(GameUiState(settings = settingsRepository.loadSettings()))
+    // Platform application constructor
+    constructor(application: Application) : this(
+        repository = KanjiRepository(application),
+        settingsRepository = SettingsRepository(application),
+        dlcManager = FirebaseStorageDlcManager(application),
+        soundManager = SoundManager(application),
+        timerManager = TimerManager(CoroutineScope(Dispatchers.Default + SupervisorJob())),
+        gameEngine = GameEngine()
+    )
+
+    private val rootScope: CoroutineScope = coroutineScope ?: viewModelScope
+
+    // Game session scope bound to a child SupervisorJob that cleanly cancels on reset or dimension switch
+    private var gameSessionJob: CompletableJob = SupervisorJob(rootScope.coroutineContext[Job])
+    private var gameSessionScope: CoroutineScope = CoroutineScope(rootScope.coroutineContext + gameSessionJob)
+    private var matchEvaluationJob: Job? = null
+
+    private val _uiState = MutableStateFlow(
+        GameUiState(settings = settingsRepository.loadSettings())
+    )
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     init {
         val initialSettings = settingsRepository.loadSettings()
         soundManager.isMuted = !initialSettings.soundEnabled
         startNewGame(initialSettings)
-        observeTimer()
     }
 
-    private fun observeTimer() {
-        viewModelScope.launch {
+    /**
+     * Binds timer observation flows to the active game session scope.
+     * These collectors are cleanly cancelled and recreated when a game resets or switches dimensions.
+     */
+    private fun observeTimer(sessionScope: CoroutineScope) {
+        sessionScope.launch {
             timerManager.elapsedSeconds.collect { sec ->
                 if (!_uiState.value.isTimeAttack) {
                     _uiState.update { it.copy(formattedTimer = timerManager.formatTime(sec)) }
                 }
             }
         }
-        viewModelScope.launch {
+        sessionScope.launch {
             timerManager.remainingMillis.collect { millis ->
                 if (_uiState.value.isTimeAttack) {
-                    _uiState.update { it.copy(formattedTimer = timerManager.formatMillis(millis)) }
+                    _uiState.update {
+                        it.copy(
+                            formattedTimer = timerManager.formatMillis(millis),
+                            isTimerLowWarning = millis in 1L..15000L
+                        )
+                    }
                 }
             }
         }
     }
-
-    var hasStartedTimer = false
-        private set
 
     fun cycleBoardDimension() {
         val nextDimension = _uiState.value.settings.dimension.next()
@@ -81,10 +140,28 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Resets the game state, cleanly cancels any in-flight coroutines from the previous session,
+     * arms the timer (without ticking), and establishes a fresh session coroutine scope.
+     */
     fun startNewGame(settings: GameSettings = _uiState.value.settings) {
-        hasStartedTimer = false
+        // Lifecycle Safety: Cancel all in-flight evaluation jobs and timer collectors from previous session
+        matchEvaluationJob?.cancel()
+        matchEvaluationJob = null
+        gameSessionJob.cancel()
+
+        // Create a new bound session job and scope
+        val newSessionJob = SupervisorJob(rootScope.coroutineContext[Job])
+        gameSessionJob = newSessionJob
+        gameSessionScope = CoroutineScope(rootScope.coroutineContext + newSessionJob)
+
         timerManager.stop()
         val deck = repository.generateDeck(settings.dimension)
+
+        val initialTimerStr = when (val mode = settings.gameType) {
+            is GameType.TimeAttack -> timerManager.formatMillis(mode.durationMillis)
+            else -> "00:00"
+        }
 
         _uiState.update {
             GameUiState(
@@ -96,15 +173,20 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 totalMoves = 0,
                 totalMatches = 0,
                 isGameOver = false,
+                isTimeExpired = false,
                 gameOverMessage = "",
+                formattedTimer = initialTimerStr,
+                isTimerLowWarning = false,
                 firstFlippedCardId = null,
                 secondFlippedCardId = null,
                 isEvaluatingMatch = false,
-                selectedKanjiForInspector = null
+                activeTwinTrapBanner = null,
+                selectedKanjiForInspector = null,
+                turnPhase = TurnPhase.IDLE_AWAITING_FIRST_MOVE
             )
         }
 
-        // Prepare Timer according to GameType (Do not start until player's first move!)
+        // Arm Timer: Prepared but NOT started until the very first valid face-down card flip!
         when (val mode = settings.gameType) {
             is GameType.TimeAttack -> {
                 timerManager.prepareCountdown(
@@ -117,34 +199,59 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 timerManager.prepareStopwatch()
             }
         }
+
+        // Rebind timer observation collectors to the fresh session scope
+        observeTimer(gameSessionScope)
     }
 
     fun onOpenWiktionary() {
-        if (hasStartedTimer && !_uiState.value.isGameOver) {
+        if (timerManager.isRunning && !_uiState.value.isGameOver) {
             timerManager.pause()
         }
     }
 
     fun onPauseApp() {
-        if (hasStartedTimer && !_uiState.value.isGameOver) {
+        if (timerManager.isRunning && !_uiState.value.isGameOver) {
             timerManager.pause()
         }
     }
 
     fun onResumeApp() {
-        if (hasStartedTimer && !_uiState.value.isGameOver && timerManager.isPaused.value) {
+        val state = _uiState.value
+        val hasStarted = state.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE
+        if (hasStarted && !state.isGameOver && timerManager.isPaused.value && !state.showSettingsDialog && !state.showDlcStoreDialog) {
             timerManager.resume()
         }
     }
 
-    fun onCardClicked(card: BoardCard) {
+    /**
+     * Primary event handler tracking TurnPhase transitions and enforcing complete input locking.
+     *
+     * Rules:
+     * 1. If card is already face-up or matched, immediately update inspector and return (inspection only).
+     * 2. If isEvaluatingMatch is true (during the 1,150ms observation delay), immediately ignore the tap.
+     * 3. If game is over, permit post-game inspection and reveal.
+     * 4. Lazy-clock initialization triggers exclusively on the first valid face-down flip of a new game.
+     */
+    fun onCardClicked(cardId: String) {
         val state = _uiState.value
-        if (state.isEvaluatingMatch) return
+        val card = state.cards.find { it.instanceId == cardId } ?: return
 
-        // When game is over: still allow player to tap squares to bring up their kanji in inspector
+        // Rule 1: Always allow inspecting cards that are already face-up or matched
+        if (card.isFaceUp || card.isMatched) {
+            _uiState.update { it.copy(selectedKanjiForInspector = card.kanji) }
+            return
+        }
+
+        // Rule 2: Complete Input Locking during match evaluation delay
+        if (state.isEvaluatingMatch || state.turnPhase == TurnPhase.EVALUATING_MATCH) {
+            return
+        }
+
+        // Rule 3: Post-game tile reveal & inspection
         if (state.isGameOver) {
             val updatedCards = state.cards.map {
-                if (it.instanceId == card.instanceId) it.copy(isFaceUp = true) else it
+                if (it.instanceId == cardId) it.copy(isFaceUp = true) else it
             }
             _uiState.update {
                 it.copy(
@@ -156,15 +263,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
-        if (card.isMatched || card.isFaceUp) {
-            // Already face up or matched: just display in inspector
-            _uiState.update { it.copy(selectedKanjiForInspector = card.kanji) }
-            return
-        }
-
-        // Don't start clock until player makes their first move
-        if (!hasStartedTimer) {
-            hasStartedTimer = true
+        // Rule 4: Lazy-clock initialization: Start timer flow exclusively on the very first valid face-down flip
+        if (state.turnPhase == TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
             if (state.isTimeAttack) {
                 timerManager.startCountdown()
             } else {
@@ -172,130 +272,184 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        // Play flip sound
         soundManager.playFlip()
 
-        if (state.firstFlippedCardId == null) {
-            // Flip first card
-            val updatedCards = state.cards.map {
-                if (it.instanceId == card.instanceId) it.copy(isFaceUp = true) else it
-            }
-            _uiState.update {
-                it.copy(
-                    cards = updatedCards,
-                    firstFlippedCardId = card.instanceId,
-                    selectedKanjiForInspector = card.kanji
-                )
-            }
-        } else if (state.secondFlippedCardId == null && card.instanceId != state.firstFlippedCardId) {
-            // Flip second card
-            val updatedCards = state.cards.map {
-                if (it.instanceId == card.instanceId) it.copy(isFaceUp = true) else it
-            }
-            _uiState.update {
-                it.copy(
-                    cards = updatedCards,
-                    secondFlippedCardId = card.instanceId,
-                    totalMoves = it.totalMoves + 1,
-                    isEvaluatingMatch = true,
-                    selectedKanjiForInspector = card.kanji
-                )
+        when (state.turnPhase) {
+            TurnPhase.IDLE_AWAITING_FIRST_MOVE, TurnPhase.AWAITING_FIRST_CARD -> {
+                // Reveal First Card
+                val updatedCards = state.cards.map {
+                    if (it.instanceId == cardId) it.copy(isFaceUp = true) else it
+                }
+                _uiState.update {
+                    it.copy(
+                        cards = updatedCards,
+                        firstFlippedCardId = cardId,
+                        secondFlippedCardId = null,
+                        selectedKanjiForInspector = card.kanji,
+                        turnPhase = TurnPhase.FIRST_CARD_REVEALED
+                    )
+                }
             }
 
-            evaluateMatch(state.firstFlippedCardId, card.instanceId)
+            TurnPhase.FIRST_CARD_REVEALED -> {
+                val firstId = state.firstFlippedCardId
+                if (firstId == null || firstId == cardId) {
+                    _uiState.update { it.copy(selectedKanjiForInspector = card.kanji) }
+                    return
+                }
+
+                // Reveal Second Card & Transition to EVALUATING_MATCH with input lock
+                val updatedCards = state.cards.map {
+                    if (it.instanceId == cardId) it.copy(isFaceUp = true) else it
+                }
+                _uiState.update {
+                    it.copy(
+                        cards = updatedCards,
+                        secondFlippedCardId = cardId,
+                        totalMoves = it.totalMoves + 1,
+                        isEvaluatingMatch = true,
+                        selectedKanjiForInspector = card.kanji,
+                        turnPhase = TurnPhase.EVALUATING_MATCH
+                    )
+                }
+
+                evaluateMatch(firstId, cardId)
+            }
+
+            TurnPhase.EVALUATING_MATCH, TurnPhase.GAME_OVER -> {
+                // Completely locked
+            }
         }
     }
 
+    /**
+     * Overload accepting BoardCard directly from Compose UI components.
+     */
+    fun onCardClicked(card: BoardCard) {
+        onCardClicked(card.instanceId)
+    }
+
     private fun evaluateMatch(firstId: String, secondId: String) {
-        viewModelScope.launch {
+        matchEvaluationJob?.cancel()
+        matchEvaluationJob = gameSessionScope.launch {
             val currentCards = _uiState.value.cards
             val card1 = currentCards.find { it.instanceId == firstId }
             val card2 = currentCards.find { it.instanceId == secondId }
 
             if (card1 != null && card2 != null) {
-                val isMatch = card1.kanji.id == card2.kanji.id
+                val state = _uiState.value
+                val result = gameEngine.evaluateFlip(
+                    card1 = card1,
+                    card2 = card2,
+                    activePlayer = state.activePlayer,
+                    player1Score = state.player1Score,
+                    player2Score = state.player2Score,
+                    totalMatches = state.totalMatches,
+                    totalPairs = state.totalPairs,
+                    settings = state.settings,
+                    formattedTimer = state.formattedTimer,
+                    totalMoves = state.totalMoves
+                )
 
-                if (isMatch) {
-                    delay(500) // Brief delay for match confirmation
-                    soundManager.playMatch()
-                    val p = _uiState.value.activePlayer
-                    val updatedCards = currentCards.map {
-                        if (it.instanceId == firstId || it.instanceId == secondId) {
-                            it.copy(isMatched = true, isFaceUp = true, matchedByPlayer = p)
-                        } else it
-                    }
+                when (result) {
+                    is TurnEvaluationResult.Match -> {
+                        delay(500L) // Brief delay for match confirmation
+                        soundManager.playMatch()
+                        val p = result.scoringPlayer
+                        val updatedCards = _uiState.value.cards.map {
+                            if (it.instanceId == firstId || it.instanceId == secondId) {
+                                it.copy(
+                                    isMatched = true,
+                                    isFaceUp = true,
+                                    matchedByPlayer = p,
+                                    isTwinTrapHighlight = false
+                                )
+                            } else it
+                        }
 
-                    val newP1Score = if (p == 1) _uiState.value.player1Score + 1 else _uiState.value.player1Score
-                    val newP2Score = if (p == 2) _uiState.value.player2Score + 1 else _uiState.value.player2Score
-                    val newTotalMatches = _uiState.value.totalMatches + 1
-                    val allPairsMatched = newTotalMatches >= _uiState.value.totalPairs
-
-                    // Next player logic
-                    val nextPlayer = if (_uiState.value.isTwoPlayer && !_uiState.value.settings.bonusTurnOnMatch) {
-                        if (p == 1) 2 else 1
-                    } else {
-                        p // Continues turn if bonus turned on
-                    }
-
-                    if (allPairsMatched) {
-                        timerManager.stop()
-                        soundManager.playVictory()
-                        val msg = if (_uiState.value.isTwoPlayer) {
-                            if (newP1Score > newP2Score) "Player 1 Wins!"
-                            else if (newP2Score > newP1Score) "Player 2 Wins!"
-                            else "It's a Tie!"
-                        } else {
-                            "Cleared in ${_uiState.value.formattedTimer} (${_uiState.value.totalMoves} moves)!"
+                        if (result.isGameOver) {
+                            timerManager.stop()
+                            soundManager.playVictory()
                         }
 
                         _uiState.update {
                             it.copy(
                                 cards = updatedCards,
-                                player1Score = newP1Score,
-                                player2Score = newP2Score,
-                                totalMatches = newTotalMatches,
-                                isGameOver = true,
-                                gameOverMessage = msg,
+                                player1Score = result.newPlayer1Score,
+                                player2Score = result.newPlayer2Score,
+                                totalMatches = result.newTotalMatches,
+                                activePlayer = result.nextPlayer,
+                                isGameOver = result.isGameOver,
+                                gameOverMessage = result.gameOverMessage,
                                 firstFlippedCardId = null,
                                 secondFlippedCardId = null,
-                                isEvaluatingMatch = false
+                                isEvaluatingMatch = false,
+                                activeTwinTrapBanner = null,
+                                turnPhase = if (result.isGameOver) TurnPhase.GAME_OVER else TurnPhase.AWAITING_FIRST_CARD
                             )
                         }
-                    } else {
+                    }
+
+                    is TurnEvaluationResult.TwinTrapMismatch -> {
+                        val markedCards = _uiState.value.cards.map {
+                            if (it.instanceId == firstId || it.instanceId == secondId) {
+                                it.copy(isTwinTrapHighlight = true)
+                            } else it
+                        }
+                        _uiState.update {
+                            it.copy(
+                                cards = markedCards,
+                                activeTwinTrapBanner = result.bannerMessage
+                            )
+                        }
+
+                        // Play distinct Twin-Trap anomaly alert immediately upon detection
+                        soundManager.playTwinTrap()
+
+                        // Observation delay of 1,150ms as specified in Section 5.2 & 5.5
+                        delay(1150L)
+
+                        val updatedCards = _uiState.value.cards.map {
+                            if (it.instanceId == firstId || it.instanceId == secondId) {
+                                it.copy(isFaceUp = false, isTwinTrapHighlight = false)
+                            } else it
+                        }
+
                         _uiState.update {
                             it.copy(
                                 cards = updatedCards,
-                                player1Score = newP1Score,
-                                player2Score = newP2Score,
-                                totalMatches = newTotalMatches,
-                                activePlayer = nextPlayer,
+                                activePlayer = result.nextPlayer,
                                 firstFlippedCardId = null,
                                 secondFlippedCardId = null,
-                                isEvaluatingMatch = false
+                                isEvaluatingMatch = false,
+                                activeTwinTrapBanner = null,
+                                turnPhase = TurnPhase.AWAITING_FIRST_CARD
                             )
                         }
                     }
-                } else {
-                    // Mismatch: Exposed time increased by 50% (from 750ms to 1125ms) so player can memorize
-                    delay(1125L)
-                    soundManager.playMismatch()
-                    val updatedCards = currentCards.map {
-                        if (it.instanceId == firstId || it.instanceId == secondId) {
-                            it.copy(isFaceUp = false)
-                        } else it
-                    }
-                    val nextPlayer = if (_uiState.value.isTwoPlayer) {
-                        if (_uiState.value.activePlayer == 1) 2 else 1
-                    } else 1
 
-                    _uiState.update {
-                        it.copy(
-                            cards = updatedCards,
-                            activePlayer = nextPlayer,
-                            firstFlippedCardId = null,
-                            secondFlippedCardId = null,
-                            isEvaluatingMatch = false
-                        )
+                    is TurnEvaluationResult.StandardMismatch -> {
+                        // Observation delay of 1,150ms as specified in Section 5.2 & 5.5
+                        delay(1150L)
+                        soundManager.playMismatch()
+
+                        val updatedCards = _uiState.value.cards.map {
+                            if (it.instanceId == firstId || it.instanceId == secondId) {
+                                it.copy(isFaceUp = false, isTwinTrapHighlight = false)
+                            } else it
+                        }
+
+                        _uiState.update {
+                            it.copy(
+                                cards = updatedCards,
+                                activePlayer = result.nextPlayer,
+                                firstFlippedCardId = null,
+                                secondFlippedCardId = null,
+                                isEvaluatingMatch = false,
+                                activeTwinTrapBanner = null,
+                                turnPhase = TurnPhase.AWAITING_FIRST_CARD
+                            )
+                        }
                     }
                 }
             }
@@ -303,13 +457,17 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun handleTimeExpired() {
+        matchEvaluationJob?.cancel()
         soundManager.playMismatch()
         val score = _uiState.value.player1Score
         val total = _uiState.value.totalPairs
         _uiState.update {
             it.copy(
                 isGameOver = true,
-                gameOverMessage = "Time's Up! Matches Found: $score / $total"
+                isTimeExpired = true,
+                gameOverMessage = "Time's Up! Matches Found: $score / $total",
+                turnPhase = TurnPhase.GAME_OVER,
+                isEvaluatingMatch = false
             )
         }
     }
@@ -318,36 +476,26 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(selectedKanjiForInspector = kanji) }
     }
 
-    fun setBoardDimension(dim: BoardDimension) {
-        val newSettings = _uiState.value.settings.copy(dimension = dim)
-        startNewGame(newSettings)
-    }
-
-    fun setGameType(type: GameType) {
-        val newSettings = _uiState.value.settings.copy(gameType = type)
-        startNewGame(newSettings)
-    }
-
-    fun toggleBonusTurnRule(enabled: Boolean) {
-        _uiState.update { it.copy(settings = it.settings.copy(bonusTurnOnMatch = enabled)) }
-    }
-
-    fun toggleSound() {
-        val newSound = !_uiState.value.settings.soundEnabled
-        soundManager.isMuted = !newSound
-        _uiState.update { it.copy(settings = it.settings.copy(soundEnabled = newSound)) }
-    }
-
     fun setShowSettingsDialog(show: Boolean) {
+        if (show && timerManager.isRunning) {
+            timerManager.pause()
+        } else if (!show && timerManager.isPaused.value && !_uiState.value.isGameOver && _uiState.value.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
+            timerManager.resume()
+        }
         _uiState.update { it.copy(showSettingsDialog = show) }
     }
 
     fun setShowDlcStoreDialog(show: Boolean) {
+        if (show && timerManager.isRunning) {
+            timerManager.pause()
+        } else if (!show && timerManager.isPaused.value && !_uiState.value.isGameOver && _uiState.value.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
+            timerManager.resume()
+        }
         _uiState.update { it.copy(showDlcStoreDialog = show) }
     }
 
     fun downloadDlcPack(pack: DlcPackItem) {
-        viewModelScope.launch {
+        rootScope.launch {
             dlcManager.downloadPack(pack) { success ->
                 if (success) {
                     repository.loadInstalledDlcPacks()
@@ -356,9 +504,42 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
-        timerManager.stop()
+        matchEvaluationJob?.cancel()
+        matchEvaluationJob = null
+        gameSessionJob.cancel()
+        timerManager.dispose()
         soundManager.release()
+    }
+
+    companion object {
+        fun createFactory(
+            repository: KanjiRepository,
+            settingsRepository: SettingsRepository,
+            timerManager: TimerManager,
+            dlcManager: DlcManager,
+            soundManager: SoundPlayer,
+            gameEngine: GameEngine = GameEngine()
+        ): ViewModelProvider.Factory = GameViewModelFactory(
+            repository = repository,
+            settingsRepository = settingsRepository,
+            timerManager = timerManager,
+            dlcManager = dlcManager,
+            soundManager = soundManager,
+            gameEngine = gameEngine
+        )
+
+        fun createDefaultFactory(application: Application): ViewModelProvider.Factory {
+            val timerScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+            return GameViewModelFactory(
+                repository = KanjiRepository(application),
+                settingsRepository = SettingsRepository(application),
+                timerManager = TimerManager(timerScope),
+                dlcManager = FirebaseStorageDlcManager(application),
+                soundManager = SoundManager(application),
+                gameEngine = GameEngine()
+            )
+        }
     }
 }

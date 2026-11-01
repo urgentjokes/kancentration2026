@@ -7,6 +7,7 @@ data class DlcPackItem(
     val priceFormatted: String,
     val storagePath: String,
     val quadCount: Int,
+    val sampleQuadPreview: String = "",
     val isInstalled: Boolean = false,
     val isDownloading: Boolean = false,
     val downloadProgress: Float = 0f
