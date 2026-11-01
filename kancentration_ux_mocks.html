@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kancentration — UI/UX Interactive Mockups</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .perspective-800 { perspective: 800px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .card-inner {
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .kanji-serif {
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", "Noto Serif JP", Georgia, serif;
+    }
+    .kanji-sans {
+      font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-6">
+
+  <!-- Top Studio Controls -->
+  <div class="max-w-5xl mx-auto mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-4 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#1E3A5F] text-white">UI/UX Mockup Studio</span>
+          <h1 class="text-xl font-bold text-[var(--foreground)] kanji-serif">Kancentration (漢セントレーション)</h1>
+        </div>
+        <p class="text-xs text-[var(--muted-foreground)] mt-1">
+          Interactive mocks — switch screens, board sizes (4×4, 6×6, 8×8), game modes, or click tiles on the board to test the Kanji Inspector &amp; Confusable Twin feedback.
+        </p>
+      </div>
+
+      <!-- Screen Tabs -->
+      <div class="flex flex-wrap gap-1.5" id="screen-tabs">
+        <button onclick="setScreen('game')" id="tab-game" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--primary)] text-[var(--primary-foreground)] transition">
+          1. In-Game &amp; Inspector
+        </button>
+        <button onclick="setScreen('twoplayer')" id="tab-twoplayer" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--secondary)] text-[var(--secondary-foreground)] transition">
+          2. 2P Duel &amp; Twin Trap
+        </button>
+        <button onclick="setScreen('settings')" id="tab-settings" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--secondary)] text-[var(--secondary-foreground)] transition">
+          3. Mode &amp; Settings
+        </button>
+        <button onclick="setScreen('dlc')" id="tab-dlc" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--secondary)] text-[var(--secondary-foreground)] transition">
+          4. DLC Pack Pavilion
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Workspace: Phone Frame + Design Annotations -->
+  <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- Left Column: Mobile Device Mockup (7 cols) -->
+    <div class="lg:col-span-7 flex justify-center">
+      <div class="w-[380px] rounded-[36px] border-[6px] border-[#27272A] bg-[#F6F2EA] text-[#18181B] shadow-2xl overflow-hidden flex flex-col" style="height: 760px;">
+        
+        <!-- Android Status Bar Mock -->
+        <div class="px-6 pt-2 pb-1 flex justify-between items-center text-xs font-medium text-[#57534E] bg-[#EFECE6]">
+          <span>9:41</span>
+          <div class="flex items-center gap-1.5">
+            <span>5G</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!--Top HUD (Always Visible in Game Mocks) -->
+        <div class="px-3.5 py-2.5 bg-[#EFECE6] border-b border-[#E2DDD3]">
+          <!-- Row 1: Title + Quick Mode Pill + Action Icons -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg font-bold tracking-tight text-[#1E3A5F] kanji-serif">Kancentration</span>
+              <button onclick="cycleDimension()" id="dimension-pill" class="px-2 py-0.5 rounded-md text-xs font-bold bg-[#1E3A5F]/10 text-[#1E3A5F] border border-[#1E3A5F]/25 hover:bg-[#1E3A5F]/20 transition" title="Click to cycle 4×4, 6×6, 8×8">
+                4×4 • Solo ▾
+              </button>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="setScreen('dlc')" class="w-8 h-8 rounded-lg flex items-center justify-center bg-white/80 border border-[#D6D1C7] text-[#1E3A5F] hover:bg-white text-xs font-bold" title="DLC Expansion Packs">
+                漢+
+              </button>
+              <button onclick="setScreen('settings')" class="w-8 h-8 rounded-lg flex items-center justify-center bg-white/80 border border-[#D6D1C7] text-[#44403C] hover:bg-white text-xs" title="Settings">
+                ⚙
+              </button>
+              <button onclick="resetDemoBoard()" class="w-8 h-8 rounded-lg flex items-center justify-center bg-white/80 border border-[#D6D1C7] text-[#44403C] hover:bg-white text-xs" title="Restart Game">
+                ↻
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 2: Timer & Score / Turn State -->
+          <div class="flex items-center justify-between mt-2" id="hud-telemetry">
+            <!-- Populated by JS based on active mode -->
+          </div>
+        </div>
+
+        <!-- Dynamic Screen Body -->
+        <div class="flex-1 flex flex-col justify-between p-3 overflow-hidden relative" id="device-body">
+          
+          <!-- Optional Banner Slot (Twin Trap Alert or Victory Banner) -->
+          <div id="status-banner" class="h-11 flex items-center justify-center mb-1">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Center Stage: The Tatami Card Grid -->
+          <div class="flex-1 flex items-center justify-center my-1">
+            <div id="board-grid" class="w-full aspect-square max-w-[344px] max-h-[344px] grid gap-2 p-1.5 rounded-2xl bg-[#EAE5D9] border border-[#DCD5C7] shadow-inner">
+              <!-- Cards injected by JS -->
+            </div>
+          </div>
+
+          <!-- Bottom Dock: Kanji Inspector (Scholar's Study Bar) -->
+          <div id="kanji-inspector" class="h-[178px] mt-1 rounded-2xl bg-white border border-[#DCD5C7] shadow-md p-3 flex flex-col justify-center transition-all">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Modal Overlay Container (for Settings / DLC Store screens) -->
+          <div id="modal-overlay" class="hidden absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col justify-end z-20">
+            <!-- Populated by JS when in Settings or DLC screen -->
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Controls & UX Rationale (5 cols) -->
+    <div class="lg:col-span-5 space-y-4">
+      
+      <!-- Interactive Simulation Panel -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
+        <h2 class="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-3">Live Prototype Controls</h2>
+        
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-semibold text-[var(--muted-foreground)] block mb-1.5">Board Size (DESIGN.MD: 4×4, 6×6, 8×8)</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="setDimension(4)" id="btn-dim-4" class="py-1.5 px-3 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--primary)] text-[var(--primary-foreground)]">4×4 (16)</button>
+              <button onclick="setDimension(6)" id="btn-dim-6" class="py-1.5 px-3 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)]">6×6 (36)</button>
+              <button onclick="setDimension(8)" id="btn-dim-8" class="py-1.5 px-3 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)]">8×8 (64)</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-[var(--muted-foreground)] block mb-1.5">Simulate Gameplay &amp; Settings</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="simulateTwinTrap()" class="py-1.5 px-2.5 rounded-lg text-xs font-semibold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90">
+                ⚡ Trigger "Twin Trap" (持 vs 特)
+              </button>
+              <button onclick="simulateVictory()" class="py-1.5 px-2.5 rounded-lg text-xs font-semibold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90">
+                🎉 Trigger Victory Banner
+              </button>
+              <button onclick="toggleRomaji()" id="btn-romaji" class="py-1.5 px-2.5 rounded-lg text-xs font-semibold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90">
+                あ/A Romaji: OFF (Default)
+              </button>
+              <button onclick="toggleFontStyle()" id="btn-font" class="py-1.5 px-2.5 rounded-lg text-xs font-semibold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90">
+                Aa Font: Mincho (Serif)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contextual UX Notes -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-3" id="ux-notes-panel">
+        <h2 class="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider">Confirmed Design Decisions</h2>
+        <div class="space-y-2.5 text-xs text-[var(--muted-foreground)] leading-relaxed">
+          <div class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <strong class="text-[var(--foreground)] block mb-0.5">1. "Confusable Twin Trap" Feedback (Default: ON, Settable)</strong>
+            When a player flips two cards from the <em>same confusable quad</em> (e.g. <span class="text-[var(--foreground)] font-bold">木</span> and <span class="text-[var(--foreground)] font-bold">本</span>, or <span class="text-[var(--foreground)] font-bold">持</span> and <span class="text-[var(--foreground)] font-bold">特</span>), an amber callout highlights the structural difference. Enabled by default and toggleable in Settings.
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <strong class="text-[var(--foreground)] block mb-0.5">2. Kana Readings by Default + Romaji Setting (Default: OFF)</strong>
+            The Kanji Inspector displays clean Japanese Kana readings (<span class="text-[var(--foreground)]">ON: ジ • KUN: も.つ</span>) by default, with a Settings switch to show Romaji transliterations.
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <strong class="text-[var(--foreground)] block mb-0.5">3. In-Situ Typography Toggle (Mincho Serif vs Gothic Sans)</strong>
+            Settings includes a live font style switch so players can compare and play with either traditional <strong>Mincho (Serif)</strong> or modern <strong>Gothic (Sans-Serif)</strong> kanji glyphs.
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <strong class="text-[var(--foreground)] block mb-0.5">4. Discoverable Wiktionary Seal &amp; Locked Viewport</strong>
+            The Kanji Inspector features a tactile <em>Hanko Seal Tile</em> with an explicit <span class="text-[var(--foreground)] font-semibold">Wiktionary ↗</span> badge, and fixed proportional slots prevent any board layout shift.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const QUADS = [
+      {
+        quadId: "q_tree_book",
+        category: "Root Tick Distinction",
+        a: { char: "木", meaning: "tree, wood", onKana: "モク", onRomaji: "moku", kunKana: "き", kunRomaji: "ki", strokes: 4, tip: "No horizontal tick near the bottom of the vertical trunk.", twin: "本", url: "https://en.wiktionary.org/wiki/%E6%9C%A8" },
+        b: { char: "本", meaning: "book, origin, main", onKana: "ホン", onRomaji: "hon", kunKana: "もと", kunRomaji: "moto", strokes: 5, tip: "Has an extra short horizontal stroke marking the root of the tree (木).", twin: "木", url: "https://en.wiktionary.org/wiki/%E6%9C%AC" }
+      },
+      {
+        quadId: "q_hold_special",
+        category: "Radical Nuance",
+        a: { char: "持", meaning: "hold, have, possess", onKana: "ジ", onRomaji: "ji", kunKana: "も.つ", kunRomaji: "motsu", strokes: 9, tip: "Left radical is 扌 (hand / te-hen, 3 strokes) + 寺 (temple).", twin: "特", url: "https://en.wiktionary.org/wiki/%E6%8C%81" },
+        b: { char: "特", meaning: "special, unique", onKana: "トク", onRomaji: "toku", kunKana: "—", kunRomaji: "", strokes: 10, tip: "Left radical is 牛 (cow / ushi-hen, 4 strokes) + 寺 (temple).", twin: "持", url: "https://en.wiktionary.org/wiki/%E7%89%B9" }
+      },
+      {
+        quadId: "q_great_differ",
+        category: "Movement Radical vs Person",
+        a: { char: "偉", meaning: "admirable, great", onKana: "イ", onRomaji: "i", kunKana: "えら.い", kunRomaji: "erai", strokes: 12, tip: "Left radical is 亻 (person) beside 韋.", twin: "違", url: "https://en.wiktionary.org/wiki/%E5%81%89" },
+        b: { char: "違", meaning: "differ, mistake", onKana: "イ", onRomaji: "i", kunKana: "ちが.う", kunRomaji: "chigau", strokes: 13, tip: "Wraps 韋 in the 辶 (road/movement) radical at left and bottom.", twin: "偉", url: "https://en.wiktionary.org/wiki/%E9%81%95" }
+      },
+      {
+        quadId: "q_sun_say",
+        category: "Proportions & Framing",
+        a: { char: "日", meaning: "day, sun, Japan", onKana: "ニチ", onRomaji: "nichi", kunKana: "ひ", kunRomaji: "hi", strokes: 4, tip: "Tall, narrow vertical rectangle (aspect ratio > 1).", twin: "曰", url: "https://en.wiktionary.org/wiki/%E6%97%A5" },
+        b: { char: "曰", meaning: "say, speak, declare", onKana: "エツ", onRomaji: "etsu", kunKana: "いわ.く", kunRomaji: "iwaku", strokes: 4, tip: "Wide, flat horizontal rectangle; inner bar often doesn't touch right wall.", twin: "日", url: "https://en.wiktionary.org/wiki/%E6%9B%B0" }
+      }
+    ];
+
+    let state = {
+      screen: 'game',
+      dimension: 4,
+      mode: 'solo', // 'solo', 'twoplayer', 'timeattack'
+      useSerif: true,
+      showRomaji: false, // Decision 2: Romaji OFF by default
+      showTwinTrapHints: true, // Decision 1: Twin Trap ON by default, settable
+      bonusTurnOnMatch: true,
+      tileBg: '#1E3A5F',
+      tileFg: '#E0B44C',
+      selectedKanji: QUADS[1].a,
+      bannerType: 'default', // 'default', 'twintrap', 'victory', 'timeattack'
+      cards: []
+    };
+
+    function buildDemoDeck(dim) {
+      const total = dim * dim;
+      const baseItems = [
+        { ...QUADS[0].a, quadId: QUADS[0].quadId },
+        { ...QUADS[0].b, quadId: QUADS[0].quadId },
+        { ...QUADS[1].a, quadId: QUADS[1].quadId },
+        { ...QUADS[1].b, quadId: QUADS[1].quadId },
+        { ...QUADS[2].a, quadId: QUADS[2].quadId },
+        { ...QUADS[2].b, quadId: QUADS[2].quadId },
+        { ...QUADS[3].a, quadId: QUADS[3].quadId },
+        { ...QUADS[3].b, quadId: QUADS[3].quadId }
+      ];
+      let deck = [];
+      for (let i = 0; i < total; i++) {
+        const k = baseItems[i % baseItems.length];
+        deck.push({
+          idx: i,
+          kanji: k,
+          isFaceUp: i === 2 || i === 5 || i === 0 || i === 7,
+          isMatched: i === 0 || i === 7,
+          matchedBy: (i === 0 || i === 7) ? 1 : 0,
+          isTwinTrap: false
+        });
+      }
+      state.cards = deck;
+    }
+
+    function renderAll() {
+      // Update screen tab styles
+      ['game', 'twoplayer', 'settings', 'dlc'].forEach(s => {
+        const btn = document.getElementById('tab-' + s);
+        if (state.screen === s) {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--primary)] text-[var(--primary-foreground)] transition";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--secondary)] text-[var(--secondary-foreground)] transition";
+        }
+      });
+
+      // Update dimension buttons
+      [4, 6, 8].forEach(d => {
+        const b = document.getElementById('btn-dim-' + d);
+        if (state.dimension === d) {
+          b.className = "py-1.5 px-3 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--primary)] text-[var(--primary-foreground)]";
+        } else {
+          b.className = "py-1.5 px-3 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)]";
+        }
+      });
+
+      document.getElementById('btn-romaji').textContent = `あ/A Romaji: ${state.showRomaji ? 'ON' : 'OFF'}`;
+      document.getElementById('btn-font').textContent = `Aa Font: ${state.useSerif ? 'Mincho (Serif)' : 'Gothic (Sans)'}`;
+
+      const modeLabel = state.mode === 'twoplayer' ? '2P Duel' : (state.mode === 'timeattack' ? '⏳ 3m' : 'Solo');
+      document.getElementById('dimension-pill').textContent = `${state.dimension}×${state.dimension} • ${modeLabel} ▾`;
+
+      renderHudTelemetry();
+      renderBanner();
+      renderBoard();
+      renderInspector();
+      renderModal();
+    }
+
+    function renderHudTelemetry() {
+      const el = document.getElementById('hud-telemetry');
+      if (state.mode === 'twoplayer') {
+        el.innerHTML = `
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#D6D1C7] text-xs font-bold text-[#44403C]">
+            <span>⏱</span><span>01:42</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="px-2.5 py-1 rounded-full bg-[#1E3A5F] text-white text-xs font-bold shadow-sm flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-[#E0B44C] animate-pulse"></span>
+              <span>P1: 4</span>
+            </div>
+            <div class="px-2.5 py-1 rounded-full bg-white border border-[#C83E2B]/40 text-[#C83E2B] text-xs font-semibold">
+              <span>P2: 3</span>
+            </div>
+          </div>
+        `;
+      } else if (state.mode === 'timeattack') {
+        el.innerHTML = `
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF1F0] border border-[#C83E2B] text-xs font-bold text-[#C83E2B]">
+            <span>⏳</span><span>00:18</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-semibold text-[#44403C]">
+            <span class="text-[#1E3A5F] font-bold">Matches: 5/${(state.dimension*state.dimension)/2}</span>
+            <span>Moves: 11</span>
+          </div>
+        `;
+      } else {
+        const matchedCount = Math.max(1, Math.floor(state.cards.filter(c => c.isMatched).length / 2));
+        el.innerHTML = `
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#D6D1C7] text-xs font-bold text-[#44403C]">
+            <span>⏱</span><span>00:48</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-semibold text-[#44403C]">
+            <span class="text-[#1E3A5F] font-bold">Matches: ${matchedCount}/${(state.dimension*state.dimension)/2}</span>
+            <span>Moves: 6</span>
+          </div>
+        `;
+      }
+    }
+
+    function renderBanner() {
+      const el = document.getElementById('status-banner');
+      if (state.bannerType === 'twintrap' && state.showTwinTrapHints) {
+        el.innerHTML = `
+          <div class="w-full h-full rounded-xl bg-[#FFFBEB] border border-[#D97706] px-3 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="px-1.5 py-0.5 rounded bg-[#D97706] text-white font-bold text-xs">惜しい!</span>
+              <span class="font-semibold text-[#92400E]">Confusable Twin Trap: <strong class="kanji-serif">持</strong> vs <strong class="kanji-serif">特</strong></span>
+            </div>
+            <span class="text-xs text-[#B45309] font-medium">扌 vs 牛</span>
+          </div>
+        `;
+      } else if (state.bannerType === 'victory') {
+        el.innerHTML = `
+          <div class="w-full h-full rounded-xl bg-[#ECFDF5] border border-[#2A6F4E] px-3 flex items-center justify-between shadow-sm">
+            <div class="text-xs font-bold text-[#14532D]">
+              🎉 Board Cleared in 01:12 (14 Moves)!
+            </div>
+            <button onclick="resetDemoBoard()" class="px-2.5 py-1 rounded-full bg-[#2A6F4E] text-white text-xs font-bold hover:opacity-90">
+              Play Again ↻
+            </button>
+          </div>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="w-full h-full rounded-xl bg-[#EFECE6]/70 border border-[#E2DDD3] px-3 flex items-center justify-between text-xs text-[#57534E]">
+            <span>Tap any two tiles to match identical kanji.</span>
+            <span class="font-semibold text-[#1E3A5F]">${state.useSerif ? 'Mincho' : 'Gothic'}</span>
+          </div>
+        `;
+      }
+    }
+
+    function renderBoard() {
+      const grid = document.getElementById('board-grid');
+      const dim = state.dimension;
+      grid.style.gridTemplateColumns = `repeat(${dim}, minmax(0, 1fr))`;
+      grid.style.gap = dim === 8 ? '3px' : (dim === 6 ? '5px' : '8px');
+
+      const fontSizeClass = dim === 8 ? 'text-base' : (dim === 6 ? 'text-xl' : 'text-3xl');
+      const fontFamilyClass = state.useSerif ? 'kanji-serif' : 'kanji-sans';
+
+      grid.innerHTML = state.cards.map(c => {
+        if (c.isFaceUp || c.isMatched) {
+          let borderStyle = "border-2 border-[#1E3A5F] bg-[#FAF9F5] text-[#18181B]";
+          let badge = "";
+          if (c.isMatched) {
+            if (c.matchedBy === 2) {
+              borderStyle = "border-2 border-[#C83E2B] bg-[#FFF5F5] text-[#991B1B]";
+              badge = `<span class="absolute top-0.5 right-1 text-xs font-bold text-[#C83E2B]">P2</span>`;
+            } else {
+              borderStyle = "border-2 border-[#2A6F4E] bg-[#F0FDF4] text-[#14532D]";
+              badge = dim === 4 ? `<span class="absolute top-0.5 right-1 text-xs font-bold text-[#2A6F4E]">✓</span>` : "";
+            }
+          } else if (c.isTwinTrap && state.showTwinTrapHints) {
+            borderStyle = "border-2 border-[#D97706] bg-[#FFFBEB] text-[#92400E] ring-2 ring-[#F59E0B]/40";
+          }
+
+          return `
+            <button onclick="onCardTap(${c.idx})" class="relative w-full aspect-square rounded-lg ${borderStyle} shadow-sm flex items-center justify-center transition transform active:scale-95">
+              ${badge}
+              <span class="${fontSizeClass} ${fontFamilyClass} font-bold leading-none select-none">${c.kanji.char}</span>
+            </button>
+          `;
+        } else {
+          return `
+            <button onclick="onCardTap(${c.idx})" style="background-color: ${state.tileBg}; color: ${state.tileFg};" class="w-full aspect-square rounded-lg border border-white/20 shadow-sm flex items-center justify-center transition transform hover:brightness-110 active:scale-95">
+              <span class="${fontSizeClass} ${fontFamilyClass} font-bold opacity-90 leading-none select-none">漢</span>
+            </button>
+          `;
+        }
+      }).join('');
+    }
+
+    function renderInspector() {
+      const el = document.getElementById('kanji-inspector');
+      const k = state.selectedKanji;
+      const fontFamilyClass = state.useSerif ? 'kanji-serif' : 'kanji-sans';
+
+      if (!k) {
+        el.innerHTML = `
+          <div class="text-center text-xs text-[#78716C] px-4">
+            Tap any tile on the board to flip it and inspect its meanings, readings, and visual distinction tips here.
+          </div>
+        `;
+        return;
+      }
+
+      const onText = state.showRomaji && k.onRomaji ? `${k.onKana} (${k.onRomaji})` : k.onKana;
+      const kunText = state.showRomaji && k.kunRomaji ? `${k.kunKana} (${k.kunRomaji})` : k.kunKana;
+
+      el.innerHTML = `
+        <div class="flex items-stretch gap-3 h-full">
+          <!-- Tappable Kanji Seal Box with explicit Wiktionary affordance -->
+          <a href="${k.url}" target="_blank" rel="noopener noreferrer"
+             class="w-[108px] shrink-0 rounded-xl bg-[#F4EFE6] border-2 border-[#1E3A5F] flex flex-col items-center justify-between p-1.5 hover:bg-[#EAE2D3] transition group shadow-sm"
+             title="Open ${k.char} on Wiktionary">
+            <div class="w-full flex justify-between items-center text-xs text-[#57534E] px-1">
+              <span>${k.strokes}画</span>
+              <span class="text-[#C83E2B] font-bold">印</span>
+            </div>
+            <div class="text-5xl font-bold text-[#1E3A5F] ${fontFamilyClass} leading-none my-auto">
+              ${k.char}
+            </div>
+            <div class="w-full py-0.5 rounded bg-[#1E3A5F] text-white text-xs font-semibold text-center group-hover:bg-[#C83E2B] transition">
+              Wiktionary ↗
+            </div>
+          </a>
+
+          <!-- Lexicon Details Column -->
+          <div class="flex-1 flex flex-col justify-between py-0.5 min-w-0">
+            <div>
+              <div class="flex items-center justify-between gap-1">
+                <h3 class="text-base font-bold text-[#18181B] truncate">${k.meaning}</h3>
+                <span class="shrink-0 px-2 py-0.5 rounded-full bg-[#EFECE6] text-[#57534E] text-xs font-semibold border border-[#DCD5C7] ${fontFamilyClass}">
+                  vs ${k.twin}
+                </span>
+              </div>
+
+              <!-- Readings Pills (Kana by default, Romaji optional via Settings) -->
+              <div class="flex flex-wrap gap-1.5 mt-1.5">
+                <span class="px-2 py-0.5 rounded-md bg-[#1E3A5F]/10 text-[#1E3A5F] text-xs font-semibold">
+                  ON: ${onText}
+                </span>
+                <span class="px-2 py-0.5 rounded-md bg-[#C83E2B]/10 text-[#991B1B] text-xs font-semibold">
+                  KUN: ${kunText}
+                </span>
+              </div>
+            </div>
+
+            <!-- Visual Distinction Tip Box -->
+            <div class="mt-2 p-2 rounded-lg bg-[#FFFBEB] border border-[#FDE68A] text-xs text-[#78350F] leading-snug">
+              <strong class="font-bold">💡 Distinction Tip:</strong> ${k.tip}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderModal() {
+      const overlay = document.getElementById('modal-overlay');
+      if (state.screen === 'settings') {
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = `
+          <div class="bg-[#FAF8F5] rounded-t-3xl border-t border-[#DCD5C7] p-4 space-y-3 max-h-[90%] overflow-y-auto shadow-2xl">
+            <div class="flex items-center justify-between border-b border-[#E5E0D5] pb-2">
+              <div>
+                <h3 class="text-base font-bold text-[#18181B] kanji-serif">Game Settings &amp; Appearance</h3>
+                <p class="text-xs text-[#78716C]">Configure board, mode, learning hints, and typography</p>
+              </div>
+              <button onclick="setScreen('game')" class="px-3 py-1 rounded-full bg-[#1E3A5F] text-white text-xs font-bold">Done</button>
+            </div>
+
+            <!-- Mode Selector -->
+            <div>
+              <div class="text-xs font-bold text-[#44403C] mb-1">Game Mode</div>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button onclick="setMode('solo')" class="p-2 rounded-xl border text-left ${state.mode==='solo' ? 'border-[#1E3A5F] bg-[#1E3A5F]/10 text-[#1E3A5F]' : 'border-[#DCD5C7] bg-white text-[#44403C]'}">
+                  <div class="text-xs font-bold">1P Solo</div>
+                  <div class="text-xs opacity-75">Stopwatch</div>
+                </button>
+                <button onclick="setMode('twoplayer')" class="p-2 rounded-xl border text-left ${state.mode==='twoplayer' ? 'border-[#1E3A5F] bg-[#1E3A5F]/10 text-[#1E3A5F]' : 'border-[#DCD5C7] bg-white text-[#44403C]'}">
+                  <div class="text-xs font-bold">2P Duel</div>
+                  <div class="text-xs opacity-75">Pass &amp; Play</div>
+                </button>
+                <button onclick="setMode('timeattack')" class="p-2 rounded-xl border text-left ${state.mode==='timeattack' ? 'border-[#C83E2B] bg-[#C83E2B]/10 text-[#C83E2B]' : 'border-[#DCD5C7] bg-white text-[#44403C]'}">
+                  <div class="text-xs font-bold">Time Attack</div>
+                  <div class="text-xs opacity-75">1m / 3m / 5m</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Kanji Typography Switch (Decision 3) -->
+            <div>
+              <div class="text-xs font-bold text-[#44403C] mb-1">Kanji Typography Style (In-Situ Toggle)</div>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="state.useSerif = true; renderAll();" class="p-2 rounded-xl border flex items-center justify-between ${state.useSerif ? 'border-[#1E3A5F] bg-[#1E3A5F]/10 text-[#1E3A5F]' : 'border-[#DCD5C7] bg-white text-[#44403C]'}">
+                  <div>
+                    <div class="text-xs font-bold">Mincho (Serif)</div>
+                    <div class="text-xs opacity-75">Calligraphic strokes</div>
+                  </div>
+                  <span class="text-xl font-bold kanji-serif">持</span>
+                </button>
+                <button onclick="state.useSerif = false; renderAll();" class="p-2 rounded-xl border flex items-center justify-between ${!state.useSerif ? 'border-[#1E3A5F] bg-[#1E3A5F]/10 text-[#1E3A5F]' : 'border-[#DCD5C7] bg-white text-[#44403C]'}">
+                  <div>
+                    <div class="text-xs font-bold">Gothic (Sans)</div>
+                    <div class="text-xs opacity-75">Modern UI print</div>
+                  </div>
+                  <span class="text-xl font-bold kanji-sans">持</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tile Theme Presets -->
+            <div>
+              <div class="text-xs font-bold text-[#44403C] mb-1">Karuta Tile Back Theme</div>
+              <div class="grid grid-cols-4 gap-2">
+                <button onclick="setTileColors('#1E3A5F','#E0B44C')" class="p-1.5 rounded-xl border border-[#DCD5C7] bg-white flex flex-col items-center gap-1">
+                  <span class="w-7 h-7 rounded-lg bg-[#1E3A5F] text-[#E0B44C] flex items-center justify-center font-bold kanji-serif text-xs">漢</span>
+                  <span class="text-xs font-medium">Aizome</span>
+                </button>
+                <button onclick="setTileColors('#FAF6F0','#C83E2B')" class="p-1.5 rounded-xl border border-[#DCD5C7] bg-white flex flex-col items-center gap-1">
+                  <span class="w-7 h-7 rounded-lg bg-[#FAF6F0] border border-[#D6D1C7] text-[#C83E2B] flex items-center justify-center font-bold kanji-serif text-xs">漢</span>
+                  <span class="text-xs font-medium">Washi</span>
+                </button>
+                <button onclick="setTileColors('#1B4332','#E0B44C')" class="p-1.5 rounded-xl border border-[#DCD5C7] bg-white flex flex-col items-center gap-1">
+                  <span class="w-7 h-7 rounded-lg bg-[#1B4332] text-[#E0B44C] flex items-center justify-center font-bold kanji-serif text-xs">漢</span>
+                  <span class="text-xs font-medium">Bamboo</span>
+                </button>
+                <button onclick="setTileColors('#7F1D1D','#FDE68A')" class="p-1.5 rounded-xl border border-[#DCD5C7] bg-white flex flex-col items-center gap-1">
+                  <span class="w-7 h-7 rounded-lg bg-[#7F1D1D] text-[#FDE68A] flex items-center justify-center font-bold kanji-serif text-xs">漢</span>
+                  <span class="text-xs font-medium">Urushi</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Rules & Pedagogical Toggles (Decisions 1 & 2) -->
+            <div class="space-y-1.5 pt-0.5">
+              <div onclick="state.showTwinTrapHints = !state.showTwinTrapHints; renderAll();" class="cursor-pointer flex items-center justify-between p-2 rounded-xl bg-white border border-[#DCD5C7]">
+                <div>
+                  <div class="text-xs font-bold text-[#18181B]">Confusable Twin Trap Alerts (惜しい！)</div>
+                  <div class="text-xs text-[#78716C]">Highlight near-misses from the same quad</div>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-white text-xs font-bold ${state.showTwinTrapHints ? 'bg-[#2A6F4E]' : 'bg-[#78716C]'}">${state.showTwinTrapHints ? 'ON' : 'OFF'}</span>
+              </div>
+
+              <div onclick="state.showRomaji = !state.showRomaji; renderAll();" class="cursor-pointer flex items-center justify-between p-2 rounded-xl bg-white border border-[#DCD5C7]">
+                <div>
+                  <div class="text-xs font-bold text-[#18181B]">Show Romaji Readings</div>
+                  <div class="text-xs text-[#78716C]">Display romaji alongside kana in Inspector</div>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-white text-xs font-bold ${state.showRomaji ? 'bg-[#2A6F4E]' : 'bg-[#78716C]'}">${state.showRomaji ? 'ON' : 'OFF'}</span>
+              </div>
+
+              <div onclick="state.bonusTurnOnMatch = !state.bonusTurnOnMatch; renderAll();" class="cursor-pointer flex items-center justify-between p-2 rounded-xl bg-white border border-[#DCD5C7]">
+                <div>
+                  <div class="text-xs font-bold text-[#18181B]">Extra Turn on Match</div>
+                  <div class="text-xs text-[#78716C]">Scoring player keeps their turn</div>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-white text-xs font-bold ${state.bonusTurnOnMatch ? 'bg-[#2A6F4E]' : 'bg-[#78716C]'}">${state.bonusTurnOnMatch ? 'ON' : 'OFF'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (state.screen === 'dlc') {
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = `
+          <div class="bg-[#FAF8F5] rounded-t-3xl border-t border-[#DCD5C7] p-4 space-y-3 max-h-[88%] overflow-y-auto shadow-2xl">
+            <div class="flex items-center justify-between border-b border-[#E5E0D5] pb-2.5">
+              <div>
+                <h3 class="text-base font-bold text-[#18181B] kanji-serif">Kanji Pack Pavilion (DLC)</h3>
+                <p class="text-xs text-[#78716C]">Expand your deck with curated Confusable Quads</p>
+              </div>
+              <button onclick="setScreen('game')" class="px-3 py-1 rounded-full bg-[#1E3A5F] text-white text-xs font-bold">Close</button>
+            </div>
+
+            <!-- Base Pack Card -->
+            <div class="p-3 rounded-2xl bg-white border border-[#2A6F4E] shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-[#2A6F4E]">✓ INCLUDED IN BASE GAME</span>
+                <span class="text-xs font-semibold text-[#57534E]">20 Quads (80 Cards)</span>
+              </div>
+              <h4 class="text-sm font-bold text-[#18181B] mt-0.5">Core Confusables Deck</h4>
+              <p class="text-xs text-[#57534E] mt-0.5">Includes 木/本, 持/特, 偉/違, 日/曰, 土/士, 末/未, 牛/午, 鳥/島 &amp; more.</p>
+            </div>
+
+            <!-- DLC Pack 1 -->
+            <div class="p-3 rounded-2xl bg-white border border-[#DCD5C7] shadow-sm">
+              <div class="flex items-center justify-between">
+                <h4 class="text-sm font-bold text-[#18181B]">Radical Rivals Pack</h4>
+                <span class="px-2 py-0.5 rounded-md bg-[#1E3A5F]/10 text-[#1E3A5F] text-xs font-bold">$0.99 • 16 Quads</span>
+              </div>
+              <p class="text-xs text-[#57534E] mt-1">Subtle left-side radical lookalikes: 礻(altar) vs 衤(cloak), 彳 vs 亻, 氵 vs 冫.</p>
+              <div class="mt-2 flex items-center justify-between">
+                <div class="flex items-center gap-1.5 text-xs font-semibold text-[#44403C]">
+                  <span class="px-2 py-0.5 rounded bg-[#F6F2EA] border border-[#DCD5C7] kanji-serif">社 vs 初</span>
+                  <span class="px-2 py-0.5 rounded bg-[#F6F2EA] border border-[#DCD5C7] kanji-serif">待 vs 侍</span>
+                </div>
+                <button onclick="this.textContent='✓ Installed'; this.className='px-3 py-1 rounded-lg bg-[#2A6F4E] text-white text-xs font-bold';" class="px-3 py-1 rounded-lg bg-[#1E3A5F] text-white text-xs font-bold">
+                  Download
+                </button>
+              </div>
+            </div>
+
+            <!-- DLC Pack 2 -->
+            <div class="p-3 rounded-2xl bg-white border border-[#DCD5C7] shadow-sm">
+              <div class="flex items-center justify-between">
+                <h4 class="text-sm font-bold text-[#18181B]">JLPT N1 Visual Traps</h4>
+                <span class="px-2 py-0.5 rounded-md bg-[#1E3A5F]/10 text-[#1E3A5F] text-xs font-bold">$1.49 • 16 Quads</span>
+              </div>
+              <p class="text-xs text-[#57534E] mt-1">High-density stroke illusions for advanced readers.</p>
+              <div class="mt-2 flex items-center justify-between">
+                <div class="flex items-center gap-1.5 text-xs font-semibold text-[#44403C]">
+                  <span class="px-2 py-0.5 rounded bg-[#F6F2EA] border border-[#DCD5C7] kanji-serif">崇 vs 祟</span>
+                  <span class="px-2 py-0.5 rounded bg-[#F6F2EA] border border-[#DCD5C7] kanji-serif">璧 vs 癖</span>
+                </div>
+                <button onclick="this.textContent='✓ Installed'; this.className='px-3 py-1 rounded-lg bg-[#2A6F4E] text-white text-xs font-bold';" class="px-3 py-1 rounded-lg bg-[#1E3A5F] text-white text-xs font-bold">
+                  Download
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function onCardTap(idx) {
+      const card = state.cards[idx];
+      card.isFaceUp = !card.isFaceUp;
+      state.selectedKanji = card.kanji;
+      renderAll();
+    }
+
+    function setScreen(s) {
+      state.screen = s;
+      if (s === 'twoplayer') {
+        state.mode = 'twoplayer';
+        simulateTwinTrap();
+        return;
+      } else if (s === 'game' && state.mode === 'twoplayer') {
+        state.mode = 'solo';
+        state.bannerType = 'default';
+      }
+      renderAll();
+    }
+
+    function setDimension(d) {
+      state.dimension = d;
+      state.screen = 'game';
+      buildDemoDeck(d);
+      renderAll();
+    }
+
+    function cycleDimension() {
+      const next = state.dimension === 4 ? 6 : (state.dimension === 6 ? 8 : 4);
+      setDimension(next);
+    }
+
+    function setMode(m) {
+      state.mode = m;
+      state.screen = 'game';
+      renderAll();
+    }
+
+    function setTileColors(bg, fg) {
+      state.tileBg = bg;
+      state.tileFg = fg;
+      renderAll();
+    }
+
+    function simulateTwinTrap() {
+      state.dimension = 4;
+      buildDemoDeck(4);
+      state.cards.forEach(c => { c.isFaceUp = false; c.isMatched = false; c.isTwinTrap = false; });
+      state.cards[0].isMatched = true; state.cards[0].matchedBy = 1;
+      state.cards[7].isMatched = true; state.cards[7].matchedBy = 1;
+      state.cards[1].isMatched = true; state.cards[1].matchedBy = 2;
+      state.cards[6].isMatched = true; state.cards[6].matchedBy = 2;
+      // Flip 持 and 特 as a Twin Trap
+      state.cards[2].isFaceUp = true; state.cards[2].isTwinTrap = true;
+      state.cards[3].isFaceUp = true; state.cards[3].isTwinTrap = true;
+      state.selectedKanji = QUADS[1].a;
+      state.bannerType = 'twintrap';
+      renderAll();
+    }
+
+    function simulateVictory() {
+      state.screen = 'game';
+      state.bannerType = 'victory';
+      state.cards.forEach(c => { c.isFaceUp = true; c.isMatched = true; c.isTwinTrap = false; });
+      renderAll();
+    }
+
+    function toggleRomaji() {
+      state.showRomaji = !state.showRomaji;
+      renderAll();
+    }
+
+    function toggleFontStyle() {
+      state.useSerif = !state.useSerif;
+      renderAll();
+    }
+
+    function resetDemoBoard() {
+      state.bannerType = 'default';
+      buildDemoDeck(state.dimension);
+      renderAll();
+    }
+
+    // Initialize
+    buildDemoDeck(4);
+    renderAll();
+  </script>
+</body>
+</html>

@@ -2,6 +2,8 @@
 
 ## Game description:
 
+This twist on the traditional card-matching game of Concentration is aimed at non-native learners of Japanese. In particular, it aims to force them to learn to distinguish between kanji with subtle differences. Three such examples are: 木vs本, 持vs特, and 偉vs違. The game should also make it easy to look up the meanings and readings of the kanji.
+
 ### Gameplay
 
 * Turn Sequence: Players take turns in clockwise order. On a turn, the active player flips over any two cards of their choice, one at a time, making sure all players can see their faces.
