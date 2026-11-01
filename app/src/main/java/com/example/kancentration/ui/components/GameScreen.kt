@@ -2,6 +2,7 @@ package com.example.kancentration.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,9 +26,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kancentration.ui.viewmodel.GameViewModel
 
 /**
- * Landscape GameScreen integrating the Tatami Grid stage on the left
- * and the Sidebar (HUD, Status Banner, and KanjiInspector) on the right.
- * Observes the immutable GameUiState contract.
+ * Landscape GameScreen with top-aligned maximized Tatami Grid stage on the left,
+ * precisely aligning card tops with the "Kancentration" header text, and the Sidebar
+ * (HUD with timer & board-size pill underneath, Status Banner, and KanjiInspector) on the right.
  */
 @Composable
 fun GameScreen(
@@ -62,31 +64,32 @@ fun GameScreen(
             .displayCutoutPadding(),
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        Row(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 10.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
         ) {
-            // Left: Center Stage Board Grid (spacious tatami card grid)
-            Column(
-                modifier = Modifier
-                    .weight(1.2f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            val totalHeight = maxHeight
+            val topAlignPadding = 6.dp
+            // Board is square. Fill available height minus top alignment padding,
+            // while reserving at least 320dp width for the sidebar.
+            val boardSize = minOf(
+                (totalHeight - topAlignPadding).coerceAtLeast(0.dp),
+                (maxWidth - 320.dp).coerceAtLeast(0.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                StatusBannerSlot(
-                    uiState = uiState,
-                    onRestart = { viewModel.startNewGame() }
-                )
+                // Left: Left-aligned Center Stage Board Grid (top aligned with Kancentration word)
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
+                        .padding(top = topAlignPadding)
+                        .size(boardSize),
+                    contentAlignment = Alignment.TopStart
                 ) {
                     BoardGrid(
                         cards = uiState.cards,
@@ -97,32 +100,39 @@ fun GameScreen(
                         onCardClick = { viewModel.onCardClicked(it) }
                     )
                 }
-            }
 
-            // Right: Sidebar containing Top HUD & Kanji Inspector dock
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                GameHud(
-                    uiState = uiState,
-                    onSettingsClick = { viewModel.setShowSettingsDialog(true) },
-                    onDlcStoreClick = { viewModel.setShowDlcStoreDialog(true) },
-                    onRestartClick = { viewModel.startNewGame() },
-                    onCycleDimensionClick = { viewModel.cycleBoardDimension() }
-                )
-
-                KanjiInspector(
-                    kanji = uiState.selectedKanjiForInspector,
-                    showRomaji = uiState.settings.showRomaji,
-                    useSerifFont = uiState.settings.useSerifFont,
-                    onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                // Right: Sidebar containing Top HUD, Status Banner (when active), & Kanji Inspector dock
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .weight(1f)
-                )
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    GameHud(
+                        uiState = uiState,
+                        onSettingsClick = { viewModel.setShowSettingsDialog(true) },
+                        onDlcStoreClick = { viewModel.setShowDlcStoreDialog(true) },
+                        onRestartClick = { viewModel.startNewGame() },
+                        onCycleDimensionClick = { viewModel.cycleBoardDimension() }
+                    )
+
+                    if (uiState.activeTwinTrapBanner != null || uiState.isGameOver) {
+                        StatusBannerSlot(
+                            uiState = uiState,
+                            onRestart = { viewModel.startNewGame() }
+                        )
+                    }
+
+                    KanjiInspector(
+                        kanji = uiState.selectedKanjiForInspector,
+                        showRomaji = uiState.settings.showRomaji,
+                        useSerifFont = uiState.settings.useSerifFont,
+                        onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+                }
             }
         }
 

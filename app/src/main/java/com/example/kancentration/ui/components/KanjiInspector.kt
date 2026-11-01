@@ -35,12 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.KanjiData
 import com.example.kancentration.theme.AizomeIndigo
-import com.example.kancentration.theme.SumiCharcoal
 import com.example.kancentration.util.KanaConverter
 
 /**
- * Stateless fixed-height bottom lexicon box presenting Kanji details,
- * distinction tips, Kana/Romaji readings, and a clickable Wiktionary intent link.
+ * Extended lexicon inspector card showcasing Kanji details, distinct readings
+ * with multi-line natural text wrapping, distinction clues, and a clickable Wiktionary intent link.
  */
 @Composable
 fun KanjiInspector(
@@ -53,7 +52,7 @@ fun KanjiInspector(
     val context = LocalContext.current
 
     Card(
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -66,12 +65,12 @@ fun KanjiInspector(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "🎴 Flip cards to inspect Kanji readings, meanings & Twin-Trap clues",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
                     textAlign = TextAlign.Center
@@ -81,19 +80,19 @@ fun KanjiInspector(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp),
+                    .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Left Hanko Seal Tile: Tappable Wiktionary Link
                 Surface(
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     color = AizomeIndigo.copy(alpha = 0.08f),
                     border = BorderStroke(1.5.dp, AizomeIndigo),
                     shadowElevation = 2.dp,
                     modifier = Modifier
-                        .width(96.dp)
                         .fillMaxHeight()
-                        .clip(RoundedCornerShape(12.dp))
+                        .aspectRatio(0.82f)
+                        .clip(RoundedCornerShape(14.dp))
                         .clickable(
                             role = androidx.compose.ui.semantics.Role.Button,
                             onClickLabel = "Open Wiktionary entry in browser"
@@ -112,12 +111,12 @@ fun KanjiInspector(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(2.dp),
+                            .padding(4.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = kanji.character,
-                            fontSize = 54.sp,
+                            fontSize = 72.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
                             color = AizomeIndigo
@@ -125,17 +124,17 @@ fun KanjiInspector(
 
                         Text(
                             text = "Wiktionary ↗",
-                            fontSize = 9.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = AizomeIndigo.copy(alpha = 0.85f),
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .padding(bottom = 2.dp)
+                                .padding(bottom = 4.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
                 // Right Information Column
                 Column(
@@ -152,15 +151,15 @@ fun KanjiInspector(
                     ) {
                         Text(
                             text = kanji.meanings.joinToString(", ").ifEmpty { "Kanji" },
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f, fill = false)
                         )
 
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         Surface(
                             shape = RoundedCornerShape(6.dp),
@@ -168,15 +167,15 @@ fun KanjiInspector(
                         ) {
                             Text(
                                 text = "${kanji.strokeCount}画",
-                                fontSize = 11.sp,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                             )
                         }
                     }
 
-                    // On-yomi & Kun-yomi Readings (with optional Romaji)
+                    // On-yomi & Kun-yomi Readings (on separate lines, wrapping naturally without ellipsis)
                     val onReadingsFormatted = if (showRomaji) {
                         kanji.onReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
                     } else {
@@ -188,35 +187,26 @@ fun KanjiInspector(
                         kanji.kunReadings
                     }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
                         if (onReadingsFormatted.isNotEmpty()) {
                             Text(
                                 text = "on: ${onReadingsFormatted.joinToString(", ")}",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.primary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                        if (onReadingsFormatted.isNotEmpty() && kunReadingsFormatted.isNotEmpty()) {
-                            Text(
-                                text = " • ",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.outline
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                         if (kunReadingsFormatted.isNotEmpty()) {
                             Text(
                                 text = "kun: ${kunReadingsFormatted.joinToString(", ")}",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.secondary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
@@ -227,8 +217,6 @@ fun KanjiInspector(
                             text = "💡 ${kanji.distinctionTip}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
                             lineHeight = 16.sp
                         )
                     } else {

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,8 +18,7 @@ import com.example.kancentration.data.model.BoardDimension
 
 /**
  * Responsive BoardGrid calculating dynamic tile scales and typography for
- * 4x4, 6x6, and 8x8 setups while maintaining a square aspect ratio and
- * zero layout jitter across small mobile screens up to full tablet layouts.
+ * 4x4, 6x6, and 8x8 setups, maximizing viewport height and left-aligned.
  */
 @Composable
 fun BoardGrid(
@@ -59,15 +57,11 @@ fun BoardGrid(
     }
 
     BoxWithConstraints(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopStart
     ) {
         val totalSpacing = spacing * (size - 1)
-        val availableWidth = maxWidth - 8.dp
-        val availableHeight = maxHeight - 8.dp
-        val boardSize = minOf(availableWidth, availableHeight).coerceAtLeast(0.dp)
+        val boardSize = minOf(maxWidth, maxHeight).coerceAtLeast(0.dp)
         val cardSize = if (size > 0) ((boardSize - totalSpacing) / size).coerceAtLeast(0.dp) else 0.dp
 
         // Font scaling rules:
@@ -84,13 +78,13 @@ fun BoardGrid(
 
         Column(
             modifier = Modifier.size(boardSize),
-            verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(spacing, Alignment.Top),
+            horizontalAlignment = Alignment.Start
         ) {
             for (row in 0 until size) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.Start),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     for (col in 0 until size) {
