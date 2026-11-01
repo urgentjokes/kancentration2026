@@ -290,7 +290,6 @@ class GameEngineTest {
         assertEquals("持", twinTrap.firstCharacter)
         assertEquals("特", twinTrap.secondCharacter)
         assertEquals(2, twinTrap.nextPlayer)
-        assertTrue(twinTrap.bannerMessage.contains("惜しい！"))
         assertTrue(twinTrap.bannerMessage.contains("持 vs 特"))
     }
 

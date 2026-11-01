@@ -112,7 +112,7 @@ class GameEngine {
                 firstCharacter = card1.kanji.character,
                 secondCharacter = card2.kanji.character,
                 nextPlayer = nextPlayer,
-                bannerMessage = "惜しい！ Confusable Twin: ${card1.kanji.character} vs ${card2.kanji.character}"
+                bannerMessage = "${card1.kanji.character} vs ${card2.kanji.character}"
             )
         }
 

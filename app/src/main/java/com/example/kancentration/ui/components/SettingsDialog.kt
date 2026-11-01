@@ -277,7 +277,7 @@ fun SettingsDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "Twin-Trap Alerts (惜しい！)", style = MaterialTheme.typography.bodyMedium)
+                        Text(text = "Almost!", style = MaterialTheme.typography.bodyMedium)
                         Text(
                             text = "Highlight confusable near-miss pairs from the same quad in Amber",
                             style = MaterialTheme.typography.labelSmall,

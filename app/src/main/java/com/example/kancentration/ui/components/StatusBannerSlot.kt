@@ -35,7 +35,7 @@ import com.example.kancentration.theme.TakeBambooSurface
 import com.example.kancentration.ui.viewmodel.GameUiState
 
 /**
- * Fixed-height status banner slot displaying the "Near-Miss / Kanji Trap! (惜しい！)"
+ * Fixed-height status banner slot displaying the "Almost"
  * alert banner when activeTwinTrapBanner is populated, and a compact celebration /
  * time-up banner when the game ends.
  *
@@ -131,7 +131,7 @@ fun StatusBannerSlot(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "⚠️ Near-Miss! (惜しい！) ${uiState.activeTwinTrapBanner}",
+                                text = "⚠️  Almost! ${uiState.activeTwinTrapBanner}",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF92400E),
