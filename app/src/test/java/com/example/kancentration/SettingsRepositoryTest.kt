@@ -57,6 +57,8 @@ class SettingsRepositoryTest {
         assertTrue("soundEnabled must be true by default", settings.soundEnabled)
         assertEquals(0xFFFFFFFFL, settings.tileColor)
         assertEquals(0xFFD4AF37L, settings.kanjiColor)
+        assertEquals(1150L, settings.mismatchDelayMs)
+        assertTrue("showStrokeCount must be true by default", settings.showStrokeCount)
     }
 
     @Test
@@ -73,7 +75,9 @@ class SettingsRepositoryTest {
             useSerifFont = false,
             soundEnabled = false,
             tileColor = 0xFF1E293BL,
-            kanjiColor = 0xFF4CAF50L
+            kanjiColor = 0xFF4CAF50L,
+            mismatchDelayMs = 2000L,
+            showStrokeCount = false
         )
 
         repo.saveSettings(customSettings)
@@ -89,6 +93,8 @@ class SettingsRepositoryTest {
         assertFalse(loaded.soundEnabled)
         assertEquals(0xFF1E293BL, loaded.tileColor)
         assertEquals(0xFF4CAF50L, loaded.kanjiColor)
+        assertEquals(2000L, loaded.mismatchDelayMs)
+        assertFalse(loaded.showStrokeCount)
     }
 
     @Test

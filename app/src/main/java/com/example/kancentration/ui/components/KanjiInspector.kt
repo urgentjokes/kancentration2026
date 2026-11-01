@@ -46,6 +46,7 @@ fun KanjiInspector(
     kanji: KanjiData?,
     modifier: Modifier = Modifier,
     showRomaji: Boolean = false,
+    showStrokeCount: Boolean = true,
     useSerifFont: Boolean = true,
     onWiktionaryClick: (() -> Unit)? = null
 ) {
@@ -159,19 +160,21 @@ fun KanjiInspector(
                             modifier = Modifier.weight(1f, fill = false)
                         )
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                        if (showStrokeCount) {
+                            Spacer(modifier = Modifier.width(8.dp))
 
-                        Surface(
-                            shape = RoundedCornerShape(6.dp),
-                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
-                        ) {
-                            Text(
-                                text = "${kanji.strokeCount}画",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                            )
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                            ) {
+                                Text(
+                                    text = "${kanji.strokeCount}画",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                                )
+                            }
                         }
                     }
 

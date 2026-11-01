@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,6 +45,7 @@ import com.example.kancentration.ui.viewmodel.GameUiState
 fun StatusBannerSlot(
     uiState: GameUiState,
     onRestart: () -> Unit,
+    onDismissTwinTrap: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -113,14 +115,20 @@ fun StatusBannerSlot(
                         shape = RoundedCornerShape(10.dp),
                         color = AmberTwinTrapSurface,
                         border = BorderStroke(1.5.dp, AmberTwinTrap),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable(
+                                role = androidx.compose.ui.semantics.Role.Button,
+                                onClickLabel = "Dismiss Near-Miss notification",
+                                onClick = onDismissTwinTrap
+                            )
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
                                 text = "⚠️ Near-Miss! (惜しい！) ${uiState.activeTwinTrapBanner}",
@@ -128,7 +136,15 @@ fun StatusBannerSlot(
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF92400E),
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "✕",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF92400E).copy(alpha = 0.7f)
                             )
                         }
                     }

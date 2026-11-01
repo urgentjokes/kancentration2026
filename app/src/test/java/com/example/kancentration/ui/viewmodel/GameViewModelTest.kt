@@ -176,10 +176,60 @@ class GameViewModelTest {
         val settledState = viewModel.uiState.value
         assertFalse("Evaluating state must be false after observation window", settledState.isEvaluatingMatch)
         assertEquals(TurnPhase.AWAITING_FIRST_CARD, settledState.turnPhase)
-        assertNull(settledState.activeTwinTrapBanner)
+        // Near-Miss pop-up must persist until the user taps the screen again
+        assertNotNull("Near-Miss pop-up must persist until next tap", settledState.activeTwinTrapBanner)
 
         val settledCard1 = settledState.cards.find { it.instanceId == cardMotsu.instanceId }
         val settledCard2 = settledState.cards.find { it.instanceId == cardToku.instanceId }
+        assertFalse(settledCard1?.isFaceUp == true)
+        assertFalse(settledCard2?.isFaceUp == true)
+
+        // When the user taps the screen again (e.g. clicks a card), the pop-up is dismissed
+        viewModel.onCardClicked(thirdCard.instanceId)
+        testScheduler.runCurrent()
+        assertNull("Near-Miss banner must be dismissed upon next card tap", viewModel.uiState.value.activeTwinTrapBanner)
+        val thirdCardFlipped = viewModel.uiState.value.cards.find { it.instanceId == thirdCard.instanceId }
+        assertTrue("Third card must be flipped", thirdCardFlipped?.isFaceUp == true)
+    }
+
+    @Test
+    fun testConfigurableFailedMatchDelayRespected() = runTest {
+        val quads = createTestQuads()
+        val kanjiRepo = FakeKanjiRepository(quads)
+        val customDelay = 2500L
+        val settingsRepo = InMemorySettingsRepository(
+            initialSettings = GameSettings(mismatchDelayMs = customDelay)
+        )
+
+        val viewModel = GameViewModel(
+            repository = kanjiRepo,
+            settingsRepository = settingsRepo,
+            dlcManager = FakeDlcManager(),
+            soundManager = NoOpSoundPlayer(),
+            coroutineScope = backgroundScope
+        )
+
+        val state = viewModel.uiState.value
+        val card1 = state.cards.first { it.kanji.character == "持" }
+        val card2 = state.cards.first { it.kanji.character == "特" } // Twin-trap mismatch
+
+        viewModel.onCardClicked(card1.instanceId)
+        viewModel.onCardClicked(card2.instanceId)
+        testScheduler.runCurrent()
+
+        assertTrue("Evaluating state must be true", viewModel.uiState.value.isEvaluatingMatch)
+
+        // At 1500ms, the cards must STILL be exposed because mismatchDelayMs is 2500ms
+        advanceTimeBy(1500L)
+        testScheduler.runCurrent()
+        assertTrue("Cards must still be exposed at 1500ms when delay is 2500ms", viewModel.uiState.value.isEvaluatingMatch)
+
+        // Advance past 2500ms (e.g. additional 1200ms -> total 2700ms)
+        advanceTimeBy(1200L)
+        testScheduler.runCurrent()
+        assertFalse("Evaluating state must be false after custom mismatch delay elapses", viewModel.uiState.value.isEvaluatingMatch)
+        val settledCard1 = viewModel.uiState.value.cards.find { it.instanceId == card1.instanceId }
+        val settledCard2 = viewModel.uiState.value.cards.find { it.instanceId == card2.instanceId }
         assertFalse(settledCard1?.isFaceUp == true)
         assertFalse(settledCard2?.isFaceUp == true)
     }

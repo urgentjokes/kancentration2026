@@ -19,6 +19,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -57,103 +59,118 @@ fun GameScreen(
         }
     }
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-            .displayCutoutPadding(),
-        containerColor = MaterialTheme.colorScheme.background
-    ) { innerPadding ->
-        BoxWithConstraints(
-            modifier = Modifier
+    if (uiState.showSettingsDialog) {
+        SettingsScreen(
+            currentSettings = uiState.settings,
+            onApplySettings = { newSettings ->
+                viewModel.setShowSettingsDialog(false)
+                viewModel.applySettings(newSettings)
+            },
+            onDismiss = { viewModel.setShowSettingsDialog(false) },
+            modifier = modifier
+        )
+    } else {
+        Scaffold(
+            modifier = modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
-        ) {
-            val totalHeight = maxHeight
-            val topAlignPadding = 6.dp
-            // Board is square. Fill available height minus top alignment padding,
-            // while reserving at least 320dp width for the sidebar.
-            val boardSize = minOf(
-                (totalHeight - topAlignPadding).coerceAtLeast(0.dp),
-                (maxWidth - 320.dp).coerceAtLeast(0.dp)
-            )
-
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.Top
+                .systemBarsPadding()
+                .displayCutoutPadding()
+                .pointerInput(uiState.activeTwinTrapBanner) {
+                    if (uiState.activeTwinTrapBanner != null) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent(PointerEventPass.Initial)
+                                if (event.changes.any { it.pressed }) {
+                                    viewModel.dismissTwinTrapBanner()
+                                    break
+                                }
+                            }
+                        }
+                    }
+                },
+            containerColor = MaterialTheme.colorScheme.background
+        ) { innerPadding ->
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
             ) {
-                // Left: Left-aligned Center Stage Board Grid (top aligned with Kancentration word)
-                Box(
-                    modifier = Modifier
-                        .padding(top = topAlignPadding)
-                        .size(boardSize),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    BoardGrid(
-                        cards = uiState.cards,
-                        dimension = uiState.settings.dimension,
-                        tileColor = uiState.settings.tileColor,
-                        kanjiColor = uiState.settings.kanjiColor,
-                        useSerifFont = uiState.settings.useSerifFont,
-                        onCardClick = { viewModel.onCardClicked(it) }
-                    )
-                }
+                val totalHeight = maxHeight
+                val topAlignPadding = 6.dp
+                // Board is square. Fill available height minus top alignment padding,
+                // while reserving at least 320dp width for the sidebar.
+                val boardSize = minOf(
+                    (totalHeight - topAlignPadding).coerceAtLeast(0.dp),
+                    (maxWidth - 320.dp).coerceAtLeast(0.dp)
+                )
 
-                // Right: Sidebar containing Top HUD, Status Banner (when active), & Kanji Inspector dock
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.Top
                 ) {
-                    GameHud(
-                        uiState = uiState,
-                        onSettingsClick = { viewModel.setShowSettingsDialog(true) },
-                        onDlcStoreClick = { viewModel.setShowDlcStoreDialog(true) },
-                        onRestartClick = { viewModel.startNewGame() },
-                        onCycleDimensionClick = { viewModel.cycleBoardDimension() }
-                    )
-
-                    if (uiState.activeTwinTrapBanner != null || uiState.isGameOver) {
-                        StatusBannerSlot(
-                            uiState = uiState,
-                            onRestart = { viewModel.startNewGame() }
+                    // Left: Left-aligned Center Stage Board Grid (top aligned with Kancentration word)
+                    Box(
+                        modifier = Modifier
+                            .padding(top = topAlignPadding)
+                            .size(boardSize),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        BoardGrid(
+                            cards = uiState.cards,
+                            dimension = uiState.settings.dimension,
+                            tileColor = uiState.settings.tileColor,
+                            kanjiColor = uiState.settings.kanjiColor,
+                            useSerifFont = uiState.settings.useSerifFont,
+                            onCardClick = { viewModel.onCardClicked(it) }
                         )
                     }
 
-                    KanjiInspector(
-                        kanji = uiState.selectedKanjiForInspector,
-                        showRomaji = uiState.settings.showRomaji,
-                        useSerifFont = uiState.settings.useSerifFont,
-                        onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                    // Right: Sidebar containing Top HUD, Status Banner (when active), & Kanji Inspector dock
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .weight(1f)
-                    )
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        GameHud(
+                            uiState = uiState,
+                            onSettingsClick = { viewModel.setShowSettingsDialog(true) },
+                            onDlcStoreClick = { viewModel.setShowDlcStoreDialog(true) },
+                            onRestartClick = { viewModel.startNewGame() },
+                            onCycleDimensionClick = { viewModel.cycleBoardDimension() }
+                        )
+
+                        if (uiState.activeTwinTrapBanner != null || uiState.isGameOver) {
+                            StatusBannerSlot(
+                                uiState = uiState,
+                                onRestart = { viewModel.startNewGame() },
+                                onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() }
+                            )
+                        }
+
+                        KanjiInspector(
+                            kanji = uiState.selectedKanjiForInspector,
+                            showRomaji = uiState.settings.showRomaji,
+                            showStrokeCount = uiState.settings.showStrokeCount,
+                            useSerifFont = uiState.settings.useSerifFont,
+                            onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        )
+                    }
                 }
             }
-        }
 
-        // Dialogs
-        if (uiState.showSettingsDialog) {
-            SettingsDialog(
-                currentSettings = uiState.settings,
-                onApplySettings = { newSettings ->
-                    viewModel.setShowSettingsDialog(false)
-                    viewModel.applySettings(newSettings)
-                },
-                onDismiss = { viewModel.setShowSettingsDialog(false) }
-            )
-        }
-
-        if (uiState.showDlcStoreDialog) {
-            DlcStoreDialog(
-                dlcManager = viewModel.dlcManager,
-                onDownloadPack = { viewModel.downloadDlcPack(it) },
-                onDismiss = { viewModel.setShowDlcStoreDialog(false) }
-            )
+            if (uiState.showDlcStoreDialog) {
+                DlcStoreDialog(
+                    dlcManager = viewModel.dlcManager,
+                    onDownloadPack = { viewModel.downloadDlcPack(it) },
+                    onDismiss = { viewModel.setShowDlcStoreDialog(false) }
+                )
+            }
         }
     }
 }

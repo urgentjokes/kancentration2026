@@ -50,6 +50,8 @@ class SharedPreferencesSettingsRepository(
         val soundEnabled = prefs.getBoolean(KEY_SOUND_ENABLED, true)
         val tileColor = prefs.getLong(KEY_TILE_COLOR, 0xFFFFFFFFL)
         val kanjiColor = prefs.getLong(KEY_KANJI_COLOR, 0xFFD4AF37L)
+        val mismatchDelayMs = prefs.getLong(KEY_MISMATCH_DELAY_MS, 1150L)
+        val showStrokeCount = prefs.getBoolean(KEY_SHOW_STROKE_COUNT, true)
 
         return GameSettings(
             dimension = dimension,
@@ -60,7 +62,9 @@ class SharedPreferencesSettingsRepository(
             useSerifFont = useSerifFont,
             soundEnabled = soundEnabled,
             tileColor = tileColor,
-            kanjiColor = kanjiColor
+            kanjiColor = kanjiColor,
+            mismatchDelayMs = mismatchDelayMs,
+            showStrokeCount = showStrokeCount
         )
     }
 
@@ -87,6 +91,8 @@ class SharedPreferencesSettingsRepository(
             .putBoolean(KEY_SOUND_ENABLED, settings.soundEnabled)
             .putLong(KEY_TILE_COLOR, settings.tileColor)
             .putLong(KEY_KANJI_COLOR, settings.kanjiColor)
+            .putLong(KEY_MISMATCH_DELAY_MS, settings.mismatchDelayMs)
+            .putBoolean(KEY_SHOW_STROKE_COUNT, settings.showStrokeCount)
             .apply()
     }
 
@@ -101,6 +107,8 @@ class SharedPreferencesSettingsRepository(
         private const val KEY_SOUND_ENABLED = "pref_sound_enabled"
         private const val KEY_TILE_COLOR = "pref_tile_color"
         private const val KEY_KANJI_COLOR = "pref_kanji_color"
+        private const val KEY_MISMATCH_DELAY_MS = "pref_mismatch_delay_ms"
+        private const val KEY_SHOW_STROKE_COUNT = "pref_show_stroke_count"
     }
 }
 

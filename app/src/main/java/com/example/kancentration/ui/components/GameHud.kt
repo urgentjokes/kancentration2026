@@ -30,8 +30,8 @@ import com.example.kancentration.ui.viewmodel.GameUiState
 
 /**
  * Top HUD Bar maintaining a clean two-row layout in the sidebar:
- * - Row 1: "Kancentration" title and control icons (DLC, Settings, Restart)
- * - Row 2: Timer badge with board-size pill underneath on the left, score telemetry on the right.
+ * - Row 1: "Kancentration" title, board-size pill, and control icons (DLC, Settings, Restart)
+ * - Row 2: Timer badge with "Moves:" field to its right on the left, score/matches telemetry on the right.
  */
 @Composable
 fun GameHud(
@@ -48,7 +48,7 @@ fun GameHud(
             .padding(horizontal = 4.dp, vertical = 2.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Row 1: Header (Title & Action Icons)
+        // Row 1: Header (Title, Board-Size Pill, & Action Icons)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,14 +56,41 @@ fun GameHud(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Kancentration",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif,
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Kancentration",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Serif,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1
+                )
+
+                // Board-Size Pill (positioned next to the word "Kancentration")
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "Cycle board dimension",
+                            onClick = { onCycleDimensionClick() }
+                        )
+                ) {
+                    Text(
+                        text = "${uiState.settings.dimension.size}×${uiState.settings.dimension.size}",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    )
+                }
+            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -95,16 +122,16 @@ fun GameHud(
             }
         }
 
-        // Row 2: Telemetry (Timer & Board-Size Pill underneath on Left, Scores on Right)
+        // Row 2: Telemetry (Timer & Moves on Left, Scores/Matches on Right)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left: Timer Badge with Board-Size Pill directly under it
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.Start
+            // Left: Timer Badge with Moves field directly to its right
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // Timer Badge
                 val timerBg = when {
@@ -150,27 +177,13 @@ fun GameHud(
                     }
                 }
 
-                // Board-Size Pill (positioned under the timer)
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable(
-                            role = Role.Button,
-                            onClickLabel = "Cycle board dimension",
-                            onClick = { onCycleDimensionClick() }
-                        )
-                ) {
-                    Text(
-                        text = "${uiState.settings.dimension.size}×${uiState.settings.dimension.size}",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
-                    )
-                }
+                // Moves field to the right of the timer
+                Text(
+                    text = "Moves: ${uiState.totalMoves}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
             // Right: Score & Turn Info
@@ -216,22 +229,12 @@ fun GameHud(
                     }
                 }
             } else {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    Text(
-                        text = "Matches: ${uiState.totalMatches}/${uiState.totalPairs}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "Moves: ${uiState.totalMoves}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Text(
+                    text = "Matches: ${uiState.totalMatches}/${uiState.totalPairs}",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

@@ -511,7 +511,9 @@ fun SettingsDialog(
                             useSerifFont = useSerifFont,
                             soundEnabled = soundEnabled,
                             tileColor = selectedTileColor,
-                            kanjiColor = selectedKanjiColor
+                            kanjiColor = selectedKanjiColor,
+                            mismatchDelayMs = currentSettings.mismatchDelayMs,
+                            showStrokeCount = currentSettings.showStrokeCount
                         )
                     )
                 }

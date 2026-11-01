@@ -248,6 +248,11 @@ class GameViewModel(
             return
         }
 
+        // Dismiss Near-Miss pop-up upon user tapping a card
+        if (state.activeTwinTrapBanner != null) {
+            _uiState.update { it.copy(activeTwinTrapBanner = null) }
+        }
+
         // Rule 3: Post-game tile reveal & inspection
         if (state.isGameOver) {
             val updatedCards = state.cards.map {
@@ -329,6 +334,15 @@ class GameViewModel(
         onCardClicked(card.instanceId)
     }
 
+    /**
+     * Dismisses the active Near-Miss pop-up / banner upon user tap.
+     */
+    fun dismissTwinTrapBanner() {
+        if (_uiState.value.activeTwinTrapBanner != null) {
+            _uiState.update { it.copy(activeTwinTrapBanner = null) }
+        }
+    }
+
     private fun evaluateMatch(firstId: String, secondId: String) {
         matchEvaluationJob?.cancel()
         matchEvaluationJob = gameSessionScope.launch {
@@ -406,8 +420,8 @@ class GameViewModel(
                         // Play distinct Twin-Trap anomaly alert immediately upon detection
                         soundManager.playTwinTrap()
 
-                        // Observation delay of 1,150ms as specified in Section 5.2 & 5.5
-                        delay(1150L)
+                        // Configurable failed match exposure delay
+                        delay(state.settings.mismatchDelayMs)
 
                         val updatedCards = _uiState.value.cards.map {
                             if (it.instanceId == firstId || it.instanceId == secondId) {
@@ -422,15 +436,14 @@ class GameViewModel(
                                 firstFlippedCardId = null,
                                 secondFlippedCardId = null,
                                 isEvaluatingMatch = false,
-                                activeTwinTrapBanner = null,
                                 turnPhase = TurnPhase.AWAITING_FIRST_CARD
                             )
                         }
                     }
 
                     is TurnEvaluationResult.StandardMismatch -> {
-                        // Observation delay of 1,150ms as specified in Section 5.2 & 5.5
-                        delay(1150L)
+                        // Configurable failed match exposure delay
+                        delay(state.settings.mismatchDelayMs)
                         soundManager.playMismatch()
 
                         val updatedCards = _uiState.value.cards.map {
@@ -446,7 +459,6 @@ class GameViewModel(
                                 firstFlippedCardId = null,
                                 secondFlippedCardId = null,
                                 isEvaluatingMatch = false,
-                                activeTwinTrapBanner = null,
                                 turnPhase = TurnPhase.AWAITING_FIRST_CARD
                             )
                         }

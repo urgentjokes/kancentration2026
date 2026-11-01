@@ -33,5 +33,7 @@ data class GameSettings(
     val useSerifFont: Boolean = true,
     val soundEnabled: Boolean = true,
     val tileColor: Long = 0xFFFFFFFFL,      // Default White
-    val kanjiColor: Long = 0xFFD4AF37L       // Default Gold (#D4AF37)
+    val kanjiColor: Long = 0xFFD4AF37L,      // Default Gold (#D4AF37)
+    val mismatchDelayMs: Long = 1150L,       // Duration (ms) failed match stays exposed
+    val showStrokeCount: Boolean = true      // Toggle stroke-count badge in Inspector
 )
