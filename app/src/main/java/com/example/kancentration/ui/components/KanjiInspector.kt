@@ -55,6 +55,7 @@ fun KanjiInspector(
     showRomaji: Boolean = false,
     showStrokeCount: Boolean = true,
     useSerifFont: Boolean = true,
+    isPhoneLandscape: Boolean = false,
     onWiktionaryClick: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
@@ -84,11 +85,209 @@ fun KanjiInspector(
                 ) {
                     Text(
                         text = "🎴 Flip cards to inspect Kanji readings, meanings & Twin-Trap clues",
-                        style = if (isTabletWidth) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyLarge,
+                        style = if (isTabletWidth) MaterialTheme.typography.titleMedium else if (isPhoneLandscape) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
                         textAlign = TextAlign.Center
                     )
+                }
+            } else if (isPhoneLandscape) {
+                // Phone-Landscape Layout:
+                // - Kanji tile size reduced by 50%
+                // - All text elements reduced by 50%
+                // - Lightbulb (tip) element aligned with the left boundary of kanji-inspector element,
+                //   with text flowing all the way to the right boundary, and wrapping.
+                val paddingH = 12.dp
+                val paddingV = 8.dp
+
+                val availableHeight = (inspectorHeight - paddingV * 2).coerceAtLeast(48.dp)
+                val maxSealWidth = (inspectorWidth * 0.35f).coerceAtMost(180.dp)
+                val clueReservedHeight = 28.dp
+                val availableForSeal = (availableHeight - clueReservedHeight).coerceAtLeast(48.dp)
+                val baseSealHeight = minOf(availableForSeal, maxSealWidth / 0.82f).coerceAtLeast(48.dp)
+
+                // 50% Tile Dimensions
+                val phoneSealSize = 54.dp
+                val phoneCharacterFontSize = 30.sp
+                val phoneWiktionaryLabelSize = 10.sp
+
+                // 50% Typography Sizes
+                val phoneMeaningFontSize = 13.sp
+                val phoneMeaningLineHeight = 16.sp
+                val phoneKakiJunFontSize = 11.sp
+                val phoneReadingFontSize = 14.sp
+                val phoneReadingLineHeight = 18.sp
+                val phoneTipFontSize = 12.sp
+                val phoneTipLineHeight = 16.sp
+
+                val onReadingsFormatted = if (showRomaji) {
+                    kanji.onReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
+                } else {
+                    kanji.onReadings
+                }
+                val kunReadingsFormatted = if (showRomaji) {
+                    kanji.kunReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
+                } else {
+                    kanji.kunReadings
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = paddingH, vertical = paddingV),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Top Section: Kanji Tile on left (with Wiktionary link below it), Header & Readings on right
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        // Left Column: Kanji Box Tile with Wiktionary link directly beneath it
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable(
+                                    role = androidx.compose.ui.semantics.Role.Button,
+                                    onClickLabel = "Open Wiktionary entry in browser"
+                                ) {
+                                    onWiktionaryClick?.invoke()
+                                    try {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kanji.wiktionaryUrl)).apply {
+                                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        }
+                                        context.startActivity(intent)
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }
+                        ) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = WashiPaper,
+                                border = BorderStroke(1.5.dp, AizomeIndigo),
+                                shadowElevation = 2.dp,
+                                modifier = Modifier.size(phoneSealSize)
+                            ) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = kanji.character,
+                                        fontSize = phoneCharacterFontSize,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
+                                        color = SumiCharcoal,
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        softWrap = false,
+                                        style = LocalTextStyle.current.copy(
+                                            lineHeight = phoneCharacterFontSize,
+                                            textAlign = TextAlign.Center,
+                                            platformStyle = PlatformTextStyle(
+                                                includeFontPadding = false
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(3.dp))
+
+                            Text(
+                                text = "Wiktionary ↗",
+                                fontSize = phoneWiktionaryLabelSize,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                softWrap = false
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        // Right Column: English Meanings & Stroke Count on row 1, Readings on row 2
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = kanji.meanings.joinToString(", ").ifEmpty { "Kanji" },
+                                    fontSize = phoneMeaningFontSize,
+                                    lineHeight = phoneMeaningLineHeight,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.weight(1f, fill = false)
+                                )
+
+                                if (showStrokeCount) {
+                                    Spacer(modifier = Modifier.width(6.dp))
+
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                                    ) {
+                                        Text(
+                                            text = "${kanji.strokeCount}画",
+                                            fontSize = phoneKakiJunFontSize,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            if (onReadingsFormatted.isNotEmpty()) {
+                                Text(
+                                    text = "on: ${onReadingsFormatted.joinToString(", ")}",
+                                    fontSize = phoneReadingFontSize,
+                                    lineHeight = phoneReadingLineHeight,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            if (kunReadingsFormatted.isNotEmpty()) {
+                                Text(
+                                    text = "kun: ${kunReadingsFormatted.joinToString(", ")}",
+                                    fontSize = phoneReadingFontSize,
+                                    lineHeight = phoneReadingLineHeight,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Bottom Row: Lightbulb (tip) element aligned with the left boundary of the kanji-inspector element,
+                    // with text flowing all the way to the right boundary, and wrapping.
+                    if (kanji.distinctionTip.isNotEmpty()) {
+                        Text(
+                            text = "💡 ${kanji.distinctionTip}",
+                            fontSize = phoneTipFontSize,
+                            lineHeight = phoneTipLineHeight,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
+                            fontSize = phoneTipFontSize,
+                            lineHeight = phoneTipLineHeight,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             } else {
                 val isCompactHeight = inspectorHeight < 140.dp

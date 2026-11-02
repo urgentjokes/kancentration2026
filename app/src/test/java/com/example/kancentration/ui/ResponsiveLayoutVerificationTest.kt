@@ -402,4 +402,73 @@ class ResponsiveLayoutVerificationTest {
             }
         }
     }
+
+    @Test
+    fun testPhoneLandscapeKanjiInspectorBottomAlignedWithBottomRowOfTiles() {
+        val phoneLandscapeViewports = listOf(
+            Pair(640f, 360f),    // Compact mobile landscape
+            Pair(780f, 390f),    // Standard mobile landscape
+            Pair(844f, 390f),    // Modern iPhone landscape
+            Pair(915f, 412f)     // Large mobile landscape (e.g. Galaxy S24 Ultra)
+        )
+
+        for ((vw, vh) in phoneLandscapeViewports) {
+            val screenPaddingH = 12f * 2
+            val screenPaddingV = 4f * 2
+            val totalWidth = vw - screenPaddingH
+            val totalHeight = vh - screenPaddingV
+            val spacing = 16f
+            val topAlignPadding = 6f
+            val minSidebarWidth = 320f
+            val maxBoardWidth = (totalWidth - minSidebarWidth - spacing).coerceAtLeast(0f)
+            val boardSize = minOf((totalHeight - topAlignPadding).coerceAtLeast(0f), maxBoardWidth)
+
+            val fullBoardBottom = topAlignPadding + boardSize
+            val sidebarHeight = topAlignPadding + boardSize
+
+            // On phone landscape, sidebar height must equal fullBoardBottom,
+            // ensuring KanjiInspector's lower boundary reaches all the way down
+            // aligned with the bottom of the bottom row of tiles
+            assertEquals(
+                "Phone sidebar height ($sidebarHeight) must match bottom of bottom row of tiles ($fullBoardBottom) on ${vw}x$vh",
+                fullBoardBottom,
+                sidebarHeight,
+                0.001f
+            )
+
+            // KanjiInspector gets ample space to fill
+            val hudHeight = 84f
+            val inspectorHeight = sidebarHeight - hudHeight - 6f // with 6dp spacing
+            assertTrue(
+                "Phone inspector height ($inspectorHeight) must be comfortably tall (>= 180dp) on ${vw}x$vh",
+                inspectorHeight >= 180f
+            )
+
+            // Phone-Landscape Inspector typography and tile sizes are reduced by 50%
+            val tabletReadingFontSizeSp = 28f
+            val phoneReadingFontSizeSp = 14f
+            assertEquals("Phone reading font size must be 50% of tablet", tabletReadingFontSizeSp * 0.5f, phoneReadingFontSizeSp, 0.001f)
+
+            val tabletTipFontSizeSp = 24f
+            val phoneTipFontSizeSp = 12f
+            assertEquals("Phone tip font size must be 50% of tablet", tabletTipFontSizeSp * 0.5f, phoneTipFontSizeSp, 0.001f)
+
+            val tabletKakiJunFontSizeSp = 22f
+            val phoneKakiJunFontSizeSp = 11f
+            assertEquals("Phone kaki-jun font size must be 50% of tablet", tabletKakiJunFontSizeSp * 0.5f, phoneKakiJunFontSizeSp, 0.001f)
+
+            // Phone-Landscape Kanji Trap Banner height and text sizes are reduced by 50%
+            val defaultBannerHeightDp = 92f
+            val phoneBannerHeightDp = 46f
+            assertEquals("Phone banner height must be 50% of standard banner", defaultBannerHeightDp * 0.5f, phoneBannerHeightDp, 0.001f)
+
+            val defaultBannerTextSizeSp = 24f
+            val phoneBannerTextSizeSp = 12f
+            assertEquals("Phone banner headline must be 50% of standard headline", defaultBannerTextSizeSp * 0.5f, phoneBannerTextSizeSp, 0.001f)
+
+            val defaultBannerClueSizeSp = 20f
+            val phoneBannerClueSizeSp = 10f
+            assertEquals("Phone banner clue text must be 50% of standard clue text", defaultBannerClueSizeSp * 0.5f, phoneBannerClueSizeSp, 0.001f)
+        }
+    }
 }

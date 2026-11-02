@@ -126,12 +126,14 @@ fun GameScreen(
                     }
                     val totalGridSpacing = gridSpacing * (dimension.size - 1)
                     val cardSize = if (dimension.size > 0) ((boardSize - totalGridSpacing) / dimension.size).coerceAtLeast(0.dp) else 0.dp
-                    // Lower boundary aligned with the center of the third row of tiles on 4x4 (or equivalent baseline on dense grids)
+                    // Lower boundary aligned with the center of the third row of tiles on 4x4 (or equivalent baseline on dense grids) for tablets;
+                    // For phones, the lower boundary reaches all the way down to the bottom (aligned with the bottom of the bottom row of tiles)
                     val boundaryThirdRowCenter = if (dimension == BoardDimension.FOUR_BY_FOUR) {
                         topAlignPadding + (cardSize * 2.5f) + (gridSpacing * 2f)
                     } else {
                         topAlignPadding + (boardSize * 0.65f)
                     }
+                    val sidebarHeight = if (isTablet) boundaryThirdRowCenter else (topAlignPadding + boardSize)
 
                     Row(
                         modifier = Modifier
@@ -158,11 +160,12 @@ fun GameScreen(
                         }
 
                         // Right: Sidebar containing Top HUD, Status Banner (when active), & Kanji Inspector dock
-                        // The bottom boundary is aligned with the center of the third row of tiles
+                        // On tablets, the bottom boundary is aligned with the center of the third row of tiles;
+                        // on phones, the lower boundary reaches all the way down to the bottom of the bottom row of tiles
                         Column(
                             modifier = Modifier
                                 .weight(1f)
-                                .height(boundaryThirdRowCenter),
+                                .height(sidebarHeight),
                             verticalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 6.dp)
                         ) {
                             GameHud(
@@ -177,7 +180,8 @@ fun GameScreen(
                                 StatusBannerSlot(
                                     uiState = uiState,
                                     onRestart = { viewModel.startNewGame() },
-                                    onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() }
+                                    onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
+                                    isPhoneLandscape = !isTablet
                                 )
                             }
 
@@ -186,6 +190,7 @@ fun GameScreen(
                                 showRomaji = uiState.settings.showRomaji,
                                 showStrokeCount = uiState.settings.showStrokeCount,
                                 useSerifFont = uiState.settings.useSerifFont,
+                                isPhoneLandscape = !isTablet,
                                 onWiktionaryClick = { viewModel.onOpenWiktionary() },
                                 modifier = Modifier
                                     .fillMaxWidth()
