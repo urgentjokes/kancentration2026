@@ -321,26 +321,29 @@ class ResponsiveLayoutVerificationTest {
                 }
                 val totalGridSpacing = gridSpacing * (dim.size - 1)
                 val cardSize = (boardSize - totalGridSpacing) / dim.size
-                val boundaryRow3And4 = if (dim == BoardDimension.FOUR_BY_FOUR) {
-                    topAlignPadding + (cardSize * 3) + (gridSpacing * 2.5f)
+                val boundaryThirdRowCenter = if (dim == BoardDimension.FOUR_BY_FOUR) {
+                    topAlignPadding + (cardSize * 2.5f) + (gridSpacing * 2f)
                 } else {
-                    topAlignPadding + (boardSize * 0.75f)
+                    topAlignPadding + (boardSize * 0.65f)
                 }
                 val fullBoardBottom = topAlignPadding + boardSize
 
                 // 1. Bottom boundary is strictly raised above the bottom of the board
                 assertTrue(
-                    "Boundary between row 3 and 4 ($boundaryRow3And4) must be strictly higher than full board bottom ($fullBoardBottom)",
-                    boundaryRow3And4 < fullBoardBottom
+                    "Boundary ($boundaryThirdRowCenter) must be strictly higher than full board bottom ($fullBoardBottom)",
+                    boundaryThirdRowCenter < fullBoardBottom
                 )
 
-                // 2. For 4x4, the boundary is positioned between row 3 bottom and row 4 top
+                // 2. For 4x4, the boundary is exactly aligned with Row 3 center
                 if (dim == BoardDimension.FOUR_BY_FOUR) {
-                    val row3Bottom = topAlignPadding + (cardSize * 3) + (gridSpacing * 2f)
-                    val row4Top = topAlignPadding + (cardSize * 3) + (gridSpacing * 3f)
-                    assertTrue(
-                        "Boundary ($boundaryRow3And4) must fall between Row 3 bottom ($row3Bottom) and Row 4 top ($row4Top)",
-                        boundaryRow3And4 in row3Bottom..row4Top
+                    val row3Top = topAlignPadding + (cardSize * 2f) + (gridSpacing * 2f)
+                    val row3Bottom = topAlignPadding + (cardSize * 3f) + (gridSpacing * 2f)
+                    val row3Center = (row3Top + row3Bottom) / 2f
+                    assertEquals(
+                        "Boundary ($boundaryThirdRowCenter) must align with Row 3 center ($row3Center)",
+                        row3Center,
+                        boundaryThirdRowCenter,
+                        0.001f
                     )
                 }
 
@@ -348,7 +351,7 @@ class ResponsiveLayoutVerificationTest {
                 val hudHeight = 84f
                 val bannerHeight = 108f
                 val verticalGaps = 20f
-                val inspectorHeightWithBanner = boundaryRow3And4 - hudHeight - bannerHeight - verticalGaps
+                val inspectorHeightWithBanner = boundaryThirdRowCenter - hudHeight - bannerHeight - verticalGaps
                 assertTrue(
                     "Inspector height with banner ($inspectorHeightWithBanner) must be at least 100dp for readability on $vw x $vh",
                     inspectorHeightWithBanner >= 100f
@@ -388,6 +391,13 @@ class ResponsiveLayoutVerificationTest {
                     readingSpacingDp,
                     kunToTipSpacingDp,
                     0.001f
+                )
+
+                // 8. Kaki-jun (stroke count) seal size is doubled (26sp on tablet, 22sp on mobile)
+                val kakiJunFontSizeSp = if (vw >= 600f) 26f else 22f
+                assertTrue(
+                    "Kaki-jun seal font size ($kakiJunFontSizeSp sp) must be doubled (>= 22sp)",
+                    kakiJunFontSizeSp >= 22f
                 )
             }
         }

@@ -126,11 +126,11 @@ fun GameScreen(
                     }
                     val totalGridSpacing = gridSpacing * (dimension.size - 1)
                     val cardSize = if (dimension.size > 0) ((boardSize - totalGridSpacing) / dimension.size).coerceAtLeast(0.dp) else 0.dp
-                    // Boundary between the third and fourth row of tiles on 4x4 (or 75% equivalent baseline on dense grids)
-                    val boundaryRow3And4 = if (dimension == BoardDimension.FOUR_BY_FOUR) {
-                        topAlignPadding + (cardSize * 3) + (gridSpacing * 2.5f)
+                    // Lower boundary aligned with the center of the third row of tiles on 4x4 (or equivalent baseline on dense grids)
+                    val boundaryThirdRowCenter = if (dimension == BoardDimension.FOUR_BY_FOUR) {
+                        topAlignPadding + (cardSize * 2.5f) + (gridSpacing * 2f)
                     } else {
-                        topAlignPadding + (boardSize * 0.75f)
+                        topAlignPadding + (boardSize * 0.65f)
                     }
 
                     Row(
@@ -158,11 +158,11 @@ fun GameScreen(
                         }
 
                         // Right: Sidebar containing Top HUD, Status Banner (when active), & Kanji Inspector dock
-                        // The bottom boundary is aligned with the boundary between the 3rd and 4th row of tiles
+                        // The bottom boundary is aligned with the center of the third row of tiles
                         Column(
                             modifier = Modifier
                                 .weight(1f)
-                                .height(boundaryRow3And4),
+                                .height(boundaryThirdRowCenter),
                             verticalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 6.dp)
                         ) {
                             GameHud(

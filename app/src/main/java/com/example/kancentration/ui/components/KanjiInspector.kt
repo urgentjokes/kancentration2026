@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.KanjiData
 import com.example.kancentration.theme.AizomeIndigo
+import com.example.kancentration.theme.SumiCharcoal
+import com.example.kancentration.theme.WashiPaper
 import com.example.kancentration.util.KanaConverter
 
 /**
@@ -105,12 +109,12 @@ fun KanjiInspector(
                         .padding(horizontal = paddingH, vertical = paddingV),
                     verticalAlignment = Alignment.Top
                 ) {
-                    // Left Hanko Seal Tile (Kanji Box): Tappable Wiktionary Link
+                    // Left Tile (Kanji Box): Matches actual game tile, Tappable Wiktionary Link
                     Surface(
                         shape = RoundedCornerShape(if (isTabletWidth) 14.dp else 10.dp),
-                        color = AizomeIndigo.copy(alpha = 0.08f),
-                        border = BorderStroke(if (isTabletWidth) 2.dp else 1.5.dp, AizomeIndigo),
-                        shadowElevation = 2.dp,
+                        color = WashiPaper,
+                        border = BorderStroke(2.dp, AizomeIndigo),
+                        shadowElevation = 4.dp,
                         modifier = Modifier
                             .size(width = sealWidth, height = sealHeight)
                             .clip(RoundedCornerShape(if (isTabletWidth) 14.dp else 10.dp))
@@ -138,16 +142,26 @@ fun KanjiInspector(
                             Text(
                                 text = kanji.character,
                                 fontSize = characterFontSize,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.SemiBold,
                                 fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
-                                color = AizomeIndigo
+                                color = SumiCharcoal,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                softWrap = false,
+                                style = LocalTextStyle.current.copy(
+                                    lineHeight = characterFontSize,
+                                    textAlign = TextAlign.Center,
+                                    platformStyle = PlatformTextStyle(
+                                        includeFontPadding = false
+                                    )
+                                )
                             )
 
                             Text(
                                 text = "Wiktionary ↗",
                                 fontSize = wiktionaryLabelSize,
                                 fontWeight = FontWeight.SemiBold,
-                                color = AizomeIndigo.copy(alpha = 0.85f),
+                                color = AizomeIndigo,
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = if (isCompactHeight) 2.dp else 4.dp)
@@ -179,20 +193,20 @@ fun KanjiInspector(
                             )
 
                             if (showStrokeCount) {
-                                Spacer(modifier = Modifier.width(6.dp))
+                                Spacer(modifier = Modifier.width(if (isTabletWidth) 12.dp else 8.dp))
 
                                 Surface(
-                                    shape = RoundedCornerShape(if (isTabletWidth) 8.dp else 6.dp),
+                                    shape = RoundedCornerShape(if (isTabletWidth) 12.dp else 8.dp),
                                     color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
                                 ) {
                                     Text(
                                         text = "${kanji.strokeCount}画",
-                                        fontSize = if (isTabletWidth) 13.sp else 11.sp,
+                                        fontSize = if (isTabletWidth) 26.sp else 22.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                                         modifier = Modifier.padding(
-                                            horizontal = if (isTabletWidth) 8.dp else 6.dp,
-                                            vertical = if (isCompactHeight) 2.dp else 3.dp
+                                            horizontal = if (isTabletWidth) 16.dp else 12.dp,
+                                            vertical = if (isCompactHeight) 4.dp else 6.dp
                                         )
                                     )
                                 }
@@ -221,7 +235,7 @@ fun KanjiInspector(
 
                         val density = LocalDensity.current
                         val readingLineHeightDp = with(density) { readingLineHeight.toDp() }
-                        val headerHeight = if (isTabletWidth && !isCompactHeight) 32.dp else 24.dp
+                        val headerHeight = if (isTabletWidth && !isCompactHeight) 40.dp else 28.dp
                         val topSpacerHeight = ((sealHeight / 2) - readingLineHeightDp - (readingSpacing / 2) - headerHeight).coerceAtLeast(if (isCompactHeight) 2.dp else 6.dp)
 
                         Spacer(modifier = Modifier.height(topSpacerHeight))
