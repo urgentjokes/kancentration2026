@@ -168,7 +168,7 @@ fun StatusBannerSlot(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     Text(
-                                        text = "⚠️ Almost! (惜しい！)",
+                                        text = "⚠️ Almost!",
                                         fontSize = bannerTextSize,
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF92400E)
