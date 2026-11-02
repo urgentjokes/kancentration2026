@@ -7,6 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -48,11 +50,19 @@ fun StatusBannerSlot(
     onDismissTwinTrap: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val isTablet = configuration.screenWidthDp >= 600 || configuration.smallestScreenWidthDp >= 600
+
+    val bannerHeight = if (isTablet) 108.dp else 92.dp
+    val bannerTextSize = if (isTablet) 28.sp else 24.sp
+    val buttonHeight = if (isTablet) 42.dp else 36.dp
+    val buttonTextSize = if (isTablet) 20.sp else 18.sp
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(46.dp)
-            .padding(horizontal = 12.dp, vertical = 2.dp),
+            .height(bannerHeight)
+            .padding(horizontal = if (isTablet) 16.dp else 12.dp, vertical = 2.dp),
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -64,43 +74,61 @@ fun StatusBannerSlot(
                 val buttonColor = if (isTimeUp) Color(0xFFC62828) else TakeBamboo
 
                 Surface(
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(if (isTablet) 14.dp else 12.dp),
                     color = containerColor,
                     border = BorderStroke(1.5.dp, borderColor),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(horizontal = if (isTablet) 16.dp else 12.dp, vertical = if (isTablet) 8.dp else 6.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = if (isTimeUp) "🛑 ${uiState.gameOverMessage}" else "🎉 Victory! ${uiState.gameOverMessage.ifEmpty { "Matches: ${uiState.totalMatches}/${uiState.totalPairs}" }}",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Button(
-                            onClick = onRestart,
-                            colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
-                            shape = RoundedCornerShape(16.dp),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                            modifier = Modifier.height(30.dp)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Play Again 🔄",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
+                                text = if (isTimeUp) "🛑 ${uiState.gameOverMessage}" else "🎉 Victory! ${uiState.gameOverMessage.ifEmpty { "Game Complete!" }}",
+                                fontSize = bannerTextSize,
+                                fontWeight = FontWeight.Bold,
+                                color = textColor,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
                             )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Button(
+                                onClick = onRestart,
+                                colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                                shape = RoundedCornerShape(16.dp),
+                                contentPadding = PaddingValues(horizontal = if (isTablet) 16.dp else 12.dp, vertical = 4.dp),
+                                modifier = Modifier.height(buttonHeight)
+                            ) {
+                                Text(
+                                    text = "Play Again 🔄",
+                                    fontSize = buttonTextSize,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
+
+                        Text(
+                            text = if (uiState.isTwoPlayer) {
+                                "Player 1: ${uiState.player1Score} matches • Player 2: ${uiState.player2Score} matches"
+                            } else {
+                                "Total Matches: ${uiState.totalMatches}/${uiState.totalPairs} • Total Moves: ${uiState.totalMoves}"
+                            },
+                            fontSize = if (isTablet) 22.sp else 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = textColor.copy(alpha = 0.85f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
             }
@@ -112,7 +140,7 @@ fun StatusBannerSlot(
                     exit = fadeOut()
                 ) {
                     Surface(
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(if (isTablet) 14.dp else 12.dp),
                         color = AmberTwinTrapSurface,
                         border = BorderStroke(1.5.dp, AmberTwinTrap),
                         modifier = Modifier
@@ -123,28 +151,58 @@ fun StatusBannerSlot(
                                 onClick = onDismissTwinTrap
                             )
                     ) {
-                        Row(
+                        Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .padding(horizontal = if (isTablet) 16.dp else 14.dp, vertical = if (isTablet) 8.dp else 6.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
                         ) {
+                            // Top Row: Tag/Headline and Dismiss Icon
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        text = "⚠️ Almost! (惜しい！)",
+                                        fontSize = bannerTextSize,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF92400E)
+                                    )
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = AmberTwinTrap.copy(alpha = 0.2f)
+                                    ) {
+                                        Text(
+                                            text = "Kanji Trap",
+                                            fontSize = if (isTablet) 18.sp else 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF92400E),
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
+
+                                Text(
+                                    text = "✕",
+                                    fontSize = if (isTablet) 26.sp else 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF92400E).copy(alpha = 0.7f)
+                                )
+                            }
+
+                            // Bottom Row: The actual twin trap clue text
                             Text(
-                                text = "⚠️  Almost! ${uiState.activeTwinTrapBanner}",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF92400E),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f, fill = false)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "✕",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF92400E).copy(alpha = 0.7f)
+                                text = uiState.activeTwinTrapBanner,
+                                fontSize = if (isTablet) 24.sp else 20.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF78350F),
+                                lineHeight = if (isTablet) 28.sp else 24.sp,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }

@@ -58,11 +58,18 @@ fun BoardGrid(
 
     BoxWithConstraints(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopStart
+        contentAlignment = Alignment.Center
     ) {
         val totalSpacing = spacing * (size - 1)
         val boardSize = minOf(maxWidth, maxHeight).coerceAtLeast(0.dp)
         val cardSize = if (size > 0) ((boardSize - totalSpacing) / size).coerceAtLeast(0.dp) else 0.dp
+
+        // Corner radius scaling smoothly with card size on larger tablet resolutions
+        val effectiveCornerRadius = if (cardSize > 80.dp) {
+            (cardSize * 0.12f).coerceIn(cornerRadius, 20.dp)
+        } else {
+            cornerRadius
+        }
 
         // Font scaling rules:
         // When adaptive grid density changes text sizes (38sp, 25sp, 17sp),
@@ -78,13 +85,13 @@ fun BoardGrid(
 
         Column(
             modifier = Modifier.size(boardSize),
-            verticalArrangement = Arrangement.spacedBy(spacing, Alignment.Top),
-            horizontalAlignment = Alignment.Start
+            verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             for (row in 0 until size) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.Start),
+                    horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     for (col in 0 until size) {
@@ -99,7 +106,7 @@ fun BoardGrid(
                                 tileColor = tileColor,
                                 kanjiColor = kanjiColor,
                                 useSerifFont = useSerifFont,
-                                cornerRadius = cornerRadius
+                                cornerRadius = effectiveCornerRadius
                             )
                         } else {
                             Box(modifier = Modifier.size(cardSize))

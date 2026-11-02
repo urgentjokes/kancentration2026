@@ -11,7 +11,8 @@
         android:theme="@style/Theme.Kancentration">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="fullUser"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

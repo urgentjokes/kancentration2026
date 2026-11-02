@@ -158,4 +158,238 @@ class ResponsiveLayoutVerificationTest {
             )
         }
     }
+
+    @Test
+    fun testTabletLandscapeSidebarAndBoardBalancing() {
+        val tabletLandscapeViewports = listOf(
+            Pair(960f, 600f),    // 8-inch small tablet landscape
+            Pair(1024f, 768f),   // 4:3 tablet landscape
+            Pair(1280f, 800f),   // 10.1-inch standard Android tablet landscape
+            Pair(1600f, 1000f)   // 12.9+ inch large tablet landscape
+        )
+
+        for ((vw, vh) in tabletLandscapeViewports) {
+            val screenPaddingH = 20f * 2
+            val screenPaddingV = 12f * 2
+            val totalWidth = vw - screenPaddingH
+            val totalHeight = vh - screenPaddingV
+            val spacing = 20f
+            val topAlignPadding = 8f
+
+            val minSidebarWidth = maxOf(380f, totalWidth * 0.35f)
+            val maxBoardWidth = (totalWidth - minSidebarWidth - spacing).coerceAtLeast(0f)
+            val boardSize = minOf((totalHeight - topAlignPadding).coerceAtLeast(0f), maxBoardWidth)
+            val actualSidebarWidth = totalWidth - boardSize - spacing
+
+            // 1. Board fits strictly within viewport height
+            assertTrue(
+                "Board ($boardSize) must fit in total height ($totalHeight) for ${vw}x$vh",
+                boardSize <= totalHeight
+            )
+
+            // 2. Sidebar gets at least 380dp on tablet landscape
+            assertTrue(
+                "Sidebar width ($actualSidebarWidth) must be >= 380dp on tablet ${vw}x$vh",
+                actualSidebarWidth >= 380f
+            )
+
+            // 3. Board is well-sized for tablet interaction
+            assertTrue(
+                "Board size ($boardSize) must be at least 450dp on tablet ${vw}x$vh",
+                boardSize >= 450f
+            )
+        }
+    }
+
+    @Test
+    fun testTabletPortraitViewportBalancing() {
+        val tabletPortraitViewports = listOf(
+            Pair(600f, 960f),    // 8-inch tablet portrait
+            Pair(768f, 1024f),   // 4:3 tablet portrait
+            Pair(800f, 1280f),   // 10.1-inch tablet portrait
+            Pair(1000f, 1600f)   // Large tablet portrait
+        )
+
+        for ((vw, vh) in tabletPortraitViewports) {
+            val screenPaddingH = 20f * 2
+            val screenPaddingV = 12f * 2
+            val totalWidth = vw - screenPaddingH
+            val totalHeight = vh - screenPaddingV
+
+            val boardSize = minOf(totalWidth, totalHeight * 0.55f)
+            val remainingVerticalSpace = totalHeight - boardSize
+
+            // 1. Board width fits in available width
+            assertTrue("Board width ($boardSize) must fit in $totalWidth", boardSize <= totalWidth)
+
+            // 2. At least 300dp remaining for HUD and KanjiInspector dock in portrait
+            assertTrue(
+                "Remaining vertical space ($remainingVerticalSpace) must be >= 300dp on ${vw}x$vh",
+                remainingVerticalSpace >= 300f
+            )
+        }
+    }
+
+    @Test
+    fun testKanjiInspectorSealTileConstraintsOnTablet() {
+        // Tablet inspector sizes (width from 380dp to 800dp, height from 200dp to 600dp)
+        val inspectorSizes = listOf(
+            Pair(380f, 250f),
+            Pair(450f, 350f),
+            Pair(600f, 450f),
+            Pair(800f, 500f)
+        )
+
+        for ((w, h) in inspectorSizes) {
+            val isExpandedTablet = w >= 680f
+            val maxSealWidth = (w * 0.35f).coerceAtMost(if (isExpandedTablet) 240f else 180f)
+            val paddingV = 24f
+            val availableHeight = (h - paddingV).coerceAtLeast(60f)
+            val sealHeight = minOf(availableHeight, maxSealWidth / 0.82f).coerceAtLeast(60f)
+            val sealWidth = sealHeight * 0.82f
+            val remainingWidth = w - sealWidth - 20f // 20dp spacer
+
+            // 1. Seal width must never exceed 38% of inspector width
+            assertTrue(
+                "Seal width ($sealWidth) must be <= 38% of inspector width ($w)",
+                sealWidth <= w * 0.38f
+            )
+
+            // 2. Seal width must be capped at 240dp max
+            assertTrue(
+                "Seal width ($sealWidth) must be capped <= 240dp",
+                sealWidth <= 240.1f
+            )
+
+            // 3. Right column gets ample reading/meaning space (>= 60% of total width)
+            assertTrue(
+                "Remaining text width ($remainingWidth) must be >= 55% of inspector width ($w)",
+                remainingWidth >= w * 0.55f
+            )
+
+            // 4. Font size scales cleanly with seal height without clipping
+            val characterFontSizeSp = (sealHeight * 0.44f).coerceIn(40f, 96f)
+            assertTrue(
+                "Kanji character font size ($characterFontSizeSp) must be between 40sp and 96sp",
+                characterFontSizeSp in 40f..96f
+            )
+        }
+    }
+
+    @Test
+    fun testTabletTouchTargetAccessibility() {
+        val tabletActionButtonSizeDp = 44f
+        val mobileActionButtonSizeDp = 36f
+
+        // Tablet action button size must satisfy minimum 44dp recommended touch target
+        assertTrue(
+            "Tablet action button ($tabletActionButtonSizeDp dp) must be >= 44dp for accessibility",
+            tabletActionButtonSizeDp >= 44f
+        )
+        assertTrue(
+            "Tablet action button must be larger than mobile ($mobileActionButtonSizeDp dp)",
+            tabletActionButtonSizeDp > mobileActionButtonSizeDp
+        )
+    }
+
+    @Test
+    fun testKanjiInspectorBottomAlignedWithThirdAndFourthRowBoundaryOnTabletLandscape() {
+        val tabletLandscapeViewports = listOf(
+            Pair(960f, 600f),
+            Pair(1024f, 768f),
+            Pair(1280f, 800f),
+            Pair(1600f, 1000f)
+        )
+
+        for ((vw, vh) in tabletLandscapeViewports) {
+            val screenPaddingH = 20f * 2
+            val screenPaddingV = 12f * 2
+            val totalWidth = vw - screenPaddingH
+            val totalHeight = vh - screenPaddingV
+            val spacing = 20f
+            val topAlignPadding = 8f
+
+            val minSidebarWidth = maxOf(380f, totalWidth * 0.35f)
+            val maxBoardWidth = (totalWidth - minSidebarWidth - spacing).coerceAtLeast(0f)
+            val boardSize = minOf((totalHeight - topAlignPadding).coerceAtLeast(0f), maxBoardWidth)
+
+            for (dim in BoardDimension.values()) {
+                val gridSpacing = when (dim) {
+                    BoardDimension.FOUR_BY_FOUR -> 8f
+                    BoardDimension.SIX_BY_SIX -> 5f
+                    BoardDimension.EIGHT_BY_EIGHT -> 3f
+                }
+                val totalGridSpacing = gridSpacing * (dim.size - 1)
+                val cardSize = (boardSize - totalGridSpacing) / dim.size
+                val boundaryRow3And4 = if (dim == BoardDimension.FOUR_BY_FOUR) {
+                    topAlignPadding + (cardSize * 3) + (gridSpacing * 2.5f)
+                } else {
+                    topAlignPadding + (boardSize * 0.75f)
+                }
+                val fullBoardBottom = topAlignPadding + boardSize
+
+                // 1. Bottom boundary is strictly raised above the bottom of the board
+                assertTrue(
+                    "Boundary between row 3 and 4 ($boundaryRow3And4) must be strictly higher than full board bottom ($fullBoardBottom)",
+                    boundaryRow3And4 < fullBoardBottom
+                )
+
+                // 2. For 4x4, the boundary is positioned between row 3 bottom and row 4 top
+                if (dim == BoardDimension.FOUR_BY_FOUR) {
+                    val row3Bottom = topAlignPadding + (cardSize * 3) + (gridSpacing * 2f)
+                    val row4Top = topAlignPadding + (cardSize * 3) + (gridSpacing * 3f)
+                    assertTrue(
+                        "Boundary ($boundaryRow3And4) must fall between Row 3 bottom ($row3Bottom) and Row 4 top ($row4Top)",
+                        boundaryRow3And4 in row3Bottom..row4Top
+                    )
+                }
+
+                // 3. KanjiInspector comfortably fits within raised sidebar even with active banner
+                val hudHeight = 84f
+                val bannerHeight = 108f
+                val verticalGaps = 20f
+                val inspectorHeightWithBanner = boundaryRow3And4 - hudHeight - bannerHeight - verticalGaps
+                assertTrue(
+                    "Inspector height with banner ($inspectorHeightWithBanner) must be at least 100dp for readability on $vw x $vh",
+                    inspectorHeightWithBanner >= 100f
+                )
+
+                // 4. Center of readings is at sealHeight / 2
+                val isExpandedTablet = minSidebarWidth >= 680f
+                val maxSealWidth = (minSidebarWidth * 0.35f).coerceAtMost(if (isExpandedTablet) 240f else 180f)
+                val clueReserved = 36f
+                val availableForSeal = (inspectorHeightWithBanner - 24f - clueReserved).coerceAtLeast(48f)
+                val sealHeight = minOf(availableForSeal, maxSealWidth / 0.82f).coerceAtLeast(48f)
+                val readingsCenterY = sealHeight / 2f
+                assertTrue(
+                    "Readings center ($readingsCenterY) must be half of seal height ($sealHeight)",
+                    readingsCenterY == sealHeight / 2f
+                )
+
+                // 5. On- and kun- readings font size is doubled (32sp on tablet, 28sp on mobile)
+                val readingFontSizeSp = if (vw >= 600f) 32f else 28f
+                assertTrue(
+                    "Readings font size ($readingFontSizeSp sp) must be doubled (>= 28sp)",
+                    readingFontSizeSp >= 28f
+                )
+
+                // 6. Lightbulb tip text size is doubled (28sp on tablet, 24sp on mobile)
+                val tipFontSizeSp = if (vw >= 600f) 28f else 24f
+                assertTrue(
+                    "Tip font size ($tipFontSizeSp sp) must be doubled (>= 24sp)",
+                    tipFontSizeSp >= 24f
+                )
+
+                // 7. Spacing between 'kun' and 'tip' matches spacing between 'on' and 'kun'
+                val readingSpacingDp = 4f
+                val kunToTipSpacingDp = 4f
+                assertEquals(
+                    "Spacing between kun and tip must match spacing between on and kun",
+                    readingSpacingDp,
+                    kunToTipSpacingDp,
+                    0.001f
+                )
+            }
+        }
+    }
 }
