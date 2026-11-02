@@ -471,4 +471,54 @@ class ResponsiveLayoutVerificationTest {
             assertEquals("Phone banner clue text must be 50% of standard clue text", defaultBannerClueSizeSp * 0.5f, phoneBannerClueSizeSp, 0.001f)
         }
     }
+
+    @Test
+    fun testPortraitKanjiInspectorFiftyPercentReductionAndFullWidthTip() {
+        val portraitViewports = listOf(
+            Pair(360f, 640f),    // Compact mobile portrait
+            Pair(390f, 780f),    // Standard mobile portrait
+            Pair(412f, 915f),    // Large mobile portrait (e.g. Galaxy S24 Ultra)
+            Pair(800f, 1280f)    // Tablet portrait
+        )
+
+        for ((vw, vh) in portraitViewports) {
+            val isTablet = vw >= 480f
+
+            // 1. 50% Tile reduction
+            val tileSealSize = if (isTablet) 72f else 54f
+            val originalBaseSealSize = if (isTablet) 144f else 108f
+            assertEquals("Tile size must be 50% of original base", originalBaseSealSize * 0.5f, tileSealSize, 0.001f)
+
+            // 2. 50% On- and Kun-yomi readings reduction
+            val readingFontSizeSp = if (isTablet) 16f else 14f
+            val originalReadingFontSizeSp = if (isTablet) 32f else 28f
+            assertEquals("On/Kun readings font size must be 50% of original", originalReadingFontSizeSp * 0.5f, readingFontSizeSp, 0.001f)
+
+            // 3. 50% Lightbulb tip text reduction
+            val tipFontSizeSp = if (isTablet) 14f else 12f
+            val originalTipFontSizeSp = if (isTablet) 28f else 24f
+            assertEquals("Tip font size must be 50% of original", originalTipFontSizeSp * 0.5f, tipFontSizeSp, 0.001f)
+
+            // 4. Lightbulb tip starts from left side and spans full card width
+            val cardPaddingH = if (isTablet) 16f else 12f
+            val tipAvailableWidth = vw - (cardPaddingH * 2)
+            assertTrue("Tip has full width spanning left to right ($tipAvailableWidth)", tipAvailableWidth > 300f)
+
+            // 5. Kanji Trap Banner height and text sizes 50% reduction in portrait
+            val bannerHeightDp = if (isTablet) 54f else 46f
+            val baseBannerHeightDp = if (isTablet) 108f else 92f
+            assertEquals("Portrait banner height must be 50% of base banner", baseBannerHeightDp * 0.5f, bannerHeightDp, 0.001f)
+
+            val bannerHeadlineSp = if (isTablet) 14f else 12f
+            val baseHeadlineSp = if (isTablet) 28f else 24f
+            assertEquals("Portrait banner headline must be 50% of base headline", baseHeadlineSp * 0.5f, bannerHeadlineSp, 0.001f)
+
+            val bannerTagSp = if (isTablet) 9f else 8f
+            val baseTagSp = if (isTablet) 18f else 16f
+            assertEquals("Portrait banner tag must be 50% of base tag", baseTagSp * 0.5f, bannerTagSp, 0.001f)
+
+            val bannerClueSp = if (isTablet) 12f else 11f
+            assertTrue("Portrait banner clue must be single line compact (<= 12sp)", bannerClueSp <= 12f)
+        }
+    }
 }

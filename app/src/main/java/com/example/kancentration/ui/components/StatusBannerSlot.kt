@@ -57,11 +57,13 @@ fun StatusBannerSlot(
     val phoneLandscape = isPhoneLandscape || (!isTablet && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
 
     val bannerHeight = when {
+        uiState.activeTwinTrapBanner != null -> if (isTablet) 54.dp else 46.dp
         phoneLandscape -> 46.dp
         isTablet -> 108.dp
         else -> 92.dp
     }
     val bannerTextSize = when {
+        uiState.activeTwinTrapBanner != null -> if (isTablet) 14.sp else 12.sp
         phoneLandscape -> 12.sp
         isTablet -> 28.sp
         else -> 24.sp
@@ -162,7 +164,7 @@ fun StatusBannerSlot(
                     exit = fadeOut()
                 ) {
                     Surface(
-                        shape = RoundedCornerShape(if (phoneLandscape) 8.dp else if (isTablet) 14.dp else 12.dp),
+                        shape = RoundedCornerShape(if (isTablet) 10.dp else 8.dp),
                         color = AmberTwinTrapSurface,
                         border = BorderStroke(1.5.dp, AmberTwinTrap),
                         modifier = Modifier
@@ -173,119 +175,54 @@ fun StatusBannerSlot(
                                 onClick = onDismissTwinTrap
                             )
                     ) {
-                        if (phoneLandscape) {
-                            // Phone landscape: 50% reduced height single-row banner ensuring all elements fit perfectly
+                        // 50% reduced height single-row banner ensuring all elements fit on a single line
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = if (isTablet) 14.dp else 10.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 10.dp, vertical = 4.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.weight(1f, fill = false)
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    modifier = Modifier.weight(1f, fill = false)
-                                ) {
-                                    Text(
-                                        text = "⚠️ Almost!",
-                                        fontSize = bannerTextSize,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF92400E)
-                                    )
-                                    Surface(
-                                        shape = RoundedCornerShape(4.dp),
-                                        color = AmberTwinTrap.copy(alpha = 0.2f)
-                                    ) {
-                                        Text(
-                                            text = "Kanji Trap",
-                                            fontSize = 8.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF92400E),
-                                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
-                                        )
-                                    }
-                                    Text(
-                                        text = uiState.activeTwinTrapBanner,
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF78350F),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-
                                 Text(
-                                    text = "✕",
-                                    fontSize = 12.sp,
+                                    text = "⚠️ Almost!",
+                                    fontSize = bannerTextSize,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF92400E).copy(alpha = 0.7f),
-                                    modifier = Modifier.padding(start = 6.dp)
+                                    color = Color(0xFF92400E)
                                 )
-                            }
-                        } else {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(
-                                        horizontal = if (isTablet) 16.dp else 14.dp,
-                                        vertical = if (isTablet) 8.dp else 6.dp
-                                    ),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                // Top Row: Tag/Headline and Dismiss Icon
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                Surface(
+                                    shape = RoundedCornerShape(4.dp),
+                                    color = AmberTwinTrap.copy(alpha = 0.2f)
                                 ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        Text(
-                                            text = "⚠️ Almost!",
-                                            fontSize = bannerTextSize,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF92400E)
-                                        )
-                                        Surface(
-                                            shape = RoundedCornerShape(6.dp),
-                                            color = AmberTwinTrap.copy(alpha = 0.2f)
-                                        ) {
-                                            Text(
-                                                text = "Kanji Trap",
-                                                fontSize = if (isTablet) 18.sp else 16.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = Color(0xFF92400E),
-                                                modifier = Modifier.padding(
-                                                    horizontal = 8.dp,
-                                                    vertical = 2.dp
-                                                )
-                                            )
-                                        }
-                                    }
-
                                     Text(
-                                        text = "✕",
-                                        fontSize = if (isTablet) 26.sp else 22.sp,
+                                        text = "Kanji Trap",
+                                        fontSize = if (isTablet) 9.sp else 8.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF92400E).copy(alpha = 0.7f)
+                                        color = Color(0xFF92400E),
+                                        modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
                                     )
                                 }
-
-                                // Bottom Row: The actual twin trap clue text
                                 Text(
                                     text = uiState.activeTwinTrapBanner,
-                                    fontSize = if (isTablet) 24.sp else 20.sp,
-                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = if (isTablet) 12.sp else 11.sp,
+                                    fontWeight = FontWeight.Bold,
                                     color = Color(0xFF78350F),
-                                    lineHeight = if (isTablet) 28.sp else 24.sp,
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.fillMaxWidth()
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
+
+                            Text(
+                                text = "✕",
+                                fontSize = if (isTablet) 14.sp else 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF92400E).copy(alpha = 0.7f),
+                                modifier = Modifier.padding(start = 6.dp)
+                            )
                         }
                     }
                 }
