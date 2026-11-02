@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.PlatformTextStyle
@@ -59,6 +60,7 @@ fun KanjiInspector(
     onWiktionaryClick: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -70,7 +72,7 @@ fun KanjiInspector(
         modifier = modifier.fillMaxWidth()
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val isTabletWidth = maxWidth >= 480.dp
+            val isTablet = maxWidth >= 600.dp || configuration.smallestScreenWidthDp >= 600
             val isExpandedTablet = maxWidth >= 680.dp
             val inspectorHeight = maxHeight
             val inspectorWidth = maxWidth
@@ -80,42 +82,42 @@ fun KanjiInspector(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(if (isTabletWidth) 24.dp else 16.dp),
+                        .padding(if (isTablet) 24.dp else 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "🎴 Flip cards to inspect Kanji readings, meanings & Twin-Trap clues",
-                        style = if (isTabletWidth) MaterialTheme.typography.titleMedium else if (isPhoneLandscape) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyLarge,
+                        style = if (isTablet) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
                         textAlign = TextAlign.Center
                     )
                 }
-            } else {
-                // Unified Responsive Inspector Layout (Phone Landscape, Phone Portrait, Tablet):
-                // - 50% reduced Kanji tile size (54dp phone, 72dp tablet)
-                // - 50% reduced on- and kun-yomi readings (14sp phone, 16sp tablet)
-                // - 50% reduced lightbulb text (12sp phone, 14sp tablet)
+            } else if (!isTablet) {
+                // Phone Layout (Portrait and Landscape):
+                // - 50% reduced Kanji tile size (54dp)
+                // - 50% reduced on- and kun-yomi readings (14sp)
+                // - 50% reduced lightbulb text (12sp)
                 // - Lightbulb (tip) element aligned with the left boundary of kanji-inspector element,
                 //   with text flowing all the way to the right boundary, and wrapping.
                 // - Wiktionary ↗ link positioned beneath the kanji preview tile in primary theme color.
                 val isCompactHeight = inspectorHeight < 140.dp
-                val paddingH = if (isTabletWidth) 16.dp else 12.dp
-                val paddingV = if (isCompactHeight) 6.dp else if (isTabletWidth) 12.dp else 8.dp
+                val paddingH = 12.dp
+                val paddingV = if (isCompactHeight) 6.dp else 8.dp
 
                 // 50% Tile Dimensions
-                val sealSize = if (isTabletWidth) 72.dp else 54.dp
-                val characterFontSize = if (isTabletWidth) 40.sp else 30.sp
-                val wiktionaryLabelSize = if (isTabletWidth) 11.sp else 10.sp
+                val phoneSealSize = 54.dp
+                val phoneCharacterFontSize = 30.sp
+                val phoneWiktionaryLabelSize = 10.sp
 
                 // 50% Typography Sizes
-                val meaningFontSize = if (isTabletWidth) 16.sp else 13.sp
-                val meaningLineHeight = if (isTabletWidth) 20.sp else 16.sp
-                val kakiJunFontSize = if (isTabletWidth) 13.sp else 11.sp
-                val readingFontSize = if (isTabletWidth) 16.sp else 14.sp
-                val readingLineHeight = if (isTabletWidth) 20.sp else 18.sp
-                val tipFontSize = if (isTabletWidth) 14.sp else 12.sp
-                val tipLineHeight = if (isTabletWidth) 18.sp else 16.sp
+                val phoneMeaningFontSize = 13.sp
+                val phoneMeaningLineHeight = 16.sp
+                val phoneKakiJunFontSize = 11.sp
+                val phoneReadingFontSize = 14.sp
+                val phoneReadingLineHeight = 18.sp
+                val phoneTipFontSize = 12.sp
+                val phoneTipLineHeight = 16.sp
 
                 val onReadingsFormatted = if (showRomaji) {
                     kanji.onReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
@@ -127,8 +129,6 @@ fun KanjiInspector(
                 } else {
                     kanji.kunReadings
                 }
-
-                val readingSpacing = if (isTabletWidth) 4.dp else 2.dp
 
                 Column(
                     modifier = Modifier
@@ -166,11 +166,11 @@ fun KanjiInspector(
                                 }
                         ) {
                             Surface(
-                                shape = RoundedCornerShape(if (isTabletWidth) 10.dp else 8.dp),
+                                shape = RoundedCornerShape(8.dp),
                                 color = WashiPaper,
                                 border = BorderStroke(1.5.dp, AizomeIndigo),
                                 shadowElevation = 2.dp,
-                                modifier = Modifier.size(sealSize)
+                                modifier = Modifier.size(phoneSealSize)
                             ) {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
@@ -178,7 +178,7 @@ fun KanjiInspector(
                                 ) {
                                     Text(
                                         text = kanji.character,
-                                        fontSize = characterFontSize,
+                                        fontSize = phoneCharacterFontSize,
                                         fontWeight = FontWeight.SemiBold,
                                         fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
                                         color = SumiCharcoal,
@@ -186,7 +186,7 @@ fun KanjiInspector(
                                         maxLines = 1,
                                         softWrap = false,
                                         style = LocalTextStyle.current.copy(
-                                            lineHeight = characterFontSize,
+                                            lineHeight = phoneCharacterFontSize,
                                             textAlign = TextAlign.Center,
                                             platformStyle = PlatformTextStyle(
                                                 includeFontPadding = false
@@ -200,7 +200,7 @@ fun KanjiInspector(
 
                             Text(
                                 text = "Wiktionary ↗",
-                                fontSize = wiktionaryLabelSize,
+                                fontSize = phoneWiktionaryLabelSize,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.primary,
                                 maxLines = 1,
@@ -208,12 +208,12 @@ fun KanjiInspector(
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(if (isTabletWidth) 16.dp else 12.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
 
                         // Right Column: English Meanings & Stroke Count, on-yomi, kun-yomi
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(readingSpacing)
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -222,8 +222,8 @@ fun KanjiInspector(
                             ) {
                                 Text(
                                     text = kanji.meanings.joinToString(", ").ifEmpty { "Kanji" },
-                                    fontSize = meaningFontSize,
-                                    lineHeight = meaningLineHeight,
+                                    fontSize = phoneMeaningFontSize,
+                                    lineHeight = phoneMeaningLineHeight,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     modifier = Modifier.weight(1f, fill = false)
@@ -238,18 +238,218 @@ fun KanjiInspector(
                                     ) {
                                         Text(
                                             text = "${kanji.strokeCount}画",
-                                            fontSize = kakiJunFontSize,
+                                            fontSize = phoneKakiJunFontSize,
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            modifier = Modifier.padding(
-                                                horizontal = if (isTabletWidth) 10.dp else 8.dp,
-                                                vertical = 2.dp
-                                            )
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                                         )
                                     }
                                 }
                             }
 
+                            if (onReadingsFormatted.isNotEmpty()) {
+                                Text(
+                                    text = "on: ${onReadingsFormatted.joinToString(", ")}",
+                                    fontSize = phoneReadingFontSize,
+                                    lineHeight = phoneReadingLineHeight,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            if (kunReadingsFormatted.isNotEmpty()) {
+                                Text(
+                                    text = "kun: ${kunReadingsFormatted.joinToString(", ")}",
+                                    fontSize = phoneReadingFontSize,
+                                    lineHeight = phoneReadingLineHeight,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+
+                    if (!isPhoneLandscape && !isCompactHeight) {
+                        Spacer(modifier = Modifier.height(2.dp))
+                    }
+
+                    // Bottom Section: Lightbulb (tip) element aligned with the left boundary of the kanji-inspector element,
+                    // with text flowing all the way to the right boundary, and wrapping.
+                    if (kanji.distinctionTip.isNotEmpty()) {
+                        Text(
+                            text = "💡 ${kanji.distinctionTip}",
+                            fontSize = phoneTipFontSize,
+                            lineHeight = phoneTipLineHeight,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
+                            fontSize = phoneTipFontSize,
+                            lineHeight = phoneTipLineHeight,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            } else {
+                // Tablet Layout: Original full-size tablet layout exactly as before
+                val isCompactHeight = inspectorHeight < 140.dp
+                val paddingH = 18.dp
+                val paddingV = if (isCompactHeight) 6.dp else 12.dp
+                val availableHeight = (inspectorHeight - paddingV * 2).coerceAtLeast(48.dp)
+                val maxSealWidth = (inspectorWidth * 0.35f).coerceAtMost(if (isExpandedTablet) 240.dp else 180.dp)
+                val clueReservedHeight = if (isCompactHeight) 24.dp else 36.dp
+                val availableForSeal = (availableHeight - clueReservedHeight).coerceAtLeast(48.dp)
+                val sealHeight = minOf(availableForSeal, maxSealWidth / 0.82f).coerceAtLeast(48.dp)
+                val sealWidth = sealHeight * 0.82f
+                val characterFontSize = (sealHeight.value * 0.44f).coerceIn(34f, 96f).sp
+                val wiktionaryLabelSize = (sealHeight.value * 0.08f).coerceIn(9f, 14f).sp
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = paddingH, vertical = paddingV),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    // Left Tile (Kanji Box): Matches actual game tile, Tappable Wiktionary Link
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = WashiPaper,
+                        border = BorderStroke(2.dp, AizomeIndigo),
+                        shadowElevation = 4.dp,
+                        modifier = Modifier
+                            .size(width = sealWidth, height = sealHeight)
+                            .clip(RoundedCornerShape(14.dp))
+                            .clickable(
+                                role = androidx.compose.ui.semantics.Role.Button,
+                                onClickLabel = "Open Wiktionary entry in browser"
+                            ) {
+                                onWiktionaryClick?.invoke()
+                                try {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kanji.wiktionaryUrl)).apply {
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = kanji.character,
+                                fontSize = characterFontSize,
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
+                                color = SumiCharcoal,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                softWrap = false,
+                                style = LocalTextStyle.current.copy(
+                                    lineHeight = characterFontSize,
+                                    textAlign = TextAlign.Center,
+                                    platformStyle = PlatformTextStyle(
+                                        includeFontPadding = false
+                                    )
+                                )
+                            )
+
+                            Text(
+                                text = "Wiktionary ↗",
+                                fontSize = wiktionaryLabelSize,
+                                fontWeight = FontWeight.SemiBold,
+                                color = AizomeIndigo,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = if (isCompactHeight) 2.dp else 4.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(if (isCompactHeight) 10.dp else 18.dp))
+
+                    // Right Information Column
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        // English Definition and Stroke Count Header (Top Aligned with Kanji Box)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = kanji.meanings.joinToString(", ").ifEmpty { "Kanji" },
+                                style = if (!isCompactHeight) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+
+                            if (showStrokeCount) {
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                                ) {
+                                    Text(
+                                        text = "${kanji.strokeCount}画",
+                                        fontSize = 26.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = if (isCompactHeight) 4.dp else 6.dp
+                                        )
+                                    )
+                                }
+                            }
+                        }
+
+                        // On-yomi, Kun-yomi Readings, and Lightbulb Tip
+                        val onReadingsFormatted = if (showRomaji) {
+                            kanji.onReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
+                        } else {
+                            kanji.onReadings
+                        }
+                        val kunReadingsFormatted = if (showRomaji) {
+                            kanji.kunReadings.map { "$it (${KanaConverter.toRomaji(it)})" }
+                        } else {
+                            kanji.kunReadings
+                        }
+
+                        val readingSpacing = if (isCompactHeight) 2.dp else 4.dp
+                        val readingFontSize = if (!isCompactHeight) 32.sp else (sealHeight.value * 0.22f).coerceIn(18f, 24f).sp
+                        val readingLineHeight = if (!isCompactHeight) 38.sp else (readingFontSize.value * 1.2f).sp
+
+                        // Tip text size (28sp on tablet)
+                        val tipFontSize = if (!isCompactHeight) 28.sp else (sealHeight.value * 0.18f).coerceIn(16f, 22f).sp
+                        val tipLineHeight = if (!isCompactHeight) 34.sp else (tipFontSize.value * 1.2f).sp
+
+                        val density = LocalDensity.current
+                        val readingLineHeightDp = with(density) { readingLineHeight.toDp() }
+                        val headerHeight = if (!isCompactHeight) 40.dp else 28.dp
+                        val topSpacerHeight = ((sealHeight / 2) - readingLineHeightDp - (readingSpacing / 2) - headerHeight).coerceAtLeast(if (isCompactHeight) 2.dp else 6.dp)
+
+                        Spacer(modifier = Modifier.height(topSpacerHeight))
+
+                        // Column with identical spacing between on, kun, and lightbulb tip lines
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(readingSpacing)
+                        ) {
                             if (onReadingsFormatted.isNotEmpty()) {
                                 Text(
                                     text = "on: ${onReadingsFormatted.joinToString(", ")}",
@@ -270,31 +470,24 @@ fun KanjiInspector(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                            if (kanji.distinctionTip.isNotEmpty()) {
+                                Text(
+                                    text = "💡 ${kanji.distinctionTip}",
+                                    fontSize = tipFontSize,
+                                    lineHeight = tipLineHeight,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            } else {
+                                Text(
+                                    text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
+                                    fontSize = tipFontSize,
+                                    lineHeight = tipLineHeight,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
-                    }
-
-                    if (!isPhoneLandscape && !isCompactHeight) {
-                        Spacer(modifier = Modifier.height(2.dp))
-                    }
-
-                    // Bottom Section: Lightbulb (tip) element aligned with the left boundary of the kanji-inspector element,
-                    // with text flowing all the way to the right boundary, and wrapping.
-                    if (kanji.distinctionTip.isNotEmpty()) {
-                        Text(
-                            text = "💡 ${kanji.distinctionTip}",
-                            fontSize = tipFontSize,
-                            lineHeight = tipLineHeight,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        Text(
-                            text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
-                            fontSize = tipFontSize,
-                            lineHeight = tipLineHeight,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
                 }
             }
