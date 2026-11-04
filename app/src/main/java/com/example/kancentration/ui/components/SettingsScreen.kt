@@ -53,8 +53,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.BoardDimension
@@ -113,34 +116,29 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .height(44.dp)
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         OutlinedButton(
                             onClick = onDismiss,
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                            modifier = Modifier.height(34.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
                         ) {
                             Text("Cancel", style = MaterialTheme.typography.labelLarge)
                         }
 
-                        Column {
-                            Text(
-                                text = "Game Settings",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "Customization & Preferences (設定)",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Text(
+                            text = "Game Settings",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
 
                     Button(
@@ -162,6 +160,8 @@ fun SettingsScreen(
                                 )
                             )
                         },
+                        modifier = Modifier.height(34.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         )
@@ -192,104 +192,73 @@ fun SettingsScreen(
             ) {
             // 1. Kanji Card Pack Section
             SettingsSectionCard(
-                title = "Kanji Card Pack",
-                subtitle = "Choose the confusable card deck to play with"
+                title = "Kanji Card Pack"
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    val packs = listOf(
-                        Triple(
-                            "base_pack",
-                            "Base Confusables (20 Quads)",
-                            "The foundational 40 Jōyō Kanji pairs (80 cards) — Classic visual traps (日 vs 曰, 持 vs 特, 木 vs 本)"
-                        ),
-                        Triple(
-                            "grade_1",
-                            "1st-Grade Kanji (18 Quads)",
-                            "Japanese 1st-grade curriculum (36 characters, 72 cards) — Elementary lookalikes & Kana traps (八 vs ハ, 夕 vs タ, 林 vs 村)"
-                        ),
-                        Triple(
-                            "grade_2",
-                            "2nd-Grade Kanji (18 Quads)",
-                            "Japanese 2nd-grade curriculum (36 characters, 72 cards) — Piercing strokes & component nuance (牛 vs 午, 太 vs 大, 刀 vs 刃)"
-                        ),
-                        Triple(
-                            "grade_3",
-                            "3rd-Grade Kanji (18 Quads)",
-                            "Japanese 3rd-grade curriculum (36 characters, 72 cards) — Radical substitutions & subtle distinctions (持 vs 特, 待 vs 侍, 油 vs 酒)"
-                        ),
-                        Triple(
-                            "grade_4",
-                            "4th-Grade Kanji (18 Quads)",
-                            "Japanese 4th-grade curriculum (36 characters, 72 cards) — Relative stroke lengths & radical swaps (未 vs 末, 士 vs 土, 令 vs 今)"
-                        ),
-                        Triple(
-                            "grade_5",
-                            "5th-Grade Kanji (18 Quads)",
-                            "Japanese 5th-grade curriculum (36 characters, 72 cards) — Complex radical variations & prefix traps (技 vs 枝, 格 vs 略, 構 vs 講)"
-                        ),
-                        Triple(
-                            "grade_6",
-                            "6th-Grade Kanji (18 Quads)",
-                            "Japanese 6th-grade curriculum (36 characters, 72 cards) — Advanced lookalikes & structural subtleties (券 vs 巻, 吸 vs 呼, 宇 vs 宙)"
-                        )
-                    )
+                val leftPacks = listOf(
+                    "base_pack" to "Starter pack",
+                    "grade_1" to "1st grade",
+                    "grade_2" to "2nd grade",
+                    "grade_3" to "3rd grade"
+                )
+                val rightPacks = listOf(
+                    "grade_4" to "4th grade",
+                    "grade_5" to "5th grade",
+                    "grade_6" to "6th grade"
+                )
 
-                    packs.forEach { (packId, title, desc) ->
-                        val isSelected = selectedPackId == packId
-                        Surface(
-                            shape = RoundedCornerShape(10.dp),
-                            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                            border = BorderStroke(
-                                width = if (isSelected) 2.dp else 1.dp,
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(10.dp))
-                                .clickable { selectedPackId = packId }
+                Column {
+                    for (i in 0 until 4) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val left = leftPacks[i]
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                                    .weight(1f)
+                                    .clickable { selectedPackId = left.first },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 RadioButton(
-                                    selected = isSelected,
-                                    onClick = { selectedPackId = packId }
+                                    selected = selectedPackId == left.first,
+                                    onClick = { selectedPackId = left.first }
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = left.second,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+
+                            if (i < rightPacks.size) {
+                                val right = rightPacks[i]
+                                Row(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { selectedPackId = right.first },
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = selectedPackId == right.first,
+                                        onClick = { selectedPackId = right.first }
+                                    )
                                     Text(
-                                        text = title,
+                                        text = right.second,
                                         style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
-                                    Text(
-                                        text = desc,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
                                 }
+                            } else {
+                                Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "✨ More grade-level and thematic packs on the way!",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
                 }
             }
 
             // 2. Kanji Typography Section
             SettingsSectionCard(
-                title = "Kanji Typography",
-                subtitle = if (useSerifFont) "Mincho (明朝体) — Calligraphic brush strokes with flared serifs" else "Gothic (ゴシック) — Modern clean geometric sans-serif"
+                title = "Tile font"
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -300,9 +269,9 @@ fun SettingsScreen(
                         onClick = { useSerifFont = true },
                         label = {
                             Text(
-                                text = "Mincho (Serif)",
+                                text = "Serif (漢字)",
                                 fontFamily = FontFamily.Serif,
-                                fontWeight = if (useSerifFont) FontWeight.Bold else FontWeight.Normal
+                                fontWeight = FontWeight.Normal
                             )
                         },
                         colors = FilterChipDefaults.filterChipColors(
@@ -316,9 +285,9 @@ fun SettingsScreen(
                         onClick = { useSerifFont = false },
                         label = {
                             Text(
-                                text = "Gothic (Sans)",
+                                text = "Sans-serif (漢字)",
                                 fontFamily = FontFamily.SansSerif,
-                                fontWeight = if (!useSerifFont) FontWeight.Bold else FontWeight.Normal
+                                fontWeight = FontWeight.Normal
                             )
                         },
                         colors = FilterChipDefaults.filterChipColors(
@@ -347,12 +316,11 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Column {
-                            Text(text = "1-Player Solo (Relaxed)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                            Text(text = "Unconstrained stopwatch; study and match at your own pace", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(text = "1-Player (Relaxed)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                         }
                     }
 
-                    // Time Attack (now 2nd)
+                    // Time Attack 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -375,8 +343,7 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Column {
-                            Text(text = "Time-Attack (Countdown)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                            Text(text = "Race against the clock before time runs out", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(text = "1-Player (Time Attack)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                         }
                     }
 
@@ -398,7 +365,7 @@ fun SettingsScreen(
                         }
                     }
 
-                    // Two Player (now 3rd)
+                    // Two Player 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -413,24 +380,23 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Column {
-                            Text(text = "2-Player Pass & Play", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                            Text(text = "Take turns on a single device with competitive scoring", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(text = "2-Player (pass & play)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
             }
 
-            // 4. Failed Match Exposure Duration
+            // 4. Failed-Match Exposure Duration
             SettingsSectionCard(
-                title = "Failed Match Exposure Time",
-                subtitle = "How long mismatched cards stay exposed before returning to face-down position"
+                title = "Tile Face-up Time",
+                subtitle = "On a failed match attempt, how long until tiles go back to being face-down"
             ) {
                 val delayOptions = listOf(
-                    800L to "0.8s (Fast)",
+                    800L to "0.8s",
                     1150L to "1.2s (Standard)",
                     1500L to "1.5s",
-                    2000L to "2.0s (Relaxed)",
-                    3000L to "3.0s (Extended)"
+                    2000L to "2s",
+                    3000L to "3s"
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -450,7 +416,7 @@ fun SettingsScreen(
                                 label = {
                                     Text(
                                         text = label,
-                                        fontWeight = if (mismatchDelayMs == ms) FontWeight.Bold else FontWeight.Normal
+                                        fontWeight = FontWeight.Normal
                                     )
                                 },
                                 colors = FilterChipDefaults.filterChipColors(
@@ -464,7 +430,7 @@ fun SettingsScreen(
             }
 
             // 5. Learning & Display Preferences Section
-            SettingsSectionCard(title = "Learning & Display Preferences", subtitle = "Fine-tune feedback and on-screen details") {
+            SettingsSectionCard(title = "Display Preferences", subtitle = "Make it your own!") {
                 Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     // Confusable Twin Alerts
                     Row(
@@ -475,7 +441,7 @@ fun SettingsScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = "Almost!", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                             Text(
-                                text = "Highlight confusable near-miss pairs from the same quad in Amber",
+                                text = "Highlight near-misses",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -491,9 +457,9 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "Show Romaji Readings", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                            Text(text = "Romaji", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                             Text(
-                                text = "Display latin transliteration alongside Kana in the Kanji Inspector",
+                                text = "Show Latin-alphabet transliteration next to the kana in the Kanji Inspector",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -509,9 +475,9 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "Show Stroke Count (画数)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                            Text(text = "Stroke Count (画数)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                             Text(
-                                text = "Display stroke count badge in Inspector (turn off to give more room for definitions)",
+                                text = "Display stroke-count badge. Disabling it leaves more room for English definitions",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -527,9 +493,9 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "Extra Turn on Match", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                            Text(text = "Keep control of board (2-player mode)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                             Text(
-                                text = "Scoring a match allows flipping again without passing turn",
+                                text = "Go again after getting a match",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -547,7 +513,7 @@ fun SettingsScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = "Sound Effects", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                             Text(
-                                text = "Audio cues for tile flips, matches, and alerts",
+                                text = "For tile flips, matches, and alerts",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -637,7 +603,6 @@ fun SettingsScreen(
                     ColorPaletteRow(
                         colors = listOf(
                             0xFFE0B44CL to "Kinpaku Gold",
-                            0xFFD4AF37L to "Kincha Gold",
                             0xFFFFFFFFL to "Pure White",
                             0xFF18181BL to "Sumi Ink",
                             0xFFC83E2BL to "Vermilion",
