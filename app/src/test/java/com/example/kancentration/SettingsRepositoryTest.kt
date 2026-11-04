@@ -59,6 +59,7 @@ class SettingsRepositoryTest {
         assertEquals(0xFFD4AF37L, settings.kanjiColor)
         assertEquals(1150L, settings.mismatchDelayMs)
         assertTrue("showStrokeCount must be true by default", settings.showStrokeCount)
+        assertEquals("base_pack", settings.selectedPackId)
     }
 
     @Test
@@ -77,7 +78,8 @@ class SettingsRepositoryTest {
             tileColor = 0xFF1E293BL,
             kanjiColor = 0xFF4CAF50L,
             mismatchDelayMs = 2000L,
-            showStrokeCount = false
+            showStrokeCount = false,
+            selectedPackId = "grade_1"
         )
 
         repo.saveSettings(customSettings)
@@ -95,6 +97,7 @@ class SettingsRepositoryTest {
         assertEquals(0xFF4CAF50L, loaded.kanjiColor)
         assertEquals(2000L, loaded.mismatchDelayMs)
         assertFalse(loaded.showStrokeCount)
+        assertEquals("grade_1", loaded.selectedPackId)
     }
 
     @Test

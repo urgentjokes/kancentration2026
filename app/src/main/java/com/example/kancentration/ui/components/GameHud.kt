@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,7 +71,6 @@ fun GameHud(
                     text = "Kancentration",
                     style = if (isTablet) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif,
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1
                 )

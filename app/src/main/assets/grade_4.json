@@ -1,0 +1,717 @@
+{
+  "packId": "grade_4",
+  "title": "Grade 4 Confusables (18 Quads)",
+  "description": "Curated set of 18 visually confusable pairs of Kanji learned in Japanese fourth grade, featuring classic horizontal dominance, stroke length nuances, and radical substitutions (36 unique characters, 72 cards total).",
+  "version": 1,
+  "quads": [
+    {
+      "id": "grade4_quad_01_notyet_end",
+      "category": "Horizontal Stroke Dominance",
+      "pairA": {
+        "id": "kanji_hitsuji_notyet_g4",
+        "character": "未",
+        "meanings": [
+          "not yet",
+          "un-",
+          "sign of the ram"
+        ],
+        "onReadings": [
+          "ミ",
+          "ビ"
+        ],
+        "kunReadings": [
+          "いま.だ",
+          "ま.だ"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "BOTTOM horizontal stroke is noticeably LONGER than the upper horizontal stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AA"
+      },
+      "pairB": {
+        "id": "kanji_sue_end_g4",
+        "character": "末",
+        "meanings": [
+          "end",
+          "tip",
+          "future"
+        ],
+        "onReadings": [
+          "マツ",
+          "バツ"
+        ],
+        "kunReadings": [
+          "すえ"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "TOP horizontal stroke is noticeably LONGER than the lower horizontal stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AB"
+      }
+    },
+    {
+      "id": "grade4_quad_02_scholar_earth",
+      "category": "Stroke Length Balance",
+      "pairA": {
+        "id": "kanji_shi_scholar_g4",
+        "character": "士",
+        "meanings": [
+          "scholar",
+          "gentleman",
+          "samurai"
+        ],
+        "onReadings": [
+          "シ"
+        ],
+        "kunReadings": [
+          "さむらい"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "TOP horizontal stroke is noticeably LONGER than the bottom baseline stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A3%AB"
+      },
+      "pairB": {
+        "id": "kanji_tsuchi_earth_g4",
+        "character": "土",
+        "meanings": [
+          "earth",
+          "soil",
+          "ground"
+        ],
+        "onReadings": [
+          "ド",
+          "ト"
+        ],
+        "kunReadings": [
+          "つち"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "BOTTOM baseline stroke is noticeably LONGER than the top horizontal stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9C%9F"
+      }
+    },
+    {
+      "id": "grade4_quad_03_order_now",
+      "category": "Lower Component Shape",
+      "pairA": {
+        "id": "kanji_rei_order",
+        "character": "令",
+        "meanings": [
+          "order",
+          "command",
+          "decree"
+        ],
+        "onReadings": [
+          "レイ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 5,
+        "distinctionTip": "Lower component has a horizontal stroke crossing under the roof, over seal (卩).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BB%A4"
+      },
+      "pairB": {
+        "id": "kanji_ima_now",
+        "character": "今",
+        "meanings": [
+          "now",
+          "present"
+        ],
+        "onReadings": [
+          "コン",
+          "キン"
+        ],
+        "kunReadings": [
+          "いま"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Lower component consists of horizontal turn (乛) and hooked vertical flick (亅).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BB%8A"
+      }
+    },
+    {
+      "id": "grade4_quad_04_husband_heaven",
+      "category": "Top Stroke Piercing",
+      "pairA": {
+        "id": "kanji_otto_husband",
+        "character": "夫",
+        "meanings": [
+          "husband",
+          "man"
+        ],
+        "onReadings": [
+          "フ",
+          "フウ"
+        ],
+        "kunReadings": [
+          "おっと",
+          "それ"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Top vertical stroke pierces distinctly UPWARD through the upper horizontal line.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A4%AB"
+      },
+      "pairB": {
+        "id": "kanji_ten_heaven_g4",
+        "character": "天",
+        "meanings": [
+          "heaven",
+          "sky"
+        ],
+        "onReadings": [
+          "テン"
+        ],
+        "kunReadings": [
+          "あめ",
+          "あま"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Top horizontal line sits flat across the top without any vertical piercing stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A4%A9"
+      }
+    },
+    {
+      "id": "grade4_quad_05_material_dept",
+      "category": "Rice vs Grain Radical",
+      "pairA": {
+        "id": "kanji_ryou_fee",
+        "character": "料",
+        "meanings": [
+          "fee",
+          "materials"
+        ],
+        "onReadings": [
+          "リョウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Left radical is rice (米 / kome-hen) alongside ladle/dipper (斗).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%96%99"
+      },
+      "pairB": {
+        "id": "kanji_ka_dept",
+        "character": "科",
+        "meanings": [
+          "department",
+          "course",
+          "science"
+        ],
+        "onReadings": [
+          "カ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is two-eared grain (禾 / nogi-hen) alongside ladle/dipper (斗).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%A7%91"
+      }
+    },
+    {
+      "id": "grade4_quad_06_pasture_sheet",
+      "category": "Cow vs Tree Radical",
+      "pairA": {
+        "id": "kanji_maki_pasture",
+        "character": "牧",
+        "meanings": [
+          "pasture",
+          "breed"
+        ],
+        "onReadings": [
+          "ボク"
+        ],
+        "kunReadings": [
+          "まき"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is cow (牛 / ushi-hen) alongside activity/strike (攵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%89%A7"
+      },
+      "pairB": {
+        "id": "kanji_mai_sheet",
+        "character": "枚",
+        "meanings": [
+          "sheet of",
+          "counter for flat objects"
+        ],
+        "onReadings": [
+          "マイ",
+          "バイ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is tree (木 / ki-hen) alongside activity/strike (攵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9E%9A"
+      }
+    },
+    {
+      "id": "grade4_quad_07_pure_sunny",
+      "category": "Water vs Sun Radical",
+      "pairA": {
+        "id": "kanji_kiyo_pure",
+        "character": "清",
+        "meanings": [
+          "pure",
+          "clean"
+        ],
+        "onReadings": [
+          "セイ",
+          "ショウ"
+        ],
+        "kunReadings": [
+          "きよ.い",
+          "きよ.める"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Left radical is three drops of water (氵 / sanzui) alongside blue (青).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B8%85"
+      },
+      "pairB": {
+        "id": "kanji_hare_sunny",
+        "character": "晴",
+        "meanings": [
+          "clear weather",
+          "sunny"
+        ],
+        "onReadings": [
+          "セイ"
+        ],
+        "kunReadings": [
+          "は.れる",
+          "は.れ"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Left radical is sun (日 / hi-hen) alongside blue (青).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%99%B4"
+      }
+    },
+    {
+      "id": "grade4_quad_08_health_build",
+      "category": "Person Radical Addition",
+      "pairA": {
+        "id": "kanji_sukoyaka_health",
+        "character": "健",
+        "meanings": [
+          "healthy",
+          "robust"
+        ],
+        "onReadings": [
+          "ケン"
+        ],
+        "kunReadings": [
+          "すこ.やか"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Features person radical (亻 / nin-ben) prefixed on the left of 建.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%81%A5"
+      },
+      "pairB": {
+        "id": "kanji_tate_build",
+        "character": "建",
+        "meanings": [
+          "build",
+          "construct"
+        ],
+        "onReadings": [
+          "ケン",
+          "コン"
+        ],
+        "kunReadings": [
+          "た.てる",
+          "た.つ"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Standalone character: long pace/motion (廴) wrapping around brush (聿).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%BB%BA"
+      }
+    },
+    {
+      "id": "grade4_quad_09_borrow_past",
+      "category": "Person Radical Prefix",
+      "pairA": {
+        "id": "kanji_kari_borrow",
+        "character": "借",
+        "meanings": [
+          "borrow",
+          "rent"
+        ],
+        "onReadings": [
+          "シャク"
+        ],
+        "kunReadings": [
+          "か.りる"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Features person radical (亻 / nin-ben) prefixed on the left of 昔.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%80%9F"
+      },
+      "pairB": {
+        "id": "kanji_mukashi_past",
+        "character": "昔",
+        "meanings": [
+          "long ago",
+          "old times"
+        ],
+        "onReadings": [
+          "セキ",
+          "シャク"
+        ],
+        "kunReadings": [
+          "むかし"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Standalone character: stacks of days (廿) sitting over sun (日).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%98%94"
+      }
+    },
+    {
+      "id": "grade4_quad_10_shallow_remain",
+      "category": "Water vs Bone Radical",
+      "pairA": {
+        "id": "kanji_asa_shallow",
+        "character": "浅",
+        "meanings": [
+          "shallow",
+          "superficial"
+        ],
+        "onReadings": [
+          "セン"
+        ],
+        "kunReadings": [
+          "あさ.い"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is three drops of water (氵 / sanzui) alongside 戔.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B5%85"
+      },
+      "pairB": {
+        "id": "kanji_noko_remain",
+        "character": "残",
+        "meanings": [
+          "remainder",
+          "leftover"
+        ],
+        "onReadings": [
+          "ザン"
+        ],
+        "kunReadings": [
+          "のこ.る",
+          "のこ.す"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Left radical is bare bone / death (歹 / kabane-hen) alongside 戔.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%AE%8B"
+      }
+    },
+    {
+      "id": "grade4_quad_11_fold_pray",
+      "category": "Hand vs Altar Radical",
+      "pairA": {
+        "id": "kanji_ori_fold",
+        "character": "折",
+        "meanings": [
+          "fold",
+          "break",
+          "bend"
+        ],
+        "onReadings": [
+          "セツ"
+        ],
+        "kunReadings": [
+          "お.る",
+          "お.れる"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Left radical is hand (扌 / te-hen) alongside axe (斤).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8A%98"
+      },
+      "pairB": {
+        "id": "kanji_inori_pray",
+        "character": "祈",
+        "meanings": [
+          "pray",
+          "wish"
+        ],
+        "onReadings": [
+          "キ"
+        ],
+        "kunReadings": [
+          "いの.る"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is altar / spirit (礻 / shimesu-hen) alongside axe (斤).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%A5%88"
+      }
+    },
+    {
+      "id": "grade4_quad_12_pine_cedar",
+      "category": "Tree Right Component",
+      "pairA": {
+        "id": "kanji_matsu_pine",
+        "character": "松",
+        "meanings": [
+          "pine tree"
+        ],
+        "onReadings": [
+          "ショウ"
+        ],
+        "kunReadings": [
+          "まつ"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Right component is public (公 / eight + private) alongside tree (木).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9D%BE"
+      },
+      "pairB": {
+        "id": "kanji_sugi_cedar_g4",
+        "character": "杉",
+        "meanings": [
+          "cedar"
+        ],
+        "onReadings": [
+          "サン"
+        ],
+        "kunReadings": [
+          "すぎ"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Right component is three hair/bristle slashes (彡) alongside tree (木).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9D%89"
+      }
+    },
+    {
+      "id": "grade4_quad_13_curtain_evening",
+      "category": "Lower Cloth vs Sun Radical",
+      "pairA": {
+        "id": "kanji_maku_curtain",
+        "character": "幕",
+        "meanings": [
+          "curtain",
+          "shogunate",
+          "act"
+        ],
+        "onReadings": [
+          "マク",
+          "バク"
+        ],
+        "kunReadings": [],
+        "strokeCount": 13,
+        "distinctionTip": "Bottom component is cloth (巾 / haba) hanging beneath 莫.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B9%95"
+      },
+      "pairB": {
+        "id": "kanji_kure_evening",
+        "character": "暮",
+        "meanings": [
+          "evening",
+          "livelihood"
+        ],
+        "onReadings": [
+          "ボ"
+        ],
+        "kunReadings": [
+          "く.れる",
+          "く.らす"
+        ],
+        "strokeCount": 14,
+        "distinctionTip": "Bottom component is sun (日 / hi) setting beneath 莫.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9A%AE"
+      }
+    },
+    {
+      "id": "grade4_quad_14_each_name",
+      "category": "Top Stroke Over Mouth",
+      "pairA": {
+        "id": "kanji_ono_each",
+        "character": "各",
+        "meanings": [
+          "each",
+          "every"
+        ],
+        "onReadings": [
+          "カク"
+        ],
+        "kunReadings": [
+          "おのおの"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Top component is downward-sweeping winter feet (夂) over mouth (口).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%90%84"
+      },
+      "pairB": {
+        "id": "kanji_na_name_g4",
+        "character": "名",
+        "meanings": [
+          "name",
+          "reputation"
+        ],
+        "onReadings": [
+          "メイ",
+          "ミョウ"
+        ],
+        "kunReadings": [
+          "な"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Top component is the evening crescent (夕) over mouth (口).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%90%8D"
+      }
+    },
+    {
+      "id": "grade4_quad_15_cure_along",
+      "category": "Water Right Component",
+      "pairA": {
+        "id": "kanji_osa_cure",
+        "character": "治",
+        "meanings": [
+          "govern",
+          "cure",
+          "heal"
+        ],
+        "onReadings": [
+          "ジ",
+          "チ"
+        ],
+        "kunReadings": [
+          "おさ.める",
+          "なお.る"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Right component is platform/pedestal (台 / dai, 5 strokes) alongside water (氵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B2%BB"
+      },
+      "pairB": {
+        "id": "kanji_soi_along",
+        "character": "沿",
+        "meanings": [
+          "run along",
+          "follow"
+        ],
+        "onReadings": [
+          "エン"
+        ],
+        "kunReadings": [
+          "そ.う",
+          "-ぞ.い"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Right component is marsh/valley mouth (㕣, 5 strokes) alongside water (氵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B2%BF"
+      }
+    },
+    {
+      "id": "grade4_quad_16_belt_stagnate",
+      "category": "Water Radical Prefix",
+      "pairA": {
+        "id": "kanji_obi_belt",
+        "character": "帯",
+        "meanings": [
+          "belt",
+          "zone",
+          "sash"
+        ],
+        "onReadings": [
+          "タイ"
+        ],
+        "kunReadings": [
+          "おび",
+          "お.びる"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Clean standalone character representing a belted sash (no side radicals).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B8%AF"
+      },
+      "pairB": {
+        "id": "kanji_todokou_stagnate",
+        "character": "滞",
+        "meanings": [
+          "stagnate",
+          "delay",
+          "stay"
+        ],
+        "onReadings": [
+          "タイ"
+        ],
+        "kunReadings": [
+          "とどこお.る"
+        ],
+        "strokeCount": 13,
+        "distinctionTip": "Features three drops of water (氵 / sanzui) prefixed on the left of 帯.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%BB%9E"
+      }
+    },
+    {
+      "id": "grade4_quad_17_stop_pavilion",
+      "category": "Person Radical Prefix",
+      "pairA": {
+        "id": "kanji_toma_halt",
+        "character": "停",
+        "meanings": [
+          "halt",
+          "stop"
+        ],
+        "onReadings": [
+          "テイ"
+        ],
+        "kunReadings": [
+          "と.まる",
+          "と.める"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Features person radical (亻 / nin-ben) prefixed on the left of 亭.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%81%9C"
+      },
+      "pairB": {
+        "id": "kanji_chin_pavilion",
+        "character": "亭",
+        "meanings": [
+          "pavilion",
+          "arbor"
+        ],
+        "onReadings": [
+          "テイ",
+          "チン"
+        ],
+        "kunReadings": [],
+        "strokeCount": 9,
+        "distinctionTip": "Standalone architecture character: lid (亠) over mouth (口) over nail (丁).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BA%AD"
+      }
+    },
+    {
+      "id": "grade4_quad_18_county_flock",
+      "category": "Component Arrangement",
+      "pairA": {
+        "id": "kanji_kouri_county",
+        "character": "郡",
+        "meanings": [
+          "county",
+          "district"
+        ],
+        "onReadings": [
+          "グン"
+        ],
+        "kunReadings": [
+          "こおり"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Ruler (君) placed alongside city/mound radical (阝 / oozato) on the right.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%83%A1"
+      },
+      "pairB": {
+        "id": "kanji_mure_flock",
+        "character": "群",
+        "meanings": [
+          "flock",
+          "group",
+          "crowd"
+        ],
+        "onReadings": [
+          "グン"
+        ],
+        "kunReadings": [
+          "む.れる",
+          "むら"
+        ],
+        "strokeCount": 13,
+        "distinctionTip": "Ruler (君) placed directly ABOVE sheep (羊) vertically stacked.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%BE%A4"
+      }
+    }
+  ]
+}

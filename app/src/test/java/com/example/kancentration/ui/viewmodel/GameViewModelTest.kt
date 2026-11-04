@@ -513,4 +513,33 @@ class GameViewModelTest {
         assertEquals("00:05", viewModel.uiState.value.formattedTimer)
         assertTrue(viewModel.timerManager.isRunning)
     }
+
+    @Test
+    fun testApplySettingsWithNewPackTriggersRestart() = runTest {
+        val quads = (1..16).map { i ->
+            KanjiQuad(
+                id = "quad_$i",
+                category = "Category $i",
+                pairA = KanjiData("k_${i}_a", "A$i", listOf("Meaning"), listOf("ON"), listOf("kun"), 1, "Tip"),
+                pairB = KanjiData("k_${i}_b", "B$i", listOf("Meaning"), listOf("ON"), listOf("kun"), 1, "Tip")
+            )
+        }
+        val kanjiRepo = FakeKanjiRepository(quads)
+        val settingsRepo = InMemorySettingsRepository()
+        val viewModel = GameViewModel(
+            repository = kanjiRepo,
+            settingsRepository = settingsRepo,
+            dlcManager = FakeDlcManager(),
+            soundManager = NoOpSoundPlayer(),
+            coroutineScope = backgroundScope
+        )
+
+        assertEquals("base_pack", viewModel.uiState.value.settings.selectedPackId)
+
+        val updatedSettings = viewModel.uiState.value.settings.copy(selectedPackId = "grade_1")
+        viewModel.applySettings(updatedSettings)
+
+        assertEquals("grade_1", viewModel.uiState.value.settings.selectedPackId)
+        assertEquals("grade_1", settingsRepo.loadSettings().selectedPackId)
+    }
 }

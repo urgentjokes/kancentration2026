@@ -80,7 +80,7 @@ fun SettingsScreen(
 ) {
     BackHandler(onBack = onDismiss)
 
-    var selectedDimension by remember { mutableStateOf(currentSettings.dimension) }
+    var selectedPackId by remember { mutableStateOf(currentSettings.selectedPackId) }
     var selectedGameType by remember { mutableStateOf(currentSettings.gameType) }
     var bonusTurn by remember { mutableStateOf(currentSettings.bonusTurnOnMatch) }
     var twinTrapHints by remember { mutableStateOf(currentSettings.showTwinTrapHints) }
@@ -96,8 +96,8 @@ fun SettingsScreen(
 
     val scrollState = rememberScrollState()
 
-    val needsRestart = selectedDimension != currentSettings.dimension ||
-            selectedGameType != currentSettings.gameType
+    val needsRestart = selectedGameType != currentSettings.gameType ||
+            selectedPackId != currentSettings.selectedPackId
 
     Scaffold(
         modifier = modifier
@@ -147,7 +147,7 @@ fun SettingsScreen(
                         onClick = {
                             onApplySettings(
                                 GameSettings(
-                                    dimension = selectedDimension,
+                                    dimension = currentSettings.dimension,
                                     gameType = selectedGameType,
                                     bonusTurnOnMatch = bonusTurn,
                                     showTwinTrapHints = twinTrapHints,
@@ -157,7 +157,8 @@ fun SettingsScreen(
                                     soundEnabled = soundEnabled,
                                     tileColor = selectedTileColor,
                                     kanjiColor = selectedKanjiColor,
-                                    mismatchDelayMs = mismatchDelayMs
+                                    mismatchDelayMs = mismatchDelayMs,
+                                    selectedPackId = selectedPackId
                                 )
                             )
                         },
@@ -189,28 +190,99 @@ fun SettingsScreen(
                     .padding(horizontal = if (isTablet) 32.dp else 20.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-            // 1. Board Dimensions Section
-            SettingsSectionCard(title = "Board Dimension", subtitle = "Choose grid density and total card pairs") {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    BoardDimension.values().forEach { dim ->
-                        FilterChip(
-                            selected = selectedDimension == dim,
-                            onClick = { selectedDimension = dim },
-                            label = {
-                                Text(
-                                    text = "${dim.size}×${dim.size} (${dim.totalCards} tiles)",
-                                    fontWeight = if (selectedDimension == dim) FontWeight.Bold else FontWeight.Normal
-                                )
-                            },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
+            // 1. Kanji Card Pack Section
+            SettingsSectionCard(
+                title = "Kanji Card Pack",
+                subtitle = "Choose the confusable card deck to play with"
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    val packs = listOf(
+                        Triple(
+                            "base_pack",
+                            "Base Confusables (20 Quads)",
+                            "The foundational 40 Jōyō Kanji pairs (80 cards) — Classic visual traps (日 vs 曰, 持 vs 特, 木 vs 本)"
+                        ),
+                        Triple(
+                            "grade_1",
+                            "1st-Grade Kanji (18 Quads)",
+                            "Japanese 1st-grade curriculum (36 characters, 72 cards) — Elementary lookalikes & Kana traps (八 vs ハ, 夕 vs タ, 林 vs 村)"
+                        ),
+                        Triple(
+                            "grade_2",
+                            "2nd-Grade Kanji (18 Quads)",
+                            "Japanese 2nd-grade curriculum (36 characters, 72 cards) — Piercing strokes & component nuance (牛 vs 午, 太 vs 大, 刀 vs 刃)"
+                        ),
+                        Triple(
+                            "grade_3",
+                            "3rd-Grade Kanji (18 Quads)",
+                            "Japanese 3rd-grade curriculum (36 characters, 72 cards) — Radical substitutions & subtle distinctions (持 vs 特, 待 vs 侍, 油 vs 酒)"
+                        ),
+                        Triple(
+                            "grade_4",
+                            "4th-Grade Kanji (18 Quads)",
+                            "Japanese 4th-grade curriculum (36 characters, 72 cards) — Relative stroke lengths & radical swaps (未 vs 末, 士 vs 土, 令 vs 今)"
+                        ),
+                        Triple(
+                            "grade_5",
+                            "5th-Grade Kanji (18 Quads)",
+                            "Japanese 5th-grade curriculum (36 characters, 72 cards) — Complex radical variations & prefix traps (技 vs 枝, 格 vs 略, 構 vs 講)"
+                        ),
+                        Triple(
+                            "grade_6",
+                            "6th-Grade Kanji (18 Quads)",
+                            "Japanese 6th-grade curriculum (36 characters, 72 cards) — Advanced lookalikes & structural subtleties (券 vs 巻, 吸 vs 呼, 宇 vs 宙)"
                         )
+                    )
+
+                    packs.forEach { (packId, title, desc) ->
+                        val isSelected = selectedPackId == packId
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            border = BorderStroke(
+                                width = if (isSelected) 2.dp else 1.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .clickable { selectedPackId = packId }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = isSelected,
+                                    onClick = { selectedPackId = packId }
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = title,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = desc,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "✨ More grade-level and thematic packs on the way!",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
                 }
             }
 
@@ -258,7 +330,7 @@ fun SettingsScreen(
             }
 
             // 3. Game Mode Selection
-            SettingsSectionCard(title = "Game Mode", subtitle = "Play alone, challenge a friend, or beat the clock") {
+            SettingsSectionCard(title = "Game Mode", subtitle = "Play alone, beat the clock, or challenge a friend") {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     // Solo
                     Row(
@@ -280,27 +352,7 @@ fun SettingsScreen(
                         }
                     }
 
-                    // Two Player
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { selectedGameType = GameType.TwoPlayer }
-                            .padding(vertical = 4.dp)
-                    ) {
-                        RadioButton(
-                            selected = selectedGameType is GameType.TwoPlayer,
-                            onClick = { selectedGameType = GameType.TwoPlayer }
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Column {
-                            Text(text = "2-Player Pass & Play", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                            Text(text = "Take turns on a single device with competitive scoring", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
-
-                    // Time Attack
+                    // Time Attack (now 2nd)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -343,6 +395,26 @@ fun SettingsScreen(
                                     label = { Text("${min} Minute${if (min > 1) "s" else ""}") }
                                 )
                             }
+                        }
+                    }
+
+                    // Two Player (now 3rd)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { selectedGameType = GameType.TwoPlayer }
+                            .padding(vertical = 4.dp)
+                    ) {
+                        RadioButton(
+                            selected = selectedGameType is GameType.TwoPlayer,
+                            onClick = { selectedGameType = GameType.TwoPlayer }
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Column {
+                            Text(text = "2-Player Pass & Play", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                            Text(text = "Take turns on a single device with competitive scoring", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -649,7 +721,7 @@ fun SettingsScreen(
                     onClick = {
                         onApplySettings(
                             GameSettings(
-                                dimension = selectedDimension,
+                                dimension = currentSettings.dimension,
                                 gameType = selectedGameType,
                                 bonusTurnOnMatch = bonusTurn,
                                 showTwinTrapHints = twinTrapHints,
@@ -659,7 +731,8 @@ fun SettingsScreen(
                                 soundEnabled = soundEnabled,
                                 tileColor = selectedTileColor,
                                 kanjiColor = selectedKanjiColor,
-                                mismatchDelayMs = mismatchDelayMs
+                                mismatchDelayMs = mismatchDelayMs,
+                                selectedPackId = selectedPackId
                             )
                         )
                     },

@@ -1,0 +1,723 @@
+{
+  "packId": "grade_5",
+  "packName": "5th-Grade Confusable Kanji",
+  "version": 1,
+  "description": "Visually confusable Kanji pairs focusing on 5th-grade Japanese elementary school kanji (subtle radical variations, component substitutions, and structural traps).",
+  "quads": [
+    {
+      "id": "grade5_quad_01_skill_branch",
+      "category": "Radical Substitution (扌 Hand vs 木 Tree)",
+      "pairA": {
+        "id": "kanji_waza_skill",
+        "character": "技",
+        "meanings": [
+          "skill",
+          "technique",
+          "art"
+        ],
+        "onReadings": [
+          "ギ"
+        ],
+        "kunReadings": [
+          "わざ"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Features the hand radical (扌) on the left of 支.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8A%80"
+      },
+      "pairB": {
+        "id": "kanji_eda_branch",
+        "character": "枝",
+        "meanings": [
+          "branch",
+          "bough",
+          "twig"
+        ],
+        "onReadings": [
+          "シ"
+        ],
+        "kunReadings": [
+          "えだ"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Features the tree/wood radical (木) on the left of 支.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9E%9D"
+      }
+    },
+    {
+      "id": "grade5_quad_02_status_abbreviation",
+      "category": "Left Radical Variation (木 Tree vs 田 Field)",
+      "pairA": {
+        "id": "kanji_kaku_status",
+        "character": "格",
+        "meanings": [
+          "status",
+          "rank",
+          "capacity"
+        ],
+        "onReadings": [
+          "カク",
+          "コウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Has the tree radical (木) on the left alongside 各.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%A0%BC"
+      },
+      "pairB": {
+        "id": "kanji_ryaku_abbreviation",
+        "character": "略",
+        "meanings": [
+          "abbreviation",
+          "omission",
+          "strategy"
+        ],
+        "onReadings": [
+          "リャク"
+        ],
+        "kunReadings": [
+          "ほぼ"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Has the rice field radical (田) on the left alongside 各.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%95%A5"
+      }
+    },
+    {
+      "id": "grade5_quad_03_construct_lecture",
+      "category": "Left Radical Variation (木 Tree vs 言 Words)",
+      "pairA": {
+        "id": "kanji_kamae_construct",
+        "character": "構",
+        "meanings": [
+          "construct",
+          "structure",
+          "posture"
+        ],
+        "onReadings": [
+          "コウ"
+        ],
+        "kunReadings": [
+          "かま・える",
+          "かま・う"
+        ],
+        "strokeCount": 14,
+        "distinctionTip": "Features the tree radical (木) on the left of 冓.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%A7%8B"
+      },
+      "pairB": {
+        "id": "kanji_kou_lecture",
+        "character": "講",
+        "meanings": [
+          "lecture",
+          "club",
+          "study"
+        ],
+        "onReadings": [
+          "コウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 17,
+        "distinctionTip": "Features the words radical (言) on the left of 冓.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%AC%9B"
+      }
+    },
+    {
+      "id": "grade5_quad_04_examine_danger",
+      "category": "Left Radical Variation (木 Tree vs 阝 Hill)",
+      "pairA": {
+        "id": "kanji_ken_examine",
+        "character": "検",
+        "meanings": [
+          "examine",
+          "investigate"
+        ],
+        "onReadings": [
+          "ケン"
+        ],
+        "kunReadings": [
+          "しら・べる"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Has the tree radical (木) on the left alongside 僉.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%A4%9C"
+      },
+      "pairB": {
+        "id": "kanji_kewashii_danger",
+        "character": "険",
+        "meanings": [
+          "steep",
+          "danger",
+          "severe"
+        ],
+        "onReadings": [
+          "ケン"
+        ],
+        "kunReadings": [
+          "けわ・しい"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Has the hill pinnacle radical (阝) on the left alongside 僉.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%99%BA"
+      }
+    },
+    {
+      "id": "grade5_quad_05_publish_judge",
+      "category": "Left Component Difference (干 Dry vs 半 Half)",
+      "pairA": {
+        "id": "kanji_kan_publish",
+        "character": "刊",
+        "meanings": [
+          "publish",
+          "engrave",
+          "edition"
+        ],
+        "onReadings": [
+          "カン"
+        ],
+        "kunReadings": [],
+        "strokeCount": 5,
+        "distinctionTip": "Features dry (干) on the left alongside knife (刂).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%88%8A"
+      },
+      "pairB": {
+        "id": "kanji_han_judge",
+        "character": "判",
+        "meanings": [
+          "judge",
+          "seal",
+          "stamp"
+        ],
+        "onReadings": [
+          "ハン",
+          "バン"
+        ],
+        "kunReadings": [
+          "わか・る"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Features half (半) on the left alongside knife (刂).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%88%A4"
+      }
+    },
+    {
+      "id": "grade5_quad_06_weave_discern",
+      "category": "Left Radical Substitution (糸 Silk vs 言 Words)",
+      "pairA": {
+        "id": "kanji_oru_weave",
+        "character": "織",
+        "meanings": [
+          "weave",
+          "fabric"
+        ],
+        "onReadings": [
+          "ショク",
+          "シキ"
+        ],
+        "kunReadings": [
+          "お・る"
+        ],
+        "strokeCount": 18,
+        "distinctionTip": "Features the silk thread radical (糸) on the left of 戠.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%B9%94"
+      },
+      "pairB": {
+        "id": "kanji_shiki_discern",
+        "character": "識",
+        "meanings": [
+          "discern",
+          "know",
+          "write"
+        ],
+        "onReadings": [
+          "シキ"
+        ],
+        "kunReadings": [
+          "し・る"
+        ],
+        "strokeCount": 19,
+        "distinctionTip": "Features the speech radical (言) on the left of 戠.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%AD%98"
+      }
+    },
+    {
+      "id": "grade5_quad_07_hall_usual",
+      "category": "Bottom Radical Variation (土 Earth vs 巾 Cloth)",
+      "pairA": {
+        "id": "kanji_dou_hall",
+        "character": "堂",
+        "meanings": [
+          "hall",
+          "public room"
+        ],
+        "onReadings": [
+          "ドウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 11,
+        "distinctionTip": "Ends with earth (土) at the bottom beneath 龸 and 口.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A0%82"
+      },
+      "pairB": {
+        "id": "kanji_tsune_usual",
+        "character": "常",
+        "meanings": [
+          "usual",
+          "ordinary",
+          "constant"
+        ],
+        "onReadings": [
+          "ジョウ"
+        ],
+        "kunReadings": [
+          "つね",
+          "とこ"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Ends with cloth/towel (巾) at the bottom beneath 龸 and 口.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B8%B8"
+      }
+    },
+    {
+      "id": "grade5_quad_08_poor_lend",
+      "category": "Top Component Variation (分 Part vs 代 Generation)",
+      "pairA": {
+        "id": "kanji_mazushii_poor",
+        "character": "貧",
+        "meanings": [
+          "poor",
+          "poverty"
+        ],
+        "onReadings": [
+          "ヒン",
+          "ビン"
+        ],
+        "kunReadings": [
+          "まず・しい"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Features part/divide (分) atop the shellfish radical (貝).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B2%A7"
+      },
+      "pairB": {
+        "id": "kanji_kasu_lend",
+        "character": "貸",
+        "meanings": [
+          "lend",
+          "loan"
+        ],
+        "onReadings": [
+          "タイ"
+        ],
+        "kunReadings": [
+          "か・す"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features generation/substitute (代) atop the shellfish radical (貝).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B2%B8"
+      }
+    },
+    {
+      "id": "grade5_quad_09_cause_distress",
+      "category": "Internal Radical Variation (大 Large vs 木 Tree)",
+      "pairA": {
+        "id": "kanji_in_cause",
+        "character": "因",
+        "meanings": [
+          "cause",
+          "factor",
+          "depend on"
+        ],
+        "onReadings": [
+          "イン"
+        ],
+        "kunReadings": [
+          "よ・る"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Encloses large (大) completely inside the box boundary (囗).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9B%A0"
+      },
+      "pairB": {
+        "id": "kanji_komaru_distress",
+        "character": "困",
+        "meanings": [
+          "distressed",
+          "quandary",
+          "trouble"
+        ],
+        "onReadings": [
+          "コン"
+        ],
+        "kunReadings": [
+          "こま・る"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Encloses tree (木) completely inside the box boundary (囗).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9B%B0"
+      }
+    },
+    {
+      "id": "grade5_quad_10_mix_warm",
+      "category": "Right Component Variation (昆 Swarm vs 昷 Warmth)",
+      "pairA": {
+        "id": "kanji_mazeru_mix",
+        "character": "混",
+        "meanings": [
+          "mix",
+          "blend",
+          "confuse"
+        ],
+        "onReadings": [
+          "コン"
+        ],
+        "kunReadings": [
+          "ま・じる",
+          "ま・ぜる"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Features 日 over 比 (昆) alongside the water radical (氵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B7%B7"
+      },
+      "pairB": {
+        "id": "kanji_atatakai_warm",
+        "character": "温",
+        "meanings": [
+          "warm",
+          "temperature"
+        ],
+        "onReadings": [
+          "オン"
+        ],
+        "kunReadings": [
+          "あたた・かい",
+          "あたた・まる"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features 日 over 皿 (昷) alongside the water radical (氵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B8%A9"
+      }
+    },
+    {
+      "id": "grade5_quad_11_thick_origin",
+      "category": "Interior Component Difference under Cliff (厂)",
+      "pairA": {
+        "id": "kanji_atsui_thick",
+        "character": "厚",
+        "meanings": [
+          "thick",
+          "kind",
+          "cordial"
+        ],
+        "onReadings": [
+          "コウ"
+        ],
+        "kunReadings": [
+          "あつ・い"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Contains 𣅀 and child (子) under the cliff radical (厂).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8E%9A"
+      },
+      "pairB": {
+        "id": "kanji_hara_origin",
+        "character": "原",
+        "meanings": [
+          "meadow",
+          "original",
+          "primitive"
+        ],
+        "onReadings": [
+          "ゲン"
+        ],
+        "kunReadings": [
+          "はら"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Contains white (白) and small (小) under the cliff radical (厂).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8E%9F"
+      }
+    },
+    {
+      "id": "grade5_quad_12_resemble_wherefore",
+      "category": "Person Radical Prefix (亻 Person vs None)",
+      "pairA": {
+        "id": "kanji_niru_resemble",
+        "character": "似",
+        "meanings": [
+          "resemble",
+          "imitate"
+        ],
+        "onReadings": [
+          "ジ"
+        ],
+        "kunReadings": [
+          "に・る"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Adds the person radical (亻) to the left of 以.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BC%BC"
+      },
+      "pairB": {
+        "id": "kanji_motte_wherefore",
+        "character": "以",
+        "meanings": [
+          "by means of",
+          "because",
+          "in view of"
+        ],
+        "onReadings": [
+          "イ"
+        ],
+        "kunReadings": [
+          "もっ・て"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Standalone character without the person radical (亻) on the left.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BB%A5"
+      }
+    },
+    {
+      "id": "grade5_quad_13_instruct_receive",
+      "category": "Hand Radical Prefix (扌 Hand vs None)",
+      "pairA": {
+        "id": "kanji_sazukeru_instruct",
+        "character": "授",
+        "meanings": [
+          "impart",
+          "instruct",
+          "award"
+        ],
+        "onReadings": [
+          "ジュ"
+        ],
+        "kunReadings": [
+          "さず・ける"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Adds the hand radical (扌) on the left of 受.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8E%88"
+      },
+      "pairB": {
+        "id": "kanji_ukeru_receive",
+        "character": "受",
+        "meanings": [
+          "receive",
+          "accept",
+          "undergo"
+        ],
+        "onReadings": [
+          "ジュ"
+        ],
+        "kunReadings": [
+          "う・ける"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Standalone character without the hand radical (扌).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8F%97"
+      }
+    },
+    {
+      "id": "grade5_quad_14_burn_sort",
+      "category": "Fire Radical Prefix (火 Fire vs None)",
+      "pairA": {
+        "id": "kanji_moeru_burn",
+        "character": "燃",
+        "meanings": [
+          "burn",
+          "ignite"
+        ],
+        "onReadings": [
+          "ネン"
+        ],
+        "kunReadings": [
+          "も・える",
+          "も・やす"
+        ],
+        "strokeCount": 16,
+        "distinctionTip": "Adds the fire radical (火) on the left of 然.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%87%83"
+      },
+      "pairB": {
+        "id": "kanji_shikari_sort",
+        "character": "然",
+        "meanings": [
+          "sort of thing",
+          "so",
+          "if so"
+        ],
+        "onReadings": [
+          "ゼン",
+          "ネン"
+        ],
+        "kunReadings": [
+          "しか・し"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Standalone character 然 without the side fire radical (火).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%84%B6"
+      }
+    },
+    {
+      "id": "grade5_quad_15_fathom_side",
+      "category": "Left Radical Variation (氵 Water vs 亻 Person)",
+      "pairA": {
+        "id": "kanji_hakaru_fathom",
+        "character": "測",
+        "meanings": [
+          "fathom",
+          "measure",
+          "plan"
+        ],
+        "onReadings": [
+          "ソク"
+        ],
+        "kunReadings": [
+          "はか・る"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features the three water drops radical (氵) alongside 則.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B8%AC"
+      },
+      "pairB": {
+        "id": "kanji_gawa_side",
+        "character": "側",
+        "meanings": [
+          "side",
+          "lean",
+          "oppose"
+        ],
+        "onReadings": [
+          "ソク"
+        ],
+        "kunReadings": [
+          "がわ",
+          "そば"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Features the person radical (亻) alongside 則.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%81%B4"
+      }
+    },
+    {
+      "id": "grade5_quad_16_depart_dwell",
+      "category": "Left Radical Variation (彳 Step vs 亻 Person)",
+      "pairA": {
+        "id": "kanji_ou_depart",
+        "character": "往",
+        "meanings": [
+          "depart",
+          "journey",
+          "chase"
+        ],
+        "onReadings": [
+          "オウ"
+        ],
+        "kunReadings": [
+          "い・く"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Features the double-person / step radical (彳) on the left of 主.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%BE%80"
+      },
+      "pairB": {
+        "id": "kanji_sumu_dwell",
+        "character": "住",
+        "meanings": [
+          "dwell",
+          "reside",
+          "live"
+        ],
+        "onReadings": [
+          "ジュウ"
+        ],
+        "kunReadings": [
+          "す・む"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Features the single person radical (亻) on the left of 主.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BD%8F"
+      }
+    },
+    {
+      "id": "grade5_quad_17_longtime_lack",
+      "category": "Stroke Geometry & Opening Direction",
+      "pairA": {
+        "id": "kanji_hisashii_longtime",
+        "character": "久",
+        "meanings": [
+          "long time",
+          "old story"
+        ],
+        "onReadings": [
+          "キュウ",
+          "ク"
+        ],
+        "kunReadings": [
+          "ひさ・しい"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Three strokes featuring a long sweeping curved diagonal through the center.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%B9%85"
+      },
+      "pairB": {
+        "id": "kanji_kakeru_lack",
+        "character": "欠",
+        "meanings": [
+          "lack",
+          "gap",
+          "yawn"
+        ],
+        "onReadings": [
+          "ケツ"
+        ],
+        "kunReadings": [
+          "か・ける"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Four strokes opening up towards the right with a curved hook base (乚).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%AC%A0"
+      }
+    },
+    {
+      "id": "grade5_quad_18_river_what",
+      "category": "Left Radical Variation (氵 Water vs 亻 Person)",
+      "pairA": {
+        "id": "kanji_kawa_river",
+        "character": "河",
+        "meanings": [
+          "river",
+          "stream"
+        ],
+        "onReadings": [
+          "カ"
+        ],
+        "kunReadings": [
+          "かわ"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Features the water radical (氵) alongside 可.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B2%B3"
+      },
+      "pairB": {
+        "id": "kanji_nani_what",
+        "character": "何",
+        "meanings": [
+          "what",
+          "which",
+          "how many"
+        ],
+        "onReadings": [
+          "カ"
+        ],
+        "kunReadings": [
+          "なに",
+          "なん"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Features the person radical (亻) alongside 可.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BD%95"
+      }
+    }
+  ]
+}

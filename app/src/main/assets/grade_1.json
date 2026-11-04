@@ -1,0 +1,746 @@
+{
+  "packId": "grade_1",
+  "title": "Grade 1 Confusables (18 Quads)",
+  "description": "Curated set of 18 visually confusable pairs of Kanji learned in Japanese first grade, featuring subtle stroke distinctions, accent variations, and classic Kanji vs Katakana traps (36 unique characters, 72 cards total).",
+  "version": 3,
+  "quads": [
+    {
+      "id": "grade1_quad_01_person_enter",
+      "category": "Stroke Overlap & Direction",
+      "pairA": {
+        "id": "kanji_hito_person",
+        "character": "人",
+        "meanings": [
+          "person",
+          "human",
+          "people"
+        ],
+        "onReadings": [
+          "ジン",
+          "ニン"
+        ],
+        "kunReadings": [
+          "ひと",
+          "-り",
+          "-と"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Left stroke is drawn first and stands taller; right stroke leans against it.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BA%BA"
+      },
+      "pairB": {
+        "id": "kanji_iru_enter",
+        "character": "入",
+        "meanings": [
+          "enter",
+          "insert"
+        ],
+        "onReadings": [
+          "ニュウ"
+        ],
+        "kunReadings": [
+          "い.る",
+          "はい.る"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Right stroke starts higher and sweeps over to the right; left stroke tucks underneath.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%85%A5"
+      }
+    },
+    {
+      "id": "grade1_quad_02_tree_book",
+      "category": "Root Stroke Accent",
+      "pairA": {
+        "id": "kanji_ki_tree",
+        "character": "木",
+        "meanings": [
+          "tree",
+          "wood"
+        ],
+        "onReadings": [
+          "モク",
+          "ボク"
+        ],
+        "kunReadings": [
+          "き",
+          "こ-"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Main vertical trunk has clear open roots with no lower horizontal crossbar.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%A8"
+      },
+      "pairB": {
+        "id": "kanji_hon_book",
+        "character": "本",
+        "meanings": [
+          "book",
+          "origin",
+          "main"
+        ],
+        "onReadings": [
+          "ホン"
+        ],
+        "kunReadings": [
+          "もと"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Features a short horizontal cross-stroke across the lower trunk marking the root.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AC"
+      }
+    },
+    {
+      "id": "grade1_quad_03_right_left",
+      "category": "Stroke Order & Component",
+      "pairA": {
+        "id": "kanji_migi_right",
+        "character": "右",
+        "meanings": [
+          "right",
+          "right-hand"
+        ],
+        "onReadings": [
+          "ウ",
+          "ユウ"
+        ],
+        "kunReadings": [
+          "みぎ"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "First stroke is the downward-left diagonal stroke; contains 口 (mouth) below.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8F%B3"
+      },
+      "pairB": {
+        "id": "kanji_hidari_left",
+        "character": "左",
+        "meanings": [
+          "left",
+          "left-hand"
+        ],
+        "onReadings": [
+          "サ",
+          "シャ"
+        ],
+        "kunReadings": [
+          "ひだり"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "First stroke is the horizontal stroke; contains 工 (craft) below.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B7%A6"
+      }
+    },
+    {
+      "id": "grade1_quad_04_king_jewel",
+      "category": "Jewel Accent Dot",
+      "pairA": {
+        "id": "kanji_ou_king",
+        "character": "王",
+        "meanings": [
+          "king",
+          "rule",
+          "magnate"
+        ],
+        "onReadings": [
+          "オウ"
+        ],
+        "kunReadings": [
+          "きみ"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Three equal horizontal bars joined by a central vertical stroke, with no dot.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%8E%8B"
+      },
+      "pairB": {
+        "id": "kanji_tama_jewel",
+        "character": "玉",
+        "meanings": [
+          "jewel",
+          "ball",
+          "gem"
+        ],
+        "onReadings": [
+          "ギョク"
+        ],
+        "kunReadings": [
+          "たま",
+          "たま-"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Features an accent dot (jewel drop) placed in the lower-right quadrant.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%8E%89"
+      }
+    },
+    {
+      "id": "grade1_quad_05_large_dog",
+      "category": "Shoulder Accent Dot",
+      "pairA": {
+        "id": "kanji_oo_large",
+        "character": "大",
+        "meanings": [
+          "large",
+          "big"
+        ],
+        "onReadings": [
+          "ダイ",
+          "タイ"
+        ],
+        "kunReadings": [
+          "おお-",
+          "おお.きい",
+          "おお.いに"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Three basic strokes (horizontal, left sweep, right sweep) with no accent dot.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A4%A7"
+      },
+      "pairB": {
+        "id": "kanji_inu_dog",
+        "character": "犬",
+        "meanings": [
+          "dog"
+        ],
+        "onReadings": [
+          "ケン"
+        ],
+        "kunReadings": [
+          "いぬ",
+          "いぬ-"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Features an accent dot at the upper-right shoulder above the horizontal stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%8A%AC"
+      }
+    },
+    {
+      "id": "grade1_quad_06_white_hundred",
+      "category": "Top Horizontal Roof",
+      "pairA": {
+        "id": "kanji_shiro_white",
+        "character": "白",
+        "meanings": [
+          "white"
+        ],
+        "onReadings": [
+          "ハク",
+          "ビャク"
+        ],
+        "kunReadings": [
+          "しろ",
+          "しら-",
+          "しろ.い"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Top stroke is a single downward-left diagonal tick (ノ) directly above the sun frame.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%99%BD"
+      },
+      "pairB": {
+        "id": "kanji_hyaku_hundred",
+        "character": "百",
+        "meanings": [
+          "hundred"
+        ],
+        "onReadings": [
+          "ヒャク",
+          "ビャク"
+        ],
+        "kunReadings": [
+          "もも"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Features an extra full horizontal roof stroke (一) across the top above the tick.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%99%BE"
+      }
+    },
+    {
+      "id": "grade1_quad_07_shell_see",
+      "category": "Lower Legs Shape",
+      "pairA": {
+        "id": "kanji_kai_shell",
+        "character": "貝",
+        "meanings": [
+          "shellfish",
+          "shell"
+        ],
+        "onReadings": [
+          "バイ"
+        ],
+        "kunReadings": [
+          "かい"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Bottom legs are two separated small diagonal tick dots (八).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B2%9D"
+      },
+      "pairB": {
+        "id": "kanji_miru_see",
+        "character": "見",
+        "meanings": [
+          "see",
+          "look",
+          "visible"
+        ],
+        "onReadings": [
+          "ケン"
+        ],
+        "kunReadings": [
+          "み.る",
+          "み.える",
+          "み.せる"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Bottom legs form human walking legs (儿), curving smoothly to the right.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%A6%8B"
+      }
+    },
+    {
+      "id": "grade1_quad_08_sun_eye",
+      "category": "Horizontal Crossbars",
+      "pairA": {
+        "id": "kanji_hi_sun",
+        "character": "日",
+        "meanings": [
+          "day",
+          "sun",
+          "Japan"
+        ],
+        "onReadings": [
+          "ニチ",
+          "ジツ"
+        ],
+        "kunReadings": [
+          "ひ",
+          "-び",
+          "-か"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Encloses ONE horizontal crossbar dividing the rectangle into two chambers.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%97%A5"
+      },
+      "pairB": {
+        "id": "kanji_me_eye",
+        "character": "目",
+        "meanings": [
+          "eye",
+          "look",
+          "insight"
+        ],
+        "onReadings": [
+          "モク",
+          "ボク"
+        ],
+        "kunReadings": [
+          "め",
+          "-め",
+          "ま-"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Encloses TWO horizontal crossbars dividing the rectangle into three chambers.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9B%AE"
+      }
+    },
+    {
+      "id": "grade1_quad_09_power_katakana_ka",
+      "category": "Kanji vs Katakana Trap",
+      "pairA": {
+        "id": "kanji_chikara_power",
+        "character": "力",
+        "meanings": [
+          "power",
+          "strength",
+          "strong"
+        ],
+        "onReadings": [
+          "リキ",
+          "リョク"
+        ],
+        "kunReadings": [
+          "ちから"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Kanji for 'power'; the left-sweeping curved stroke (ノ) pierces upward through the top horizontal line.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8A%9B"
+      },
+      "pairB": {
+        "id": "katakana_ka",
+        "character": "カ",
+        "meanings": [
+          "katakana 'ka'",
+          "syllable 'ka'"
+        ],
+        "onReadings": [
+          "カ"
+        ],
+        "kunReadings": [
+          "か"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Katakana 'ka' (derived from 加); the left-sweeping stroke does NOT pierce through the top, meeting neatly at the top-left vertex.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E3%82%AB"
+      }
+    },
+    {
+      "id": "grade1_quad_10_nine_round",
+      "category": "Internal Accent Dot",
+      "pairA": {
+        "id": "kanji_kyuu_nine",
+        "character": "九",
+        "meanings": [
+          "nine"
+        ],
+        "onReadings": [
+          "ク",
+          "キュウ"
+        ],
+        "kunReadings": [
+          "ここの",
+          "ここの.つ"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Kanji for 'nine'; 2 strokes with no internal accent dot.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%B9%9D"
+      },
+      "pairB": {
+        "id": "kanji_maru_round",
+        "character": "丸",
+        "meanings": [
+          "round",
+          "circle",
+          "curl up"
+        ],
+        "onReadings": [
+          "ガン"
+        ],
+        "kunReadings": [
+          "まる",
+          "まる.い",
+          "まる.める"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Kanji for 'round'; features an extra accent drop dot (丶) inside the upper-right bend of the hooked stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%B8%B8"
+      }
+    },
+    {
+      "id": "grade1_quad_11_six_text",
+      "category": "Lower Stroke Crossing",
+      "pairA": {
+        "id": "kanji_roku_six",
+        "character": "六",
+        "meanings": [
+          "six"
+        ],
+        "onReadings": [
+          "ロク",
+          "リク"
+        ],
+        "kunReadings": [
+          "む",
+          "む.つ",
+          "むっ.つ",
+          "むい"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Top lid (亠) sits over two outward-spreading dot strokes (八).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%85%AD"
+      },
+      "pairB": {
+        "id": "kanji_fumi_text",
+        "character": "文",
+        "meanings": [
+          "text",
+          "sentence",
+          "literature"
+        ],
+        "onReadings": [
+          "ブン",
+          "モン"
+        ],
+        "kunReadings": [
+          "ふみ",
+          "あや"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Top lid (亠) sits over two intersecting diagonal crossed strokes (乂).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%96%87"
+      }
+    },
+    {
+      "id": "grade1_quad_12_woods_village",
+      "category": "Right Component Distinction",
+      "pairA": {
+        "id": "kanji_hayashi_woods",
+        "character": "林",
+        "meanings": [
+          "woods",
+          "grove"
+        ],
+        "onReadings": [
+          "リン"
+        ],
+        "kunReadings": [
+          "はやし"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Right component is 木 (tree) with an open downward-left stroke and right sweep.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9E%97"
+      },
+      "pairB": {
+        "id": "kanji_mura_village",
+        "character": "村",
+        "meanings": [
+          "village",
+          "town"
+        ],
+        "onReadings": [
+          "ソン"
+        ],
+        "kunReadings": [
+          "むら"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Right component is 寸 (inch) with a hooked vertical line and an accent dot.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9D%91"
+      }
+    },
+    {
+      "id": "grade1_quad_13_early_grass",
+      "category": "Grass Crown Addition",
+      "pairA": {
+        "id": "kanji_haya_early",
+        "character": "早",
+        "meanings": [
+          "early",
+          "fast"
+        ],
+        "onReadings": [
+          "ソウ",
+          "サ"
+        ],
+        "kunReadings": [
+          "はや.い",
+          "はや.まる"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Composed of sun (日) sitting directly on top of cross (十) without any upper crown.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%97%A9"
+      },
+      "pairB": {
+        "id": "kanji_kusa_grass",
+        "character": "草",
+        "meanings": [
+          "grass",
+          "weed",
+          "herbs"
+        ],
+        "onReadings": [
+          "ソウ"
+        ],
+        "kunReadings": [
+          "くさ",
+          "くさ-"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Features a three-stroke grass crown radical (艹 / kusakanmuri) added on top of 早.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%8D%89"
+      }
+    },
+    {
+      "id": "grade1_quad_14_character_study",
+      "category": "Crown Radical Nuance",
+      "pairA": {
+        "id": "kanji_ji_character",
+        "character": "字",
+        "meanings": [
+          "character",
+          "letter",
+          "word"
+        ],
+        "onReadings": [
+          "ジ"
+        ],
+        "kunReadings": [
+          "あざ",
+          "あざな"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Crown is the smooth 3-stroke roof radical (宀 / ukanmuri) directly capping 子.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%AD%97"
+      },
+      "pairB": {
+        "id": "kanji_gaku_study",
+        "character": "学",
+        "meanings": [
+          "study",
+          "learning",
+          "school"
+        ],
+        "onReadings": [
+          "ガク"
+        ],
+        "kunReadings": [
+          "まな.ぶ"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Crown features three small dots/strokes (⺍) over a cover (冖) above 子.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%AD%A6"
+      }
+    },
+    {
+      "id": "grade1_quad_15_eight_katakana_ha",
+      "category": "Kanji vs Katakana Trap",
+      "pairA": {
+        "id": "kanji_hachi_eight",
+        "character": "八",
+        "meanings": [
+          "eight"
+        ],
+        "onReadings": [
+          "ハチ",
+          "ハツ"
+        ],
+        "kunReadings": [
+          "や",
+          "や.つ",
+          "やっ.つ",
+          "よう"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Kanji for 'eight'; left stroke is drawn with a graceful curved left sweep (丿).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%85%AB"
+      },
+      "pairB": {
+        "id": "katakana_ha",
+        "character": "ハ",
+        "meanings": [
+          "katakana 'ha'",
+          "syllable 'ha'"
+        ],
+        "onReadings": [
+          "ハ"
+        ],
+        "kunReadings": [
+          "は"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Katakana 'ha' (derived from 八); typically rendered with shorter, sharper, more angular strokes.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E3%83%8F"
+      }
+    },
+    {
+      "id": "grade1_quad_16_evening_katakana_ta",
+      "category": "Kanji vs Katakana Trap",
+      "pairA": {
+        "id": "kanji_yuu_evening",
+        "character": "夕",
+        "meanings": [
+          "evening",
+          "dusk"
+        ],
+        "onReadings": [
+          "セキ"
+        ],
+        "kunReadings": [
+          "ゆう"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Kanji for 'evening'; the diagonal center stroke stays contained inside the outer crescent hook.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A4%95"
+      },
+      "pairB": {
+        "id": "katakana_ta",
+        "character": "タ",
+        "meanings": [
+          "katakana 'ta'",
+          "syllable 'ta'"
+        ],
+        "onReadings": [
+          "タ"
+        ],
+        "kunReadings": [
+          "た"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Katakana 'ta' (derived from 多); the crossing horizontal-diagonal stroke breaks distinctly through the left slant.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E3%82%BF"
+      }
+    },
+    {
+      "id": "grade1_quad_17_mouth_katakana_ro",
+      "category": "Kanji vs Katakana Trap",
+      "pairA": {
+        "id": "kanji_kuchi_mouth",
+        "character": "口",
+        "meanings": [
+          "mouth",
+          "opening",
+          "entrance"
+        ],
+        "onReadings": [
+          "コウ",
+          "ク"
+        ],
+        "kunReadings": [
+          "くち"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Kanji for 'mouth'; vertical left stroke extends slightly below the bottom line, and bottom horizontal stroke extends slightly past right vertical corner.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8F%A3"
+      },
+      "pairB": {
+        "id": "katakana_ro",
+        "character": "ロ",
+        "meanings": [
+          "katakana 'ro'",
+          "syllable 'ro'"
+        ],
+        "onReadings": [
+          "ロ"
+        ],
+        "kunReadings": [
+          "ろ"
+        ],
+        "strokeCount": 3,
+        "distinctionTip": "Katakana 'ro' (derived from 呂); drawn as a clean closed square box without protruding stroke tails at the corners.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E3%83%AD"
+      }
+    },
+    {
+      "id": "grade1_quad_18_two_katakana_ni",
+      "category": "Kanji vs Katakana Trap",
+      "pairA": {
+        "id": "kanji_ni_two",
+        "character": "二",
+        "meanings": [
+          "two"
+        ],
+        "onReadings": [
+          "ニ",
+          "ジ"
+        ],
+        "kunReadings": [
+          "ふた",
+          "ふた.つ"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Kanji for 'two'; bottom horizontal stroke is noticeably longer than the top horizontal stroke (proportional balance).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BA%8C"
+      },
+      "pairB": {
+        "id": "katakana_ni",
+        "character": "ニ",
+        "meanings": [
+          "katakana 'ni'",
+          "syllable 'ni'"
+        ],
+        "onReadings": [
+          "ニ"
+        ],
+        "kunReadings": [
+          "に"
+        ],
+        "strokeCount": 2,
+        "distinctionTip": "Katakana 'ni' (derived from 仁/二); the two horizontal parallel bars are nearly equal in length and more compact.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E3%83%8B"
+      }
+    }
+  ]
+}

@@ -66,7 +66,7 @@ fun SettingsDialog(
     onApplySettings: (GameSettings) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var selectedDimension by remember { mutableStateOf(currentSettings.dimension) }
+    var selectedPackId by remember { mutableStateOf(currentSettings.selectedPackId) }
     var selectedGameType by remember { mutableStateOf(currentSettings.gameType) }
     var bonusTurn by remember { mutableStateOf(currentSettings.bonusTurnOnMatch) }
     var twinTrapHints by remember { mutableStateOf(currentSettings.showTwinTrapHints) }
@@ -102,32 +102,37 @@ fun SettingsDialog(
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
             ) {
-                // 1. Board Dimensions Segmented Switch
+                // 1. Kanji Card Pack Section
                 Text(
-                    text = "Board Dimension",
+                    text = "Kanji Card Pack",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    BoardDimension.values().forEach { dim ->
-                        FilterChip(
-                            selected = selectedDimension == dim,
-                            onClick = { selectedDimension = dim },
-                            label = {
-                                Text(
-                                    text = "${dim.size}×${dim.size}",
-                                    fontWeight = if (selectedDimension == dim) FontWeight.Bold else FontWeight.Normal
-                                )
-                            },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    val packs = listOf(
+                        "base_pack" to "Base Confusables (20 Quads)",
+                        "grade_1" to "1st-Grade Kanji (18 Quads)",
+                        "grade_2" to "2nd-Grade Kanji (18 Quads)",
+                        "grade_3" to "3rd-Grade Kanji (18 Quads)",
+                        "grade_4" to "4th-Grade Kanji (18 Quads)",
+                        "grade_5" to "5th-Grade Kanji (18 Quads)",
+                        "grade_6" to "6th-Grade Kanji (18 Quads)"
+                    )
+                    packs.forEach { (packId, label) ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedPackId = packId }
+                        ) {
+                            RadioButton(
+                                selected = selectedPackId == packId,
+                                onClick = { selectedPackId = packId }
                             )
-                        )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(text = label, style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
                 }
 
@@ -206,21 +211,7 @@ fun SettingsDialog(
                     Text(text = "1-Player Solo (Relaxed)", style = MaterialTheme.typography.bodyMedium)
                 }
 
-                // Two Player
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { selectedGameType = GameType.TwoPlayer }
-                ) {
-                    RadioButton(
-                        selected = selectedGameType is GameType.TwoPlayer,
-                        onClick = { selectedGameType = GameType.TwoPlayer }
-                    )
-                    Text(text = "2-Player Pass & Play", style = MaterialTheme.typography.bodyMedium)
-                }
-
-                // Time Attack
+                // Time Attack (now 2nd)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -258,6 +249,20 @@ fun SettingsDialog(
                             )
                         }
                     }
+                }
+
+                // Two Player (now 3rd)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedGameType = GameType.TwoPlayer }
+                ) {
+                    RadioButton(
+                        selected = selectedGameType is GameType.TwoPlayer,
+                        onClick = { selectedGameType = GameType.TwoPlayer }
+                    )
+                    Text(text = "2-Player Pass & Play", style = MaterialTheme.typography.bodyMedium)
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -496,14 +501,14 @@ fun SettingsDialog(
             }
         },
         confirmButton = {
-            val needsRestart = selectedDimension != currentSettings.dimension ||
-                    selectedGameType != currentSettings.gameType
+            val needsRestart = selectedGameType != currentSettings.gameType ||
+                    selectedPackId != currentSettings.selectedPackId
 
             Button(
                 onClick = {
                     onApplySettings(
                         GameSettings(
-                            dimension = selectedDimension,
+                            dimension = currentSettings.dimension,
                             gameType = selectedGameType,
                             bonusTurnOnMatch = bonusTurn,
                             showTwinTrapHints = twinTrapHints,
@@ -513,7 +518,8 @@ fun SettingsDialog(
                             tileColor = selectedTileColor,
                             kanjiColor = selectedKanjiColor,
                             mismatchDelayMs = currentSettings.mismatchDelayMs,
-                            showStrokeCount = currentSettings.showStrokeCount
+                            showStrokeCount = currentSettings.showStrokeCount,
+                            selectedPackId = selectedPackId
                         )
                     )
                 }

@@ -128,7 +128,8 @@ class GameViewModel(
     fun applySettings(newSettings: GameSettings) {
         val currentSettings = _uiState.value.settings
         val requiresRestart = newSettings.dimension != currentSettings.dimension ||
-                newSettings.gameType != currentSettings.gameType
+                newSettings.gameType != currentSettings.gameType ||
+                newSettings.selectedPackId != currentSettings.selectedPackId
 
         settingsRepository.saveSettings(newSettings)
         soundManager.isMuted = !newSettings.soundEnabled
@@ -156,6 +157,7 @@ class GameViewModel(
         gameSessionScope = CoroutineScope(rootScope.coroutineContext + newSessionJob)
 
         timerManager.stop()
+        repository.setActivePack(settings.selectedPackId)
         val deck = repository.generateDeck(settings.dimension)
 
         val initialTimerStr = when (val mode = settings.gameType) {

@@ -52,6 +52,7 @@ class SharedPreferencesSettingsRepository(
         val kanjiColor = prefs.getLong(KEY_KANJI_COLOR, 0xFFD4AF37L)
         val mismatchDelayMs = prefs.getLong(KEY_MISMATCH_DELAY_MS, 1150L)
         val showStrokeCount = prefs.getBoolean(KEY_SHOW_STROKE_COUNT, true)
+        val selectedPackId = prefs.getString(KEY_SELECTED_PACK, "base_pack") ?: "base_pack"
 
         return GameSettings(
             dimension = dimension,
@@ -64,7 +65,8 @@ class SharedPreferencesSettingsRepository(
             tileColor = tileColor,
             kanjiColor = kanjiColor,
             mismatchDelayMs = mismatchDelayMs,
-            showStrokeCount = showStrokeCount
+            showStrokeCount = showStrokeCount,
+            selectedPackId = selectedPackId
         )
     }
 
@@ -93,6 +95,7 @@ class SharedPreferencesSettingsRepository(
             .putLong(KEY_KANJI_COLOR, settings.kanjiColor)
             .putLong(KEY_MISMATCH_DELAY_MS, settings.mismatchDelayMs)
             .putBoolean(KEY_SHOW_STROKE_COUNT, settings.showStrokeCount)
+            .putString(KEY_SELECTED_PACK, settings.selectedPackId)
             .apply()
     }
 
@@ -109,6 +112,7 @@ class SharedPreferencesSettingsRepository(
         private const val KEY_KANJI_COLOR = "pref_kanji_color"
         private const val KEY_MISMATCH_DELAY_MS = "pref_mismatch_delay_ms"
         private const val KEY_SHOW_STROKE_COUNT = "pref_show_stroke_count"
+        private const val KEY_SELECTED_PACK = "pref_selected_pack"
     }
 }
 

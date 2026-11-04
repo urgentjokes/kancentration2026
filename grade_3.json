@@ -1,0 +1,698 @@
+{
+  "packId": "grade_3",
+  "title": "Grade 3 Confusables (18 Quads)",
+  "description": "Curated set of 18 visually confusable pairs of Kanji learned in Japanese third grade, highlighting subtle radical nuance, component substitution, and stroke balance (36 unique characters, 72 cards total).",
+  "version": 1,
+  "quads": [
+    {
+      "id": "grade3_quad_01_hold_special",
+      "category": "Radical Nuance (Hand vs Cow)",
+      "pairA": {
+        "id": "kanji_motsu_hold_g3",
+        "character": "持",
+        "meanings": [
+          "hold",
+          "possess"
+        ],
+        "onReadings": [
+          "ジ"
+        ],
+        "kunReadings": [
+          "も.つ",
+          "も.てる"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is hand (扌 / te-hen) alongside temple (寺).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8C%81"
+      },
+      "pairB": {
+        "id": "kanji_toku_special_g3",
+        "character": "特",
+        "meanings": [
+          "special",
+          "unique"
+        ],
+        "onReadings": [
+          "トク"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Left radical is cow (牛 / ushi-hen) alongside temple (寺).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%89%B9"
+      }
+    },
+    {
+      "id": "grade3_quad_02_wait_samurai",
+      "category": "Left Radical Nuance (Step vs Person)",
+      "pairA": {
+        "id": "kanji_matsu_wait_g3",
+        "character": "待",
+        "meanings": [
+          "wait",
+          "depend on"
+        ],
+        "onReadings": [
+          "タイ"
+        ],
+        "kunReadings": [
+          "ま.つ"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is double step (彳 / gyou-nin-ben, 2 angled strokes).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%BE%85"
+      },
+      "pairB": {
+        "id": "kanji_samurai_retainer_g3",
+        "character": "侍",
+        "meanings": [
+          "samurai",
+          "attend upon"
+        ],
+        "onReadings": [
+          "ジ",
+          "シ"
+        ],
+        "kunReadings": [
+          "さむらい"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is single person (亻 / nin-ben, 1 angled stroke).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BE%8D"
+      }
+    },
+    {
+      "id": "grade3_quad_03_island_bird",
+      "category": "Bottom Radical Accent",
+      "pairA": {
+        "id": "kanji_shima_island_g3",
+        "character": "島",
+        "meanings": [
+          "island"
+        ],
+        "onReadings": [
+          "トウ"
+        ],
+        "kunReadings": [
+          "しま"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Bottom component is mountain (山) nestled below the bird frame.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B3%B6"
+      },
+      "pairB": {
+        "id": "kanji_tori_bird_g3",
+        "character": "鳥",
+        "meanings": [
+          "bird"
+        ],
+        "onReadings": [
+          "チョウ"
+        ],
+        "kunReadings": [
+          "とり"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Bottom component consists of four distinct tail-feather dots (灬 / renga).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%B3%A5"
+      }
+    },
+    {
+      "id": "grade3_quad_04_say_reason",
+      "category": "Vertical Pierce Direction",
+      "pairA": {
+        "id": "kanji_mousu_say_g3",
+        "character": "申",
+        "meanings": [
+          "say",
+          "report",
+          "monkey"
+        ],
+        "onReadings": [
+          "シン"
+        ],
+        "kunReadings": [
+          "もう.す",
+          "さる"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Central vertical stroke extends cleanly out of BOTH the top and bottom of the box.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%94%B3"
+      },
+      "pairB": {
+        "id": "kanji_yoshi_reason_g3",
+        "character": "由",
+        "meanings": [
+          "reason",
+          "cause"
+        ],
+        "onReadings": [
+          "ユ",
+          "ユウ"
+        ],
+        "kunReadings": [
+          "よし",
+          "よ.る"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Central vertical stroke extends ONLY out of the TOP of the box.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%94%B1"
+      }
+    },
+    {
+      "id": "grade3_quad_05_slope_board",
+      "category": "Earth vs Tree Radical",
+      "pairA": {
+        "id": "kanji_saka_slope",
+        "character": "坂",
+        "meanings": [
+          "slope",
+          "hill"
+        ],
+        "onReadings": [
+          "ハン"
+        ],
+        "kunReadings": [
+          "さか"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Left radical is earth/ground (土 / tsuchi-hen) alongside 反.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9D%82"
+      },
+      "pairB": {
+        "id": "kanji_ita_board",
+        "character": "板",
+        "meanings": [
+          "board",
+          "plank"
+        ],
+        "onReadings": [
+          "ハン",
+          "バン"
+        ],
+        "kunReadings": [
+          "いた"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is tree/wood (木 / ki-hen) alongside 反.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9D%BF"
+      }
+    },
+    {
+      "id": "grade3_quad_06_pillar_pour",
+      "category": "Tree vs Water Radical",
+      "pairA": {
+        "id": "kanji_hashira_pillar",
+        "character": "柱",
+        "meanings": [
+          "pillar",
+          "post"
+        ],
+        "onReadings": [
+          "チュウ"
+        ],
+        "kunReadings": [
+          "はしら"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Left radical is wood (木) supporting the master (主) component.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9F%B1"
+      },
+      "pairB": {
+        "id": "kanji_soso_pour",
+        "character": "注",
+        "meanings": [
+          "pour",
+          "note",
+          "shed"
+        ],
+        "onReadings": [
+          "チュウ"
+        ],
+        "kunReadings": [
+          "そそ.ぐ",
+          "さ.す"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Left radical is three drops of water (氵 / sanzui) alongside 主.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B3%A8"
+      }
+    },
+    {
+      "id": "grade3_quad_07_duty_throw",
+      "category": "Step vs Hand Radical",
+      "pairA": {
+        "id": "kanji_yaku_duty",
+        "character": "役",
+        "meanings": [
+          "duty",
+          "service",
+          "role"
+        ],
+        "onReadings": [
+          "ヤク",
+          "エキ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 7,
+        "distinctionTip": "Left radical is step (彳 / gyou-nin-ben) alongside 殳.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%BD%B9"
+      },
+      "pairB": {
+        "id": "kanji_nageru_throw",
+        "character": "投",
+        "meanings": [
+          "throw",
+          "cast"
+        ],
+        "onReadings": [
+          "トウ"
+        ],
+        "kunReadings": [
+          "な.げる"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Left radical is hand (扌 / te-hen) alongside 殳.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8A%95"
+      }
+    },
+    {
+      "id": "grade3_quad_08_oil_sake",
+      "category": "Right Component Complexity",
+      "pairA": {
+        "id": "kanji_abura_oil",
+        "character": "油",
+        "meanings": [
+          "oil",
+          "fat"
+        ],
+        "onReadings": [
+          "ユ"
+        ],
+        "kunReadings": [
+          "あぶら"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Right component is 由 (reason, 5 strokes) alongside water (氵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B2%B9"
+      },
+      "pairB": {
+        "id": "kanji_sake_alcohol",
+        "character": "酒",
+        "meanings": [
+          "sake",
+          "alcohol"
+        ],
+        "onReadings": [
+          "シュ"
+        ],
+        "kunReadings": [
+          "さけ",
+          "さか-"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Right component is 酉 (wine vessel / zodiac rooster, 7 strokes) alongside water (氵).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%85%92"
+      }
+    },
+    {
+      "id": "grade3_quad_09_ice_water",
+      "category": "Top-Left Accent Dot",
+      "pairA": {
+        "id": "kanji_koori_ice",
+        "character": "氷",
+        "meanings": [
+          "ice",
+          "hail"
+        ],
+        "onReadings": [
+          "ヒョウ"
+        ],
+        "kunReadings": [
+          "こおり",
+          "ひ"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Features an accent drop dot (丶) in the upper-left quadrant above water.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B0%B7"
+      },
+      "pairB": {
+        "id": "kanji_mizu_water_g3",
+        "character": "水",
+        "meanings": [
+          "water"
+        ],
+        "onReadings": [
+          "スイ"
+        ],
+        "kunReadings": [
+          "みず"
+        ],
+        "strokeCount": 4,
+        "distinctionTip": "Clean four-stroke elemental water kanji with no upper-left drop dot.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%B0%B4"
+      }
+    },
+    {
+      "id": "grade3_quad_10_face_rotate",
+      "category": "Enclosure and Roof Sweep",
+      "pairA": {
+        "id": "kanji_muka_face",
+        "character": "向",
+        "meanings": [
+          "face",
+          "turn toward"
+        ],
+        "onReadings": [
+          "コウ"
+        ],
+        "kunReadings": [
+          "む.く",
+          "む.かう"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Begins with a downward-left diagonal stroke on top of an open-bottom arch enclosing 口.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%90%91"
+      },
+      "pairB": {
+        "id": "kanji_mawa_rotate",
+        "character": "回",
+        "meanings": [
+          "rotate",
+          "times",
+          "revolve"
+        ],
+        "onReadings": [
+          "カイ",
+          "エ"
+        ],
+        "kunReadings": [
+          "まわ.る",
+          "まわ.す"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Formed by concentric closed boxes: full outer square (囗) enclosing inner square (口).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9B%9E"
+      }
+    },
+    {
+      "id": "grade3_quad_11_gather_finger",
+      "category": "Right Component Fit",
+      "pairA": {
+        "id": "kanji_hirowa_gather",
+        "character": "拾",
+        "meanings": [
+          "pick up",
+          "gather"
+        ],
+        "onReadings": [
+          "シュウ",
+          "ジュウ"
+        ],
+        "kunReadings": [
+          "ひろ.う"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Right component is 合 (join / combine / roof + mouth) alongside 扌.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8B%BE"
+      },
+      "pairB": {
+        "id": "kanji_yubi_finger",
+        "character": "指",
+        "meanings": [
+          "finger",
+          "point to"
+        ],
+        "onReadings": [
+          "シ"
+        ],
+        "kunReadings": [
+          "ゆび",
+          "さ.す"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Right component is 旨 (delicious / decree / spoon + sun) alongside 扌.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%8C%87"
+      }
+    },
+    {
+      "id": "grade3_quad_12_short_know",
+      "category": "Right Component (Bean vs Mouth)",
+      "pairA": {
+        "id": "kanji_mijika_short",
+        "character": "短",
+        "meanings": [
+          "short",
+          "brief"
+        ],
+        "onReadings": [
+          "タン"
+        ],
+        "kunReadings": [
+          "みじか.い"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Right component is 豆 (bean / table, 7 strokes) alongside arrow (矢).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9F%AD"
+      },
+      "pairB": {
+        "id": "kanji_shiru_know",
+        "character": "知",
+        "meanings": [
+          "know",
+          "wisdom"
+        ],
+        "onReadings": [
+          "チ"
+        ],
+        "kunReadings": [
+          "し.る"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Right component is 口 (mouth, 3 strokes) alongside arrow (矢).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9F%A5"
+      }
+    },
+    {
+      "id": "grade3_quad_13_second_autumn",
+      "category": "Grain Right Component",
+      "pairA": {
+        "id": "kanji_byou_second",
+        "character": "秒",
+        "meanings": [
+          "second (time)"
+        ],
+        "onReadings": [
+          "ビョウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 9,
+        "distinctionTip": "Right component is 少 (few/little) alongside grain (禾).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%A7%92"
+      },
+      "pairB": {
+        "id": "kanji_aki_autumn",
+        "character": "秋",
+        "meanings": [
+          "autumn",
+          "fall"
+        ],
+        "onReadings": [
+          "シュウ"
+        ],
+        "kunReadings": [
+          "あき"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Right component is 火 (fire) alongside grain (禾).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%A7%8B"
+      }
+    },
+    {
+      "id": "grade3_quad_14_member_buy",
+      "category": "Upper Component Complexity",
+      "pairA": {
+        "id": "kanji_in_member_g3",
+        "character": "員",
+        "meanings": [
+          "member",
+          "employee"
+        ],
+        "onReadings": [
+          "イン"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Top component is a single mouth (口, 3 strokes) sitting over shell (貝).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%93%A1"
+      },
+      "pairB": {
+        "id": "kanji_kau_buy_g3",
+        "character": "買",
+        "meanings": [
+          "buy",
+          "purchase"
+        ],
+        "onReadings": [
+          "バイ"
+        ],
+        "kunReadings": [
+          "か.う"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Top component is net crown (罒 / amigashira, 5 strokes) over shell (貝).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%B2%B7"
+      }
+    },
+    {
+      "id": "grade3_quad_15_center_hero",
+      "category": "Grass Crown Addition",
+      "pairA": {
+        "id": "kanji_nakaba_center",
+        "character": "央",
+        "meanings": [
+          "center",
+          "middle"
+        ],
+        "onReadings": [
+          "オウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 5,
+        "distinctionTip": "Clean five-stroke character with big (大) piercing an open box.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%A4%AE"
+      },
+      "pairB": {
+        "id": "kanji_ei_heroic",
+        "character": "英",
+        "meanings": [
+          "heroic",
+          "English"
+        ],
+        "onReadings": [
+          "エイ"
+        ],
+        "kunReadings": [
+          "はなぶさ"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Features the grass crown radical (艹 / kusakanmuri) capping 央.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%8B%B1"
+      }
+    },
+    {
+      "id": "grade3_quad_16_god_ancestor",
+      "category": "Altar Radical Right Component",
+      "pairA": {
+        "id": "kanji_kami_god",
+        "character": "神",
+        "meanings": [
+          "god",
+          "deity",
+          "spirit"
+        ],
+        "onReadings": [
+          "シン",
+          "ジン"
+        ],
+        "kunReadings": [
+          "かみ",
+          "かん-"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Right component is 申 (say/lightning, pierced central spine) alongside altar (礻).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%A5%9E"
+      },
+      "pairB": {
+        "id": "kanji_so_ancestor",
+        "character": "祖",
+        "meanings": [
+          "ancestor",
+          "origin"
+        ],
+        "onReadings": [
+          "ソ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 9,
+        "distinctionTip": "Right component is 且 (shelf / moreover, ladder rungs) alongside altar (礻).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%A5%96"
+      }
+    },
+    {
+      "id": "grade3_quad_17_warehouse_vehicle",
+      "category": "Cliff Canopy Radical",
+      "pairA": {
+        "id": "kanji_kura_warehouse",
+        "character": "庫",
+        "meanings": [
+          "warehouse",
+          "storehouse"
+        ],
+        "onReadings": [
+          "コ",
+          "ク"
+        ],
+        "kunReadings": [
+          "くら"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Vehicle (車) sheltered underneath the dotted cliff canopy (广).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%BA%AB"
+      },
+      "pairB": {
+        "id": "kanji_kuruma_vehicle_g3",
+        "character": "車",
+        "meanings": [
+          "vehicle",
+          "car"
+        ],
+        "onReadings": [
+          "シャ"
+        ],
+        "kunReadings": [
+          "くるま"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Standalone vehicle character standing freely without any cliff canopy.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%BB%8A"
+      }
+    },
+    {
+      "id": "grade3_quad_18_cropland_field",
+      "category": "Fire Radical Prefix",
+      "pairA": {
+        "id": "kanji_hatake_cropland",
+        "character": "畑",
+        "meanings": [
+          "cropland",
+          "farm field"
+        ],
+        "onReadings": [],
+        "kunReadings": [
+          "はた",
+          "はたけ"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Features fire (火) prefixed directly to the left of rice field (田).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%95%91"
+      },
+      "pairB": {
+        "id": "kanji_ta_field_g3",
+        "character": "田",
+        "meanings": [
+          "rice field",
+          "paddy"
+        ],
+        "onReadings": [
+          "デン"
+        ],
+        "kunReadings": [
+          "た"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Single standalone rice field square with interior cross dividing 4 quadrants.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%94%B0"
+      }
+    }
+  ]
+}

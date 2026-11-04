@@ -9,10 +9,27 @@ import java.io.File
 import java.util.UUID
 import kotlin.random.Random
 
+data class KanjiPackInfo(
+    val id: String,
+    val title: String,
+    val description: String,
+    val quadCount: Int
+)
+
 interface KanjiRepository {
     fun getAllAvailableQuads(): List<KanjiQuad>
     fun generateDeck(dimension: BoardDimension, random: Random = Random.Default): List<BoardCard>
     fun loadInstalledDlcPacks()
+    fun setActivePack(packId: String) {}
+    fun getAvailablePacks(): List<KanjiPackInfo> = listOf(
+        KanjiPackInfo("base_pack", "Base Confusables", "Foundational Jōyō pairs (20 quads, 40 kanji)", 20),
+        KanjiPackInfo("grade_1", "1st-Grade Kanji", "Elementary confusables & Kana traps (18 quads, 36 characters)", 18),
+        KanjiPackInfo("grade_2", "2nd-Grade Kanji", "Elementary confusables & subtle stroke shifts (18 quads, 36 characters)", 18),
+        KanjiPackInfo("grade_3", "3rd-Grade Kanji", "Intermediate radical substitutions & nuance traps (18 quads, 36 characters)", 18),
+        KanjiPackInfo("grade_4", "4th-Grade Kanji", "Intermediate stroke length & component lookalikes (18 quads, 36 characters)", 18),
+        KanjiPackInfo("grade_5", "5th-Grade Kanji", "Advanced radical variations & prefix traps (18 quads, 36 characters)", 18),
+        KanjiPackInfo("grade_6", "6th-Grade Kanji", "Advanced nuance distinctions & structure lookalikes (18 quads, 36 characters)", 18)
+    )
 
     companion object {
         operator fun invoke(context: Context): KanjiRepository = AssetAndFileKanjiRepository(context)
@@ -25,8 +42,11 @@ interface KanjiRepository {
  * Falls back gracefully to DEFAULT_CORE_QUADS if asset pack structure breaks.
  */
 open class AssetAndFileKanjiRepository(
-    private val basePackJsonProvider: () -> String,
-    private val dlcPacksJsonProvider: () -> List<String> = { emptyList() }
+    private val basePackJsonProvider: () -> String = { "" },
+    private val dlcPacksJsonProvider: () -> List<String> = { emptyList() },
+    private val packJsonProvider: (String) -> String = { packId ->
+        if (packId == "base_pack") basePackJsonProvider() else ""
+    }
 ) : KanjiRepository {
 
     constructor(context: Context) : this(
@@ -55,20 +75,55 @@ open class AssetAndFileKanjiRepository(
             } catch (e: Exception) {
                 emptyList()
             }
+        },
+        packJsonProvider = { packId ->
+            try {
+                val fileName = when (packId) {
+                    "grade_1" -> "grade_1.json"
+                    "grade_2" -> "grade_2.json"
+                    "grade_3" -> "grade_3.json"
+                    "grade_4" -> "grade_4.json"
+                    "grade_5" -> "grade_5.json"
+                    "grade_6" -> "grade_6.json"
+                    else -> "kanji_base_pack.json"
+                }
+                context.assets.open(fileName).bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                try {
+                    val file = File(File(context.filesDir, "dlc_packs"), "$packId.json")
+                    if (file.exists()) file.readText() else ""
+                } catch (e2: Exception) {
+                    ""
+                }
+            }
         }
     )
 
     private val baseQuads = mutableListOf<KanjiQuad>()
     private val dlcQuads = mutableListOf<KanjiQuad>()
+    private var activePackId: String = "base_pack"
 
     init {
-        loadBasePack()
+        loadActivePack()
         loadInstalledDlcPacks()
     }
 
-    private fun loadBasePack() {
+    override fun setActivePack(packId: String) {
+        if (activePackId != packId) {
+            activePackId = packId
+            loadActivePack()
+        }
+    }
+
+    private fun loadActivePack() {
         try {
-            val json = basePackJsonProvider()
+            val json = if (activePackId == "base_pack") {
+                val direct = basePackJsonProvider()
+                if (direct.isNotBlank()) direct else packJsonProvider("base_pack")
+            } else {
+                val direct = packJsonProvider(activePackId)
+                if (direct.isNotBlank()) direct else basePackJsonProvider()
+            }
             val parsed = KanjiQuadParser.parseQuads(json)
             baseQuads.clear()
             if (parsed.size >= BoardDimension.EIGHT_BY_EIGHT.requiredQuads) {

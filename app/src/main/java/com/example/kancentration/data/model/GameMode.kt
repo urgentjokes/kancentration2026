@@ -35,5 +35,6 @@ data class GameSettings(
     val tileColor: Long = 0xFFFFFFFFL,      // Default White
     val kanjiColor: Long = 0xFFD4AF37L,      // Default Gold (#D4AF37)
     val mismatchDelayMs: Long = 1150L,       // Duration (ms) failed match stays exposed
-    val showStrokeCount: Boolean = true      // Toggle stroke-count badge in Inspector
+    val showStrokeCount: Boolean = true,     // Toggle stroke-count badge in Inspector
+    val selectedPackId: String = "base_pack" // Selected Kanji card pack
 )

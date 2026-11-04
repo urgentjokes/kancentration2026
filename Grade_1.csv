@@ -1,0 +1,81 @@
+#,Kanji,Meaning,On'yomi,Kun'yomi,Strokes
+1,一,one,"ichi, itsu",hito-tsu,1
+2,二,two,"ni, ji",futa-tsu,2
+3,三,three,san,mit-tsu,3
+4,四,four,shi,"yot-tsu, yon",5
+5,五,five,go,itsu-tsu,4
+6,六,six,roku,mut-tsu,4
+7,七,seven,shichi,"nana-tsu, nana",2
+8,八,eight,hachi,yat-tsu,2
+9,九,nine,"ku, kyū",kokono-tsu,2
+10,十,ten,jū,tō,2
+11,百,hundred,hyaku,momo,6
+12,千,thousand,sen,chi,3
+13,上,"top, above",jō,ue,3
+14,下,"bottom, below","ka, ge","shita, shimo, moto",3
+15,左,left,sa,hidari,5
+16,右,right,"u, yū",migi,5
+17,中,"inside, middle","chū, jū",naka,4
+18,大,large,"dai, tai","ō-kii, ō",3
+19,小,small,shō,"chii-sai, ko, o",3
+20,月,"month, moon","gatsu, getsu",tsuki,4
+21,日,"day, sun","nichi, jitsu","hi, ka",4
+22,年,year,nen,toshi,6
+23,早,early,"sō, sa",haya-i,6
+24,木,tree,"moku, boku",ki,4
+25,林,woods,rin,hayashi,8
+26,山,mountain,san,yama,3
+27,川,river,sen,kawa,3
+28,土,soil,"to, do",tsuchi,3
+29,空,"sky, empty",kū,"sora, a-ku, kara",8
+30,田,rice field,den,"da, ta",5
+31,天,"heaven, sky",ten,"ame, ama",4
+32,生,"living, birth, raw","sei, shō","i-kiru, u-mu, nama",5
+33,花,flower,ka,hana,7
+34,草,grass,sō,kusa,9
+35,虫,insect,chū,mushi,6
+36,犬,dog,ken,inu,4
+37,人,person,"jin, nin",hito,2
+38,名,name,"mei, myō",na,6
+39,女,female,"jo, nyo",on'na,3
+40,男,male,"dan, nan",otoko,7
+41,子,child,"shi, su",ko,3
+42,目,eye,moku,me,5
+43,耳,ear,"ji, ni",mimi,6
+44,口,mouth,kō,kuchi,3
+45,手,hand,shu,te,4
+46,足,"foot, suffice",soku,"ashi, ta-riru",7
+47,見,see,"ken, gen",mi-ru,7
+48,音,sound,on,"ne, oto",9
+49,力,power,"riki, ryoku",chikara,2
+50,気,"spirit, air","ki, ke",iki,6
+51,円,"yen, circle",en,maru,4
+52,入,enter,nyū,"hai-ru, i-ru",2
+53,出,exit,shutsu,de-ru,5
+54,立,stand up,ritsu,ta-tsu,5
+55,休,rest,kyū,yasu-mu,6
+56,先,previous,sen,saki,6
+57,夕,evening,seki,yū,3
+58,本,book,hon,moto,5
+59,文,text,"bun, mon",fumi,4
+60,字,character,ji,aza,6
+61,学,study,gaku,mana-bu,8
+62,校,school,kō,kase,10
+63,村,village,son,mura,7
+64,町,town,chō,machi,7
+65,森,forest,shin,mori,12
+66,正,correct,"sei, shō","tada-shii, masa",5
+67,水,water,sui,mizu,4
+68,火,fire,ka,hi,4
+69,玉,"jewel, ball",gyoku,tama,5
+70,王,king,ō,kimi,4
+71,石,stone,"seki, koku",ishi,5
+72,竹,bamboo,chiku,take,6
+73,糸,thread,shi,ito,6
+74,貝,shellfish,bai,kai,7
+75,車,vehicle,sha,kuruma,7
+76,金,"gold, money",kin,"kane, kana",8
+77,雨,rain,u,"ame, ama",8
+78,赤,red,seki,aka,7
+79,青,blue,"sei, shō",ao,8
+80,白,white,haku,"shiro, shira",5

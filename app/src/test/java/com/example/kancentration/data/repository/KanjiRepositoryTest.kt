@@ -203,4 +203,19 @@ class KanjiRepositoryTest {
             assertEquals("Twin cards must share the same quadId as card", card.quadId, matchingTwinCards[0].quadId)
         }
     }
+
+    @Test
+    fun testSwitchToGrade1Pack() {
+        val grade1File = File("src/main/assets/grade_1.json")
+        val grade1Json = if (grade1File.exists()) grade1File.readText() else File("app/src/main/assets/grade_1.json").readText()
+        val repo = DefaultKanjiRepository(
+            basePackJsonProvider = { "" },
+            packJsonProvider = { packId -> if (packId == "grade_1") grade1Json else "" }
+        )
+        repo.setActivePack("grade_1")
+        val quads = repo.getAllAvailableQuads()
+        assertEquals(18, quads.size)
+        val deck = repo.generateDeck(BoardDimension.FOUR_BY_FOUR)
+        assertEquals(16, deck.size)
+    }
 }

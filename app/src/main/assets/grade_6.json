@@ -1,0 +1,721 @@
+{
+  "packId": "grade_6",
+  "packName": "6th-Grade Confusable Kanji",
+  "version": 1,
+  "description": "Visually confusable Kanji pairs focusing on 6th-grade Japanese elementary school kanji (subtle radical variations, component substitutions, and structural traps).",
+  "quads": [
+    {
+      "id": "grade6_quad_01_ticket_scroll",
+      "category": "Bottom Radical Variation (刀 Knife vs 己 Self)",
+      "pairA": {
+        "id": "kanji_ken_ticket",
+        "character": "券",
+        "meanings": [
+          "ticket",
+          "coupon",
+          "certificate"
+        ],
+        "onReadings": [
+          "ケン"
+        ],
+        "kunReadings": [],
+        "strokeCount": 8,
+        "distinctionTip": "Bottom component is knife (刀) beneath 𠔉.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%88%B8"
+      },
+      "pairB": {
+        "id": "kanji_maki_scroll",
+        "character": "巻",
+        "meanings": [
+          "scroll",
+          "volume",
+          "roll up"
+        ],
+        "onReadings": [
+          "カン"
+        ],
+        "kunReadings": [
+          "ま・く",
+          "まき"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Bottom component is self/kneeling person (己) beneath 𠔉.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B7%BB"
+      }
+    },
+    {
+      "id": "grade6_quad_02_inhale_call",
+      "category": "Right Component Variation (及 Reach vs 乎 Call)",
+      "pairA": {
+        "id": "kanji_suu_inhale",
+        "character": "吸",
+        "meanings": [
+          "suck",
+          "inhale",
+          "breathe in"
+        ],
+        "onReadings": [
+          "キュウ"
+        ],
+        "kunReadings": [
+          "す・う"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Features reach/catch up (及) alongside the mouth radical (口).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%90%B8"
+      },
+      "pairB": {
+        "id": "kanji_yobu_call",
+        "character": "呼",
+        "meanings": [
+          "call",
+          "call out to",
+          "invite"
+        ],
+        "onReadings": [
+          "コ"
+        ],
+        "kunReadings": [
+          "よ・ぶ"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Features 乎 alongside the mouth radical (口).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%91%BC"
+      }
+    },
+    {
+      "id": "grade6_quad_03_space_universe",
+      "category": "Interior Component under Roof (于 vs 由)",
+      "pairA": {
+        "id": "kanji_u_space",
+        "character": "宇",
+        "meanings": [
+          "eaves",
+          "roof",
+          "universe"
+        ],
+        "onReadings": [
+          "ウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 6,
+        "distinctionTip": "Contains 于 beneath the roof radical (宀).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%AE%87"
+      },
+      "pairB": {
+        "id": "kanji_chuu_universe",
+        "character": "宙",
+        "meanings": [
+          "mid-air",
+          "air",
+          "space",
+          "sky"
+        ],
+        "onReadings": [
+          "チュウ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 8,
+        "distinctionTip": "Contains 由 beneath the roof radical (宀).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%AE%99"
+      }
+    },
+    {
+      "id": "grade6_quad_04_government_office_author",
+      "category": "Top Radical Variation (罒 Net vs 艹 Grass)",
+      "pairA": {
+        "id": "kanji_sho_government_office",
+        "character": "署",
+        "meanings": [
+          "government office",
+          "police station",
+          "sign"
+        ],
+        "onReadings": [
+          "ショ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 13,
+        "distinctionTip": "Features the net radical (罒) on top of 者.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%BD%B2"
+      },
+      "pairB": {
+        "id": "kanji_cho_author",
+        "character": "著",
+        "meanings": [
+          "author",
+          "write",
+          "remarkable"
+        ],
+        "onReadings": [
+          "チョ",
+          "チャク"
+        ],
+        "kunReadings": [
+          "あらわ・す",
+          "いちじる・しい"
+        ],
+        "strokeCount": 11,
+        "distinctionTip": "Features the grass radical (艹) on top of 者.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%91%97"
+      }
+    },
+    {
+      "id": "grade6_quad_05_region_castle",
+      "category": "Right Component Variation (或 Spear vs 成 Become)",
+      "pairA": {
+        "id": "kanji_iki_region",
+        "character": "域",
+        "meanings": [
+          "region",
+          "zone",
+          "limit"
+        ],
+        "onReadings": [
+          "イキ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 11,
+        "distinctionTip": "Features 或 alongside the earth radical (土).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9F%9F"
+      },
+      "pairB": {
+        "id": "kanji_shiro_castle",
+        "character": "城",
+        "meanings": [
+          "castle"
+        ],
+        "onReadings": [
+          "ジョウ"
+        ],
+        "kunReadings": [
+          "しろ"
+        ],
+        "strokeCount": 9,
+        "distinctionTip": "Features become (成) alongside the earth radical (土).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%9F%8E"
+      }
+    },
+    {
+      "id": "grade6_quad_06_divide_harm",
+      "category": "Knife Radical Suffix (刂 Knife vs None)",
+      "pairA": {
+        "id": "kanji_waru_divide",
+        "character": "割",
+        "meanings": [
+          "proportion",
+          "divide",
+          "cut"
+        ],
+        "onReadings": [
+          "カツ"
+        ],
+        "kunReadings": [
+          "わ・る",
+          "わ・れる",
+          "わり"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Adds the knife radical (刂) to the right of 害.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%89%B2"
+      },
+      "pairB": {
+        "id": "kanji_gai_harm",
+        "character": "害",
+        "meanings": [
+          "harm",
+          "injury",
+          "damage"
+        ],
+        "onReadings": [
+          "ガイ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Standalone character without the knife radical (刂) on the right.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%AE%B3"
+      }
+    },
+    {
+      "id": "grade6_quad_07_create_storehouse",
+      "category": "Knife Radical Suffix (刂 Knife vs None)",
+      "pairA": {
+        "id": "kanji_tsukuru_create",
+        "character": "創",
+        "meanings": [
+          "create",
+          "originate",
+          "genesis"
+        ],
+        "onReadings": [
+          "ソウ"
+        ],
+        "kunReadings": [
+          "つく・る"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Adds the knife radical (刂) to the right of 倉.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%89%B5"
+      },
+      "pairB": {
+        "id": "kanji_kura_storehouse",
+        "character": "倉",
+        "meanings": [
+          "storehouse",
+          "godown",
+          "warehouse"
+        ],
+        "onReadings": [
+          "ソウ"
+        ],
+        "kunReadings": [
+          "くら"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Standalone character without the knife radical (刂) on the right.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%80%89"
+      }
+    },
+    {
+      "id": "grade6_quad_08_measure_exhaust",
+      "category": "Bottom Accent Dots (None vs 冫 Two Dots)",
+      "pairA": {
+        "id": "kanji_shaku_measure",
+        "character": "尺",
+        "meanings": [
+          "shaku (unit of measure)",
+          "scale",
+          "rule"
+        ],
+        "onReadings": [
+          "シャク"
+        ],
+        "kunReadings": [],
+        "strokeCount": 4,
+        "distinctionTip": "Four strokes ending cleanly with a sweeping leg and hook.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B0%BA"
+      },
+      "pairB": {
+        "id": "kanji_tsukiru_exhaust",
+        "character": "尽",
+        "meanings": [
+          "exhaust",
+          "use up",
+          "run out of"
+        ],
+        "onReadings": [
+          "ジン"
+        ],
+        "kunReadings": [
+          "つ・きる",
+          "つ・くす"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Adds two diagonal accent dots (冫) under the 尺 frame.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B0%BD"
+      }
+    },
+    {
+      "id": "grade6_quad_09_egg_hare",
+      "category": "Interior Accent Dots and Hook",
+      "pairA": {
+        "id": "kanji_tamago_egg",
+        "character": "卵",
+        "meanings": [
+          "egg",
+          "ovum",
+          "spawn"
+        ],
+        "onReadings": [
+          "ラン"
+        ],
+        "kunReadings": [
+          "たまご"
+        ],
+        "strokeCount": 7,
+        "distinctionTip": "Contains interior dots and an inner upward hook stroke.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8D%B5"
+      },
+      "pairB": {
+        "id": "kanji_u_hare",
+        "character": "卯",
+        "meanings": [
+          "sign of the hare / rabbit",
+          "east"
+        ],
+        "onReadings": [
+          "ボウ",
+          "モウ"
+        ],
+        "kunReadings": [
+          "う"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Clean open frames without inner dots or hooks.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8D%8F"
+      }
+    },
+    {
+      "id": "grade6_quad_10_deliver_yield",
+      "category": "Internal Radical under Corpse (由 Field vs 出 Exit)",
+      "pairA": {
+        "id": "kanji_todokeru_deliver",
+        "character": "届",
+        "meanings": [
+          "deliver",
+          "report",
+          "reach"
+        ],
+        "onReadings": [
+          "カイ"
+        ],
+        "kunReadings": [
+          "とど・ける",
+          "とど・く"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Contains 由 under the corpse radical (尸).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B1%8A"
+      },
+      "pairB": {
+        "id": "kanji_kussuru_yield",
+        "character": "屈",
+        "meanings": [
+          "yield",
+          "bend",
+          "flinch",
+          "submit"
+        ],
+        "onReadings": [
+          "クツ"
+        ],
+        "kunReadings": [
+          "かが・む"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Contains 出 under the corpse radical (尸).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B1%88"
+      }
+    },
+    {
+      "id": "grade6_quad_11_diligence_encourage",
+      "category": "Left Component Variation (堇 vs 雚 alongside 力)",
+      "pairA": {
+        "id": "kanji_tsutomeru_diligence",
+        "character": "勤",
+        "meanings": [
+          "diligence",
+          "employed",
+          "serve"
+        ],
+        "onReadings": [
+          "キン",
+          "ゴン"
+        ],
+        "kunReadings": [
+          "つと・める",
+          "つと・まる"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features 堇 on the left alongside power (力).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8B%A4"
+      },
+      "pairB": {
+        "id": "kanji_susumeru_encourage",
+        "character": "勧",
+        "meanings": [
+          "persuade",
+          "recommend",
+          "encourage"
+        ],
+        "onReadings": [
+          "カン"
+        ],
+        "kunReadings": [
+          "すす・める"
+        ],
+        "strokeCount": 13,
+        "distinctionTip": "Features 雚 (with grass 艹 atop) on the left alongside power (力).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8B%A7"
+      }
+    },
+    {
+      "id": "grade6_quad_12_engrave_impeach",
+      "category": "Right Radical Variation (刂 Knife vs 力 Power)",
+      "pairA": {
+        "id": "kanji_kizamu_engrave",
+        "character": "刻",
+        "meanings": [
+          "engrave",
+          "cut fine",
+          "time"
+        ],
+        "onReadings": [
+          "コク"
+        ],
+        "kunReadings": [
+          "きざ・む"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Features knife (刂) on the right alongside 亥.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%88%BB"
+      },
+      "pairB": {
+        "id": "kanji_koku_impeach",
+        "character": "劾",
+        "meanings": [
+          "impeach",
+          "censure",
+          "investigate crime"
+        ],
+        "onReadings": [
+          "ガイ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 8,
+        "distinctionTip": "Features power (力) on the right alongside 亥.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8A%BE"
+      }
+    },
+    {
+      "id": "grade6_quad_13_sack_surface",
+      "category": "Person Radical Prefix (亻 Person vs None)",
+      "pairA": {
+        "id": "kanji_tawara_sack",
+        "character": "俵",
+        "meanings": [
+          "bag",
+          "bale",
+          "sack"
+        ],
+        "onReadings": [
+          "ヒョウ"
+        ],
+        "kunReadings": [
+          "たわら"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Adds the person radical (亻) on the left of 表.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E4%BF%B5"
+      },
+      "pairB": {
+        "id": "kanji_omote_surface",
+        "character": "表",
+        "meanings": [
+          "surface",
+          "table",
+          "express",
+          "outside"
+        ],
+        "onReadings": [
+          "ヒョウ"
+        ],
+        "kunReadings": [
+          "おもて",
+          "あらわ・す"
+        ],
+        "strokeCount": 8,
+        "distinctionTip": "Standalone character without the person radical (亻) on the left.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%A1%A8"
+      }
+    },
+    {
+      "id": "grade6_quad_14_value_plant",
+      "category": "Left Radical Variation (亻 Person vs 木 Tree)",
+      "pairA": {
+        "id": "kanji_atai_value",
+        "character": "値",
+        "meanings": [
+          "price",
+          "cost",
+          "value"
+        ],
+        "onReadings": [
+          "チ"
+        ],
+        "kunReadings": [
+          "ね",
+          "あたい"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Features the person radical (亻) on the left of 直.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%80%A4"
+      },
+      "pairB": {
+        "id": "kanji_ueru_plant",
+        "character": "植",
+        "meanings": [
+          "plant",
+          "grow"
+        ],
+        "onReadings": [
+          "ショク"
+        ],
+        "kunReadings": [
+          "う・える",
+          "う・わる"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features the tree radical (木) on the left of 直.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%A4%8D"
+      }
+    },
+    {
+      "id": "grade6_quad_15_cut_plant_cultivate",
+      "category": "Bottom-Right Component (衣 Clothing vs 木 Tree)",
+      "pairA": {
+        "id": "kanji_sabaku_cut",
+        "character": "裁",
+        "meanings": [
+          "tailor",
+          "judge",
+          "cut out"
+        ],
+        "onReadings": [
+          "サイ"
+        ],
+        "kunReadings": [
+          "た・つ",
+          "さば・く"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features clothing (衣) at the bottom-right inside 𢦏.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E8%A3%81"
+      },
+      "pairB": {
+        "id": "kanji_sai_plant",
+        "character": "栽",
+        "meanings": [
+          "plant",
+          "cultivate",
+          "grow"
+        ],
+        "onReadings": [
+          "サイ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Features tree (木) at the bottom-right inside 𢦏.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%A0%BD"
+      }
+    },
+    {
+      "id": "grade6_quad_16_desk_tag",
+      "category": "Right Component Variation (几 Table vs 乚 Tag Hook)",
+      "pairA": {
+        "id": "kanji_tsukue_desk",
+        "character": "机",
+        "meanings": [
+          "desk",
+          "table"
+        ],
+        "onReadings": [
+          "キ"
+        ],
+        "kunReadings": [
+          "つくえ"
+        ],
+        "strokeCount": 6,
+        "distinctionTip": "Features the table radical (几) on the right of tree (木).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%BA"
+      },
+      "pairB": {
+        "id": "kanji_fuda_tag",
+        "character": "札",
+        "meanings": [
+          "tag",
+          "paper money",
+          "placard",
+          "slip"
+        ],
+        "onReadings": [
+          "サツ"
+        ],
+        "kunReadings": [
+          "ふだ"
+        ],
+        "strokeCount": 5,
+        "distinctionTip": "Features the hook base stroke (乚) with a slant on the right of tree (木).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E6%9C%AD"
+      }
+    },
+    {
+      "id": "grade6_quad_17_imperial_steps_stairs",
+      "category": "Bottom Component under 比 (土 Earth vs 白 White)",
+      "pairA": {
+        "id": "kanji_hei_imperial_steps",
+        "character": "陛",
+        "meanings": [
+          "highness",
+          "imperial palace steps"
+        ],
+        "onReadings": [
+          "ヘイ"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Features earth (土) at the bottom beneath 比 alongside 阝.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%99%9B"
+      },
+      "pairB": {
+        "id": "kanji_kai_stairs",
+        "character": "階",
+        "meanings": [
+          "stairs",
+          "storey",
+          "floor",
+          "grade"
+        ],
+        "onReadings": [
+          "カイ"
+        ],
+        "kunReadings": [
+          "きざはし"
+        ],
+        "strokeCount": 12,
+        "distinctionTip": "Features white (白) at the bottom beneath 比 alongside 阝.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E9%9A%8E"
+      }
+    },
+    {
+      "id": "grade6_quad_18_pure_settle",
+      "category": "Right Component Variation (屯 Barracks vs 内 Inside)",
+      "pairA": {
+        "id": "kanji_jun_pure",
+        "character": "純",
+        "meanings": [
+          "pure",
+          "genuine",
+          "innocent"
+        ],
+        "onReadings": [
+          "ジュン"
+        ],
+        "kunReadings": [],
+        "strokeCount": 10,
+        "distinctionTip": "Features barracks (屯) on the right alongside silk (糸).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%B4%94"
+      },
+      "pairB": {
+        "id": "kanji_osameru_settle",
+        "character": "納",
+        "meanings": [
+          "settlement",
+          "obtain",
+          "reap",
+          "pay"
+        ],
+        "onReadings": [
+          "ノウ",
+          "ナッ"
+        ],
+        "kunReadings": [
+          "おさ・める"
+        ],
+        "strokeCount": 10,
+        "distinctionTip": "Features inside (内) on the right alongside silk (糸).",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%B4%8D"
+      }
+    }
+  ]
+}
