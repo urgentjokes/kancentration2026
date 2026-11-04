@@ -380,7 +380,7 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Column {
-                            Text(text = "2-Player (pass & play)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                            Text(text = "2-Player (Pass & play)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
