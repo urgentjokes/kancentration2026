@@ -134,6 +134,16 @@ Directly beneath the game board (occupying ~26% of screen height, fixed so the b
   - Shows **Preview Sample Quads** on each pack card (e.g., `社 vs 初`, `崇 vs 祟`) so players can preview the content.
   - Supports download progress indicator and instant integration into `KanjiRepository`.
 
+### G. Post-Game Flash Cards Screen
+- Opened via the **`Flash cards`** chip in the Victory banner.
+- Displays all kanji that appeared over the course of the game (`cards.map { it.kanji }.distinctBy { it.id }`).
+- For each kanji, renders a dedicated card matching the information from the Kanji Inspector:
+  - **Kanji Seal Tile**: Styled Hanko tile with Wiktionary link. Tapping the tile opens the entry on Wiktionary (`Intent.ACTION_VIEW`).
+  - **Definition & Reading Text**: English meanings, stroke count badge (`画`), on'yomi and kun'yomi readings, and distinction tip (`💡`).
+  - **Interactive Toggle**: Touching anywhere else on the card toggles definition and reading text on/off (allowing learners to self-quiz on the kanji).
+  - **Romaji Respect**: Romaji transliterations are displayed or hidden according to the `showRomaji` setting in Settings.
+  - **Batch Controls**: Includes a "Reveal All / Hide All" batch toggle for flexible review.
+
 ---
 
 ## 5. Software Architecture Plan

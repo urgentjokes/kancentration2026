@@ -11,3 +11,6 @@
 
 ## Connected Hardware & Devices
 - **User's Phone (`SM-S948U`)**: Samsung Galaxy S26 Ultra (not S24).
+
+## Build & Device Deployment
+- **Automatic Deployment to Phone**: After completing code changes requested by the user, build and push/install the app to the user's phone (`SM-S948U` / Samsung Galaxy S26 Ultra), launching the updated build. (Note: this is deploying via `adb install` to the physical phone, NOT a `git commit` or `git push` to version control).

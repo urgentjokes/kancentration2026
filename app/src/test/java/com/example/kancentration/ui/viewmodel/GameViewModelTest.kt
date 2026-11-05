@@ -542,4 +542,34 @@ class GameViewModelTest {
         assertEquals("grade_1", viewModel.uiState.value.settings.selectedPackId)
         assertEquals("grade_1", settingsRepo.loadSettings().selectedPackId)
     }
+
+    @Test
+    fun testShowFlashCardsScreenStateAndKanjiExtraction() = runTest {
+        val quads = createTestQuads()
+        val kanjiRepo = FakeKanjiRepository(quads)
+        val settingsRepo = InMemorySettingsRepository()
+        val viewModel = GameViewModel(
+            repository = kanjiRepo,
+            settingsRepository = settingsRepo,
+            dlcManager = FakeDlcManager(),
+            soundManager = NoOpSoundPlayer(),
+            coroutineScope = backgroundScope
+        )
+
+        assertFalse(viewModel.uiState.value.showFlashCardsScreen)
+
+        viewModel.setShowFlashCardsScreen(true)
+        assertTrue(viewModel.uiState.value.showFlashCardsScreen)
+
+        // Verify distinct kanji from the board cards
+        val distinctKanji = viewModel.uiState.value.cards.map { it.kanji }.distinctBy { it.id }
+        assertEquals(8, distinctKanji.size)
+        distinctKanji.forEach { kanji ->
+            assertTrue(kanji.character.isNotEmpty())
+            assertTrue(kanji.wiktionaryUrl.contains("en.wiktionary.org/wiki/"))
+        }
+
+        viewModel.setShowFlashCardsScreen(false)
+        assertFalse(viewModel.uiState.value.showFlashCardsScreen)
+    }
 }

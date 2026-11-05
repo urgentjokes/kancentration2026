@@ -352,7 +352,7 @@
           <div class="w-full h-full rounded-xl bg-[#ECFDF5] border border-[#2A6F4E] px-3 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-[#14532D]">🎉 Victory!</span>
-              <span class="px-2 py-0.5 rounded-full bg-white border border-[#2A6F4E]/50 text-[#14532D] text-[10px] font-semibold cursor-pointer">Flash cards</span>
+              <span onclick="openFlashCards()" class="px-2 py-0.5 rounded-full bg-white border border-[#2A6F4E]/50 text-[#14532D] text-[10px] font-semibold cursor-pointer hover:bg-[#F1F8E9]">Flash cards</span>
             </div>
             <button onclick="resetDemoBoard()" class="px-2.5 py-1 rounded-full bg-[#2A6F4E] text-white text-xs font-bold hover:opacity-90">
               Play Again ↻
@@ -639,9 +639,72 @@
             </div>
           </div>
         `;
+      } else if (state.screen === 'flashcards') {
+        overlay.classList.remove('hidden');
+        const distinctKanji = [];
+        const seen = new Set();
+        state.cards.forEach(c => {
+          if (!seen.has(c.kanji.char)) {
+            seen.add(c.kanji.char);
+            distinctKanji.push(c.kanji);
+          }
+        });
+        overlay.innerHTML = `
+          <div class="bg-[#FAF8F5] rounded-t-3xl border-t border-[#DCD5C7] p-4 space-y-3 max-h-[92%] overflow-y-auto shadow-2xl">
+            <div class="flex items-center justify-between border-b border-[#E5E0D5] pb-2">
+              <div class="flex items-center gap-2">
+                <button onclick="setScreen('game')" class="px-3 py-1 rounded-full border border-[#DCD5C7] text-xs font-bold text-[#44403C]">← Back</button>
+                <h3 class="text-base font-bold text-[#18181B] kanji-serif">Flash Cards</h3>
+                <span class="px-2 py-0.5 rounded-full bg-[#2A6F4E]/10 text-[#2A6F4E] text-xs font-bold">${distinctKanji.length} Kanji</span>
+              </div>
+              <button onclick="toggleAllFlashCards()" class="text-xs font-semibold text-[#1E3A5F]">Toggle All</button>
+            </div>
+            <div class="space-y-3">
+              ${distinctKanji.map((k, idx) => `
+                <div onclick="toggleFlashCard(${idx})" class="p-3 rounded-2xl bg-white border border-[#DCD5C7] shadow-sm flex items-start gap-3 cursor-pointer hover:border-[#1E3A5F]">
+                  <div onclick="event.stopPropagation(); window.open('${k.url}', '_blank');" class="w-14 h-14 rounded-xl bg-[#FAF9F5] border border-[#1E3A5F] flex flex-col items-center justify-center shadow-sm cursor-pointer hover:bg-white" title="Open Wiktionary">
+                    <span class="text-2xl font-bold ${state.useSerif ? 'kanji-serif' : 'kanji-sans'} text-[#18181B]">${k.char}</span>
+                    <span class="text-[9px] text-[#1E3A5F] font-bold">Wiktionary ↗</span>
+                  </div>
+                  <div class="flex-1" id="fc-details-${idx}">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-bold text-[#18181B]">${k.meaning}</span>
+                      <span class="text-[11px] font-bold text-[#78716C] bg-[#F5F2EB] px-2 py-0.5 rounded">${k.strokes}画</span>
+                    </div>
+                    <div class="text-xs font-semibold text-[#1E3A5F] mt-1">on: ${state.showRomaji ? k.onKana + ' (' + k.onRomaji + ')' : k.onKana}</div>
+                    <div class="text-xs font-semibold text-[#C83E2B]">kun: ${state.showRomaji ? k.kunKana + ' (' + k.kunRomaji + ')' : k.kunKana}</div>
+                    <div class="text-[11px] text-[#78716C] mt-1">💡 ${k.tip}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
       } else {
         overlay.classList.add('hidden');
       }
+    }
+
+    let fcAllVisible = true;
+    function openFlashCards() {
+      state.screen = 'flashcards';
+      renderAll();
+    }
+    function toggleFlashCard(idx) {
+      const el = document.getElementById(`fc-details-${idx}`);
+      if (!el) return;
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+    function toggleAllFlashCards() {
+      fcAllVisible = !fcAllVisible;
+      document.querySelectorAll('[id^="fc-details-"]').forEach(el => {
+        if (fcAllVisible) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      });
     }
 
     function onCardTap(idx) {

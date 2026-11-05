@@ -72,6 +72,14 @@ fun GameScreen(
             onDismiss = { viewModel.setShowSettingsDialog(false) },
             modifier = modifier
         )
+    } else if (uiState.showFlashCardsScreen) {
+        FlashCardsScreen(
+            cards = uiState.cards,
+            settings = uiState.settings,
+            onWiktionaryClick = { viewModel.onOpenWiktionary() },
+            onDismiss = { viewModel.setShowFlashCardsScreen(false) },
+            modifier = modifier
+        )
     } else {
         Scaffold(
             modifier = modifier
@@ -181,6 +189,7 @@ fun GameScreen(
                                     uiState = uiState,
                                     onRestart = { viewModel.startNewGame() },
                                     onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
+                                    onFlashCards = { viewModel.setShowFlashCardsScreen(true) },
                                     isPhoneLandscape = !isTablet
                                 )
                             }
@@ -242,6 +251,7 @@ fun GameScreen(
                                 uiState = uiState,
                                 onRestart = { viewModel.startNewGame() },
                                 onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
+                                onFlashCards = { viewModel.setShowFlashCardsScreen(true) },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }

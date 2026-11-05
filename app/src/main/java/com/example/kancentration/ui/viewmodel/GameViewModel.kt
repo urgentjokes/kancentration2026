@@ -221,7 +221,7 @@ class GameViewModel(
     fun onResumeApp() {
         val state = _uiState.value
         val hasStarted = state.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE
-        if (hasStarted && !state.isGameOver && timerManager.isPaused.value && !state.showSettingsDialog && !state.showDlcStoreDialog) {
+        if (hasStarted && !state.isGameOver && timerManager.isPaused.value && !state.showSettingsDialog && !state.showDlcStoreDialog && !state.showFlashCardsScreen) {
             timerManager.resume()
         }
     }
@@ -506,6 +506,15 @@ class GameViewModel(
             timerManager.resume()
         }
         _uiState.update { it.copy(showDlcStoreDialog = show) }
+    }
+
+    fun setShowFlashCardsScreen(show: Boolean) {
+        if (show && timerManager.isRunning) {
+            timerManager.pause()
+        } else if (!show && timerManager.isPaused.value && !_uiState.value.isGameOver && _uiState.value.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
+            timerManager.resume()
+        }
+        _uiState.update { it.copy(showFlashCardsScreen = show) }
     }
 
     fun downloadDlcPack(pack: DlcPackItem) {

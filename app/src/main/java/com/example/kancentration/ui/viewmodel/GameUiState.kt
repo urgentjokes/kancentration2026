@@ -40,7 +40,8 @@ data class GameUiState(
     val isTimerLowWarning: Boolean = false,
     val turnPhase: TurnPhase = TurnPhase.IDLE_AWAITING_FIRST_MOVE,
     val showSettingsDialog: Boolean = false,
-    val showDlcStoreDialog: Boolean = false
+    val showDlcStoreDialog: Boolean = false,
+    val showFlashCardsScreen: Boolean = false
 ) {
     val totalPairs: Int get() = cards.size / 2
     val isTwoPlayer: Boolean get() = settings.gameType is GameType.TwoPlayer
