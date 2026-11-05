@@ -30,16 +30,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kancentration.data.model.KanjiData
+import com.example.kancentration.theme.AizomeIndigo
 import com.example.kancentration.theme.AmberTwinTrap
 import com.example.kancentration.theme.AmberTwinTrapSurface
+import com.example.kancentration.theme.SumiCharcoal
 import com.example.kancentration.theme.TakeBamboo
 import com.example.kancentration.theme.TakeBambooSurface
+import com.example.kancentration.theme.WashiPaper
 import com.example.kancentration.ui.viewmodel.GameUiState
 
 /**
@@ -47,7 +52,7 @@ import com.example.kancentration.ui.viewmodel.GameUiState
  * alert banner when activeTwinTrapBanner is populated, and a compact celebration /
  * time-up banner when the game ends.
  *
- * Designed with a strict fixed height (46.dp on phone landscape) to guarantee zero layout shift of the board grid.
+ * Designed with a strict fixed height (46.dp on phones) to guarantee zero layout shift of the board grid.
  */
 @Composable
 fun StatusBannerSlot(
@@ -55,6 +60,7 @@ fun StatusBannerSlot(
     onRestart: () -> Unit,
     onDismissTwinTrap: () -> Unit = {},
     onFlashCards: () -> Unit = {},
+    onInspectKanji: (KanjiData) -> Unit = {},
     isPhoneLandscape: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -105,22 +111,17 @@ fun StatusBannerSlot(
                 val buttonColor = if (isTimeUp) Color(0xFFC62828) else TakeBamboo
 
                 Surface(
-                    shape = RoundedCornerShape(if (phoneLandscape) 8.dp else if (isTablet) 14.dp else 12.dp),
+                    shape = RoundedCornerShape(if (isPhone) 8.dp else if (isTablet) 14.dp else 12.dp),
                     color = containerColor,
                     border = BorderStroke(1.5.dp, borderColor),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(
-                                horizontal = if (phoneLandscape) 10.dp else if (isTablet) 16.dp else 12.dp,
-                                vertical = if (phoneLandscape) 4.dp else if (isTablet) 8.dp else 6.dp
-                            ),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
+                    if (isPhone) {
+                        // Phone (portrait and landscape): Single-row 46dp Victory / Time's Up banner with zero clipping
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 10.dp, vertical = 4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -137,7 +138,7 @@ fun StatusBannerSlot(
                             } else {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(if (isTablet) 12.dp else 8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     modifier = Modifier.weight(1f, fill = false)
                                 ) {
                                     Text(
@@ -165,7 +166,7 @@ fun StatusBannerSlot(
                                             contentAlignment = Alignment.Center,
                                             modifier = Modifier
                                                 .fillMaxHeight()
-                                                .padding(horizontal = if (phoneLandscape) 10.dp else if (isTablet) 16.dp else 12.dp)
+                                                .padding(horizontal = 10.dp)
                                         ) {
                                             Text(
                                                 text = "Flash cards",
@@ -193,8 +194,8 @@ fun StatusBannerSlot(
                             Button(
                                 onClick = onRestart,
                                 colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
-                                shape = RoundedCornerShape(if (phoneLandscape) 10.dp else 16.dp),
-                                contentPadding = PaddingValues(horizontal = if (phoneLandscape) 8.dp else if (isTablet) 16.dp else 12.dp, vertical = 0.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
                                 modifier = Modifier.height(buttonHeight)
                             ) {
                                 Box(
@@ -230,24 +231,154 @@ fun StatusBannerSlot(
                                 }
                             }
                         }
+                    } else {
+                        // Tablet: Spacious two-row Victory / Time's Up layout
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    horizontal = if (isTablet) 16.dp else 12.dp,
+                                    vertical = if (isTablet) 8.dp else 6.dp
+                                ),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                if (isTimeUp) {
+                                    Text(
+                                        text = "🛑 ${uiState.gameOverMessage}",
+                                        fontSize = bannerTextSize,
+                                        fontWeight = FontWeight.Bold,
+                                        color = textColor,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                } else {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(if (isTablet) 12.dp else 8.dp),
+                                        modifier = Modifier.weight(1f, fill = false)
+                                    ) {
+                                        Text(
+                                            text = if (uiState.isTwoPlayer) "🎉 ${uiState.gameOverMessage.ifEmpty { "Victory!" }}" else "🎉 Victory!",
+                                            fontSize = bannerTextSize,
+                                            fontWeight = FontWeight.Bold,
+                                            color = textColor,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
 
-                        Text(
-                            text = if (uiState.isTwoPlayer) {
-                                "Player 1: ${uiState.player1Score} matches • Player 2: ${uiState.player2Score} matches"
-                            } else {
-                                "Total Matches: ${uiState.totalMatches}/${uiState.totalPairs} • Total Moves: ${uiState.totalMoves}"
-                            },
-                            fontSize = if (phoneLandscape) 10.sp else if (isTablet) 22.sp else 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = textColor.copy(alpha = 0.85f),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                                        Surface(
+                                            shape = RoundedCornerShape(percent = 50),
+                                            color = Color.White.copy(alpha = 0.9f),
+                                            border = BorderStroke(1.dp, TakeBamboo.copy(alpha = 0.6f)),
+                                            modifier = Modifier
+                                                .height(buttonHeight)
+                                                .clickable(
+                                                    role = androidx.compose.ui.semantics.Role.Button,
+                                                    onClickLabel = "Flash cards",
+                                                    onClick = onFlashCards
+                                                )
+                                        ) {
+                                            Box(
+                                                contentAlignment = Alignment.Center,
+                                                modifier = Modifier
+                                                    .fillMaxHeight()
+                                                    .padding(horizontal = if (isTablet) 16.dp else 12.dp)
+                                            ) {
+                                                Text(
+                                                    text = "Flash cards",
+                                                    fontSize = chipTextSize,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = textColor,
+                                                    textAlign = TextAlign.Center,
+                                                    style = LocalTextStyle.current.copy(
+                                                        lineHeight = chipTextSize,
+                                                        textAlign = TextAlign.Center,
+                                                        platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                                        lineHeightStyle = LineHeightStyle(
+                                                            alignment = LineHeightStyle.Alignment.Center,
+                                                            trim = LineHeightStyle.Trim.Both
+                                                        )
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Button(
+                                    onClick = onRestart,
+                                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                                    shape = RoundedCornerShape(16.dp),
+                                    contentPadding = PaddingValues(horizontal = if (isTablet) 16.dp else 12.dp, vertical = 0.dp),
+                                    modifier = Modifier.height(buttonHeight)
+                                ) {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.fillMaxHeight()
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
+                                            Text(
+                                                text = "Play Again",
+                                                fontSize = buttonTextSize,
+                                                fontWeight = FontWeight.Bold,
+                                                textAlign = TextAlign.Center,
+                                                style = LocalTextStyle.current.copy(
+                                                    lineHeight = buttonTextSize,
+                                                    platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                                    lineHeightStyle = LineHeightStyle(
+                                                        alignment = LineHeightStyle.Alignment.Center,
+                                                        trim = LineHeightStyle.Trim.Both
+                                                    )
+                                                )
+                                            )
+                                            Text(
+                                                text = "🔄",
+                                                fontSize = (buttonTextSize.value * 0.95f).sp,
+                                                style = LocalTextStyle.current.copy(
+                                                    platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            Text(
+                                text = if (uiState.isTwoPlayer) {
+                                    "Player 1: ${uiState.player1Score} matches • Player 2: ${uiState.player2Score} matches"
+                                } else {
+                                    "Total Matches: ${uiState.totalMatches}/${uiState.totalPairs} • Total Moves: ${uiState.totalMoves}"
+                                },
+                                fontSize = if (isTablet) 22.sp else 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = textColor.copy(alpha = 0.85f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
             }
 
             uiState.activeTwinTrapBanner != null -> {
+                val parts = uiState.activeTwinTrapBanner.split(" vs ")
+                val firstChar = parts.getOrNull(0)?.trim()
+                val secondChar = parts.getOrNull(1)?.trim()
+                val firstKanji = firstChar?.let { ch -> uiState.cards.firstOrNull { it.kanji.character == ch }?.kanji }
+                val secondKanji = secondChar?.let { ch -> uiState.cards.firstOrNull { it.kanji.character == ch }?.kanji }
+                val tileFont = if (uiState.settings.useSerifFont) FontFamily.Serif else FontFamily.SansSerif
+
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn(),
@@ -266,7 +397,7 @@ fun StatusBannerSlot(
                             )
                     ) {
                         if (isPhone) {
-                            // Phone (portrait and landscape): 50% reduced height single-row banner
+                            // Phone (portrait and landscape): 50% reduced height single-row banner with tappable mini-tiles
                             Row(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -285,26 +416,127 @@ fun StatusBannerSlot(
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF92400E)
                                     )
-                                    Surface(
-                                        shape = RoundedCornerShape(4.dp),
-                                        color = AmberTwinTrap.copy(alpha = 0.2f)
-                                    ) {
+
+                                    if (firstKanji != null && secondKanji != null) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
+                                            val isFirstSelected = uiState.selectedKanjiForInspector?.id == firstKanji.id
+                                            val isSecondSelected = uiState.selectedKanjiForInspector?.id == secondKanji.id
+
+                                            Surface(
+                                                shape = RoundedCornerShape(5.dp),
+                                                color = WashiPaper,
+                                                border = BorderStroke(
+                                                    width = if (isFirstSelected) 1.5.dp else 1.dp,
+                                                    color = if (isFirstSelected) AizomeIndigo else AmberTwinTrap
+                                                ),
+                                                shadowElevation = if (isFirstSelected) 2.dp else 0.dp,
+                                                modifier = Modifier
+                                                    .height(26.dp)
+                                                    .clickable(
+                                                        role = androidx.compose.ui.semantics.Role.Button,
+                                                        onClickLabel = "Inspect ${firstKanji.character}"
+                                                    ) {
+                                                        onInspectKanji(firstKanji)
+                                                    }
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier
+                                                        .fillMaxHeight()
+                                                        .padding(horizontal = 6.dp)
+                                                ) {
+                                                    Text(
+                                                        text = firstKanji.character,
+                                                        fontSize = 15.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        fontFamily = tileFont,
+                                                        color = if (isFirstSelected) SumiCharcoal else Color(0xFF92400E),
+                                                        style = LocalTextStyle.current.copy(
+                                                            lineHeight = 15.sp,
+                                                            platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                                        )
+                                                    )
+                                                }
+                                            }
+
+                                            Text(
+                                                text = "vs",
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color(0xFF92400E)
+                                            )
+
+                                            Surface(
+                                                shape = RoundedCornerShape(5.dp),
+                                                color = WashiPaper,
+                                                border = BorderStroke(
+                                                    width = if (isSecondSelected) 1.5.dp else 1.dp,
+                                                    color = if (isSecondSelected) AizomeIndigo else AmberTwinTrap
+                                                ),
+                                                shadowElevation = if (isSecondSelected) 2.dp else 0.dp,
+                                                modifier = Modifier
+                                                    .height(26.dp)
+                                                    .clickable(
+                                                        role = androidx.compose.ui.semantics.Role.Button,
+                                                        onClickLabel = "Inspect ${secondKanji.character}"
+                                                    ) {
+                                                        onInspectKanji(secondKanji)
+                                                    }
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier
+                                                        .fillMaxHeight()
+                                                        .padding(horizontal = 6.dp)
+                                                ) {
+                                                    Text(
+                                                        text = secondKanji.character,
+                                                        fontSize = 15.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        fontFamily = tileFont,
+                                                        color = if (isSecondSelected) SumiCharcoal else Color(0xFF92400E),
+                                                        style = LocalTextStyle.current.copy(
+                                                            lineHeight = 15.sp,
+                                                            platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        }
+
                                         Text(
-                                            text = "Kanji Trap",
-                                            fontSize = 8.sp,
+                                            text = "Tap tile to compare",
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color(0xFF78350F),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    } else {
+                                        Surface(
+                                            shape = RoundedCornerShape(4.dp),
+                                            color = AmberTwinTrap.copy(alpha = 0.2f)
+                                        ) {
+                                            Text(
+                                                text = "Kanji Trap",
+                                                fontSize = 8.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color(0xFF92400E),
+                                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
+                                            )
+                                        }
+                                        Text(
+                                            text = uiState.activeTwinTrapBanner,
+                                            fontSize = 11.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF92400E),
-                                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
+                                            color = Color(0xFF78350F),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
-                                    Text(
-                                        text = uiState.activeTwinTrapBanner,
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF78350F),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
                                 }
 
                                 Text(
@@ -316,7 +548,7 @@ fun StatusBannerSlot(
                                 )
                             }
                         } else {
-                            // Tablet: Original full-size two-row layout with spacious typography
+                            // Tablet: Full-size two-row layout with tappable mini-tiles
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -367,17 +599,82 @@ fun StatusBannerSlot(
                                     )
                                 }
 
-                                // Bottom Row: The actual twin trap clue text
-                                Text(
-                                    text = uiState.activeTwinTrapBanner,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF78350F),
-                                    lineHeight = 28.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                                // Bottom Row: Interactive mini-tiles or clue text
+                                if (firstKanji != null && secondKanji != null) {
+                                    val isFirstSelected = uiState.selectedKanjiForInspector?.id == firstKanji.id
+                                    val isSecondSelected = uiState.selectedKanjiForInspector?.id == secondKanji.id
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = WashiPaper,
+                                            border = BorderStroke(
+                                                width = if (isFirstSelected) 2.dp else 1.dp,
+                                                color = if (isFirstSelected) AizomeIndigo else AmberTwinTrap
+                                            ),
+                                            modifier = Modifier.clickable { onInspectKanji(firstKanji) }
+                                        ) {
+                                            Text(
+                                                text = firstKanji.character,
+                                                fontSize = 24.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                fontFamily = tileFont,
+                                                color = if (isFirstSelected) SumiCharcoal else Color(0xFF92400E),
+                                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                                            )
+                                        }
+
+                                        Text(
+                                            text = "vs",
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF92400E)
+                                        )
+
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = WashiPaper,
+                                            border = BorderStroke(
+                                                width = if (isSecondSelected) 2.dp else 1.dp,
+                                                color = if (isSecondSelected) AizomeIndigo else AmberTwinTrap
+                                            ),
+                                            modifier = Modifier.clickable { onInspectKanji(secondKanji) }
+                                        ) {
+                                            Text(
+                                                text = secondKanji.character,
+                                                fontSize = 24.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                fontFamily = tileFont,
+                                                color = if (isSecondSelected) SumiCharcoal else Color(0xFF92400E),
+                                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                                            )
+                                        }
+
+                                        Text(
+                                            text = "Tap either tile to compare in Inspector",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color(0xFF78350F),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = uiState.activeTwinTrapBanner,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFF78350F),
+                                        lineHeight = 28.sp,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
                             }
                         }
                     }

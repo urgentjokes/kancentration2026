@@ -1,5 +1,7 @@
 package com.example.kancentration.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -7,10 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kancentration.data.model.BoardCard
@@ -60,9 +66,15 @@ fun BoardGrid(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        val matPadding = when (dimension) {
+            BoardDimension.FOUR_BY_FOUR -> 6.dp
+            BoardDimension.SIX_BY_SIX -> 5.dp
+            BoardDimension.EIGHT_BY_EIGHT -> 4.dp
+        }
         val totalSpacing = spacing * (size - 1)
         val boardSize = minOf(maxWidth, maxHeight).coerceAtLeast(0.dp)
-        val cardSize = if (size > 0) ((boardSize - totalSpacing) / size).coerceAtLeast(0.dp) else 0.dp
+        val innerBoardSize = (boardSize - matPadding * 2).coerceAtLeast(0.dp)
+        val cardSize = if (size > 0) ((innerBoardSize - totalSpacing) / size).coerceAtLeast(0.dp) else 0.dp
 
         // Corner radius scaling smoothly with card size on larger tablet resolutions
         val effectiveCornerRadius = if (cardSize > 80.dp) {
@@ -83,8 +95,19 @@ fun BoardGrid(
             baseFontSize
         }
 
+        val matShape = RoundedCornerShape(effectiveCornerRadius + 4.dp)
+
         Column(
-            modifier = Modifier.size(boardSize),
+            modifier = Modifier
+                .size(boardSize)
+                .clip(matShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                    shape = matShape
+                )
+                .padding(matPadding),
             verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

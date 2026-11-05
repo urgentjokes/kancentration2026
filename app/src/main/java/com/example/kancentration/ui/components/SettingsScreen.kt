@@ -65,6 +65,8 @@ import com.example.kancentration.data.model.GameSettings
 import com.example.kancentration.data.model.GameType
 import com.example.kancentration.theme.AizomeIndigo
 import com.example.kancentration.theme.KinpakuGold
+import com.example.kancentration.theme.SumiCharcoal
+import com.example.kancentration.theme.WashiPaper
 
 /**
  * Dedicated full-screen Settings experience:
@@ -252,6 +254,32 @@ fun SettingsScreen(
                                 Spacer(modifier = Modifier.weight(1f))
                             }
                         }
+                    }
+
+                    val packSampleInfo = when (selectedPackId) {
+                        "base_pack" -> "Starter pack (20 Quads): 日/曰 • 木/本 • 持/特 • 偉/違"
+                        "grade_1" -> "1st grade (18 Quads): 八/ハ • 夕/タ • 林/村 • 大/犬"
+                        "grade_2" -> "2nd grade (18 Quads): 牛/午 • 太/大 • 刀/刃 • 鳥/烏"
+                        "grade_3" -> "3rd grade (18 Quads): 持/特 • 待/侍 • 油/酒 • 昭/招"
+                        "grade_4" -> "4th grade (18 Quads): 未/末 • 士/土 • 令/今 • 官/管"
+                        "grade_5" -> "5th grade (18 Quads): 技/枝 • 格/略 • 構/講 • 往/住"
+                        "grade_6" -> "6th grade (18 Quads): 券/巻 • 吸/呼 • 宇/宙 • 律/建"
+                        else -> "Expansion pack: Confusable lookalike quads"
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = packSampleInfo,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
+                        )
                     }
                 }
             }
@@ -547,8 +575,9 @@ fun SettingsScreen(
                         Row(
                             modifier = Modifier.padding(14.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
+                            // Card Back Preview (漢)
                             Card(
                                 shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = previewBg),
@@ -556,7 +585,17 @@ fun SettingsScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                                 modifier = Modifier.size(64.dp)
                             ) {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(3.dp)
+                                        .border(
+                                            width = 0.75.dp,
+                                            color = KinpakuGold.copy(alpha = 0.35f),
+                                            shape = RoundedCornerShape(7.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     Text(
                                         text = "漢",
                                         color = previewKanji,
@@ -567,14 +606,38 @@ fun SettingsScreen(
                                 }
                             }
 
-                            Column {
+                            // Card Front Preview (持)
+                            Card(
+                                shape = RoundedCornerShape(10.dp),
+                                colors = CardDefaults.cardColors(containerColor = WashiPaper),
+                                border = BorderStroke(2.dp, AizomeIndigo),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                modifier = Modifier.size(64.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .kanjiCalligraphyGrid(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "持",
+                                        color = SumiCharcoal,
+                                        fontSize = 34.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontFamily = if (useSerifFont) FontFamily.Serif else FontFamily.SansSerif
+                                    )
+                                }
+                            }
+
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "Live Tile Back Preview",
+                                    text = "Live Back & Front Preview",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "Instant update with zero layout shift during gameplay",
+                                    text = "Previews your selected colors and ${if (useSerifFont) "Serif" else "Sans-serif"} tile font",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )

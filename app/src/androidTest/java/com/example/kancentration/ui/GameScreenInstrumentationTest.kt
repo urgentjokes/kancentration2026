@@ -41,8 +41,8 @@ class GameScreenInstrumentationTest {
 
         // Verify Settings modal sheet appears
         composeTestRule.onNodeWithText("Game Settings").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Mincho (Serif)").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Gothic (Sans)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Serif (漢字)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Sans-serif (漢字)").assertIsDisplayed()
 
         // Close dialog
         composeTestRule.onNodeWithText("Cancel").performClick()

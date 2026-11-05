@@ -80,8 +80,14 @@ fun FlashCardsScreen(
 ) {
     BackHandler(onBack = onDismiss)
 
-    val kanjiList = remember(cards) {
-        cards.map { it.kanji }.distinctBy { it.id }
+    val quadGroups = remember(cards) {
+        cards.groupBy { it.quadId }
+            .values
+            .map { group -> group.map { it.kanji }.distinctBy { it.id } }
+            .filter { it.isNotEmpty() }
+    }
+    val kanjiList = remember(quadGroups) {
+        quadGroups.flatten().distinctBy { it.id }
     }
 
     var globalRevealedState by rememberSaveable { mutableStateOf(false) }
@@ -181,19 +187,45 @@ fun FlashCardsScreen(
                         .fillMaxSize()
                         .widthIn(max = 800.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(
-                        items = kanjiList,
-                        key = { it.id }
-                    ) { kanji ->
-                        FlashCardItem(
-                            kanji = kanji,
-                            settings = settings,
-                            initialRevealed = globalRevealedState,
-                            globalVersion = globalVersion,
-                            onWiktionaryClick = onWiktionaryClick
-                        )
+                    quadGroups.forEachIndexed { index, pair ->
+                        if (pair.size > 1) {
+                            item(key = "quad_header_$index") {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = if (index > 0) 6.dp else 0.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+                                    ) {
+                                        Text(
+                                            text = "Confusable Pair ${index + 1}: ${pair.joinToString(" & ") { it.character }}",
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        items(
+                            items = pair,
+                            key = { it.id }
+                        ) { kanji ->
+                            FlashCardItem(
+                                kanji = kanji,
+                                settings = settings,
+                                initialRevealed = globalRevealedState,
+                                globalVersion = globalVersion,
+                                onWiktionaryClick = onWiktionaryClick
+                            )
+                        }
                     }
                 }
             }
@@ -276,7 +308,9 @@ private fun FlashCardItem(
                     modifier = Modifier.size(64.dp)
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .kanjiCalligraphyGrid(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(

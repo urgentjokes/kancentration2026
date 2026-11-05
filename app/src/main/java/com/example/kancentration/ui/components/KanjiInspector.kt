@@ -29,6 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -44,6 +47,28 @@ import com.example.kancentration.theme.AizomeIndigo
 import com.example.kancentration.theme.SumiCharcoal
 import com.example.kancentration.theme.WashiPaper
 import com.example.kancentration.util.KanaConverter
+
+/**
+ * Draws subtle 4-quadrant calligraphy proportion crosshairs inside a Washi kanji preview tile.
+ */
+internal fun Modifier.kanjiCalligraphyGrid(lineColor: Color = AizomeIndigo.copy(alpha = 0.11f)): Modifier =
+    this.drawBehind {
+        val strokeWidth = 1.dp.toPx()
+        val halfW = size.width / 2f
+        val halfH = size.height / 2f
+        drawLine(
+            color = lineColor,
+            start = Offset(halfW, 0f),
+            end = Offset(halfW, size.height),
+            strokeWidth = strokeWidth
+        )
+        drawLine(
+            color = lineColor,
+            start = Offset(0f, halfH),
+            end = Offset(size.width, halfH),
+            strokeWidth = strokeWidth
+        )
+    }
 
 /**
  * Extended lexicon inspector card showcasing Kanji details, distinct readings
@@ -71,7 +96,13 @@ fun KanjiInspector(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier.fillMaxWidth()
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        BoxWithConstraints(
+            modifier = if (isPhoneLandscape || configuration.smallestScreenWidthDp >= 600) {
+                Modifier.fillMaxSize()
+            } else {
+                Modifier.fillMaxWidth()
+            }
+        ) {
             val isTablet = maxWidth >= 600.dp || configuration.smallestScreenWidthDp >= 600
             val isExpandedTablet = maxWidth >= 680.dp
             val inspectorHeight = maxHeight
@@ -81,7 +112,7 @@ fun KanjiInspector(
                 // Calm zen placeholder state
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .then(if (isTablet || isPhoneLandscape) Modifier.fillMaxSize() else Modifier.fillMaxWidth())
                         .padding(if (isTablet) 24.dp else 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -132,7 +163,7 @@ fun KanjiInspector(
 
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .then(if (isPhoneLandscape) Modifier.fillMaxSize() else Modifier.fillMaxWidth())
                         .padding(horizontal = paddingH, vertical = paddingV),
                     verticalArrangement = if (isPhoneLandscape) {
                         Arrangement.SpaceBetween
@@ -173,7 +204,9 @@ fun KanjiInspector(
                                 modifier = Modifier.size(phoneSealSize)
                             ) {
                                 Box(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .kanjiCalligraphyGrid(),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -275,27 +308,38 @@ fun KanjiInspector(
                     }
 
                     // Bottom Section: Lightbulb (tip) element aligned with the left boundary of the kanji-inspector element,
-                    // with text flowing all the way to the right boundary, and wrapping.
-                    if (kanji.distinctionTip.isNotEmpty()) {
-                        Text(
-                            text = "💡 ${kanji.distinctionTip}",
-                            fontSize = phoneTipFontSize,
-                            lineHeight = phoneTipLineHeight,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        Text(
-                            text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
-                            fontSize = phoneTipFontSize,
-                            lineHeight = phoneTipLineHeight,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    // with text flowing all the way to the right boundary, and wrapping inside a warm callout strip.
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (kanji.distinctionTip.isNotEmpty()) {
+                            Text(
+                                text = "💡 ${kanji.distinctionTip}",
+                                fontSize = phoneTipFontSize,
+                                lineHeight = phoneTipLineHeight,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Kanji: ${kanji.character} (ID: ${kanji.id})",
+                                fontSize = phoneTipFontSize,
+                                lineHeight = phoneTipLineHeight,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
                     }
                 }
             } else {
-                // Tablet Layout: Original full-size tablet layout exactly as before
+                // Tablet Layout: Original full-size tablet layout
                 val isCompactHeight = inspectorHeight < 140.dp
                 val paddingH = 18.dp
                 val paddingV = if (isCompactHeight) 6.dp else 12.dp
@@ -341,6 +385,7 @@ fun KanjiInspector(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
+                                .kanjiCalligraphyGrid()
                                 .padding(2.dp),
                             contentAlignment = Alignment.Center
                         ) {

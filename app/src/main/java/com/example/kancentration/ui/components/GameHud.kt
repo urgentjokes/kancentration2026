@@ -26,6 +26,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kancentration.theme.ShuiroSurface
+import com.example.kancentration.theme.ShuiroVermilion
+import com.example.kancentration.theme.TakeBamboo
+import com.example.kancentration.theme.TakeBambooSurface
 import com.example.kancentration.ui.viewmodel.GameUiState
 
 /**
@@ -95,6 +99,43 @@ fun GameHud(
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.padding(
                             horizontal = if (isTablet) 12.dp else 8.dp,
+                            vertical = if (isTablet) 5.dp else 3.dp
+                        )
+                    )
+                }
+
+                // Active Kanji Pack Badge (tapping opens Settings)
+                val packBadgeLabel = when (val packId = uiState.settings.selectedPackId) {
+                    "base_pack" -> "Starter"
+                    "grade_1" -> "1st grade"
+                    "grade_2" -> "2nd grade"
+                    "grade_3" -> "3rd grade"
+                    "grade_4" -> "4th grade"
+                    "grade_5" -> "5th grade"
+                    "grade_6" -> "6th grade"
+                    else -> uiState.dlcPacks.find { it.id == packId }?.title ?: "Pack"
+                }
+
+                Surface(
+                    shape = RoundedCornerShape(if (isTablet) 10.dp else 8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(if (isTablet) 10.dp else 8.dp))
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "Change Kanji card pack in settings",
+                            onClick = onSettingsClick
+                        )
+                ) {
+                    Text(
+                        text = packBadgeLabel,
+                        style = if (isTablet) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        modifier = Modifier.padding(
+                            horizontal = if (isTablet) 10.dp else 7.dp,
                             vertical = if (isTablet) 5.dp else 3.dp
                         )
                     )
@@ -204,20 +245,20 @@ fun GameHud(
                     horizontalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Player 1 Pill
+                    // Player 1 Pill (Synced with TakeBamboo matched tile color)
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = if (uiState.activePlayer == 1) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surface,
+                        color = if (uiState.activePlayer == 1) TakeBambooSurface else MaterialTheme.colorScheme.surface,
                         border = BorderStroke(
                             if (uiState.activePlayer == 1) 2.dp else 1.dp,
-                            if (uiState.activePlayer == 1) Color(0xFF2E7D32) else Color.LightGray
+                            if (uiState.activePlayer == 1) TakeBamboo else Color.LightGray
                         )
                     ) {
                         Text(
                             text = "P1: ${uiState.player1Score}",
                             style = if (isTablet) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                             fontWeight = if (uiState.activePlayer == 1) FontWeight.Bold else FontWeight.Normal,
-                            color = if (uiState.activePlayer == 1) Color(0xFF1B5E20) else Color.Gray,
+                            color = if (uiState.activePlayer == 1) TakeBamboo else Color.Gray,
                             modifier = Modifier.padding(
                                 horizontal = if (isTablet) 12.dp else 8.dp,
                                 vertical = if (isTablet) 6.dp else 4.dp
@@ -225,20 +266,20 @@ fun GameHud(
                         )
                     }
 
-                    // Player 2 Pill
+                    // Player 2 Pill (Synced with ShuiroVermilion matched tile color)
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = if (uiState.activePlayer == 2) Color(0xFFFCE4EC) else MaterialTheme.colorScheme.surface,
+                        color = if (uiState.activePlayer == 2) ShuiroSurface else MaterialTheme.colorScheme.surface,
                         border = BorderStroke(
                             if (uiState.activePlayer == 2) 2.dp else 1.dp,
-                            if (uiState.activePlayer == 2) Color(0xFFC2185B) else Color.LightGray
+                            if (uiState.activePlayer == 2) ShuiroVermilion else Color.LightGray
                         )
                     ) {
                         Text(
                             text = "P2: ${uiState.player2Score}",
                             style = if (isTablet) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                             fontWeight = if (uiState.activePlayer == 2) FontWeight.Bold else FontWeight.Normal,
-                            color = if (uiState.activePlayer == 2) Color(0xFF880E4F) else Color.Gray,
+                            color = if (uiState.activePlayer == 2) ShuiroVermilion else Color.Gray,
                             modifier = Modifier.padding(
                                 horizontal = if (isTablet) 12.dp else 8.dp,
                                 vertical = if (isTablet) 6.dp else 4.dp

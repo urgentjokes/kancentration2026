@@ -5,10 +5,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -130,7 +132,13 @@ fun CardItem(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(backColor),
+                        .background(backColor)
+                        .padding(3.dp)
+                        .border(
+                            width = 0.75.dp,
+                            color = borderColor.copy(alpha = 0.45f),
+                            shape = RoundedCornerShape((cornerRadius - 2.dp).coerceAtLeast(3.dp))
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

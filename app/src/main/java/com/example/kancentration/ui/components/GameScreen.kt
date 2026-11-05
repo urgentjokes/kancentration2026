@@ -21,8 +21,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -85,20 +83,7 @@ fun GameScreen(
             modifier = modifier
                 .fillMaxSize()
                 .systemBarsPadding()
-                .displayCutoutPadding()
-                .pointerInput(uiState.activeTwinTrapBanner) {
-                    if (uiState.activeTwinTrapBanner != null) {
-                        awaitPointerEventScope {
-                            while (true) {
-                                val event = awaitPointerEvent(PointerEventPass.Initial)
-                                if (event.changes.any { it.pressed }) {
-                                    viewModel.dismissTwinTrapBanner()
-                                    break
-                                }
-                            }
-                        }
-                    }
-                },
+                .displayCutoutPadding(),
             containerColor = MaterialTheme.colorScheme.background
         ) { innerPadding ->
             val configuration = LocalConfiguration.current
@@ -190,6 +175,7 @@ fun GameScreen(
                                     onRestart = { viewModel.startNewGame() },
                                     onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
                                     onFlashCards = { viewModel.setShowFlashCardsScreen(true) },
+                                    onInspectKanji = { viewModel.onKanjiInspected(it) },
                                     isPhoneLandscape = !isTablet
                                 )
                             }
@@ -213,7 +199,7 @@ fun GameScreen(
                     val totalWidth = maxWidth - (screenPaddingH * 2)
                     val boardSize = minOf(
                         totalWidth,
-                        totalHeight * (if (isTablet) 0.55f else 0.46f)
+                        totalHeight * (if (isTablet) 0.55f else 0.52f)
                     ).coerceAtLeast(0.dp)
 
                     Column(
@@ -252,6 +238,7 @@ fun GameScreen(
                                 onRestart = { viewModel.startNewGame() },
                                 onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
                                 onFlashCards = { viewModel.setShowFlashCardsScreen(true) },
+                                onInspectKanji = { viewModel.onKanjiInspected(it) },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -264,7 +251,7 @@ fun GameScreen(
                             onWiktionaryClick = { viewModel.onOpenWiktionary() },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f)
+                                .then(if (isTablet) Modifier.weight(1f) else Modifier)
                         )
                     }
                 }
