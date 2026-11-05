@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +54,7 @@ fun StatusBannerSlot(
     uiState: GameUiState,
     onRestart: () -> Unit,
     onDismissTwinTrap: () -> Unit = {},
+    onFlashCards: () -> Unit = {},
     isPhoneLandscape: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -76,6 +82,11 @@ fun StatusBannerSlot(
         isPhone -> 10.sp
         isTablet -> 20.sp
         else -> 18.sp
+    }
+    val chipTextSize = when {
+        isPhone -> 10.sp
+        isTablet -> 18.sp
+        else -> 16.sp
     }
 
     Box(
@@ -113,15 +124,69 @@ fun StatusBannerSlot(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = if (isTimeUp) "🛑 ${uiState.gameOverMessage}" else "🎉 Victory! ${uiState.gameOverMessage.ifEmpty { "Game Complete!" }}",
-                                fontSize = bannerTextSize,
-                                fontWeight = FontWeight.Bold,
-                                color = textColor,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f)
-                            )
+                            if (isTimeUp) {
+                                Text(
+                                    text = "🛑 ${uiState.gameOverMessage}",
+                                    fontSize = bannerTextSize,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textColor,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            } else {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(if (isTablet) 12.dp else 8.dp),
+                                    modifier = Modifier.weight(1f, fill = false)
+                                ) {
+                                    Text(
+                                        text = if (uiState.isTwoPlayer) "🎉 ${uiState.gameOverMessage.ifEmpty { "Victory!" }}" else "🎉 Victory!",
+                                        fontSize = bannerTextSize,
+                                        fontWeight = FontWeight.Bold,
+                                        color = textColor,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+
+                                    Surface(
+                                        shape = RoundedCornerShape(percent = 50),
+                                        color = Color.White.copy(alpha = 0.9f),
+                                        border = BorderStroke(1.dp, TakeBamboo.copy(alpha = 0.6f)),
+                                        modifier = Modifier
+                                            .height(buttonHeight)
+                                            .clickable(
+                                                role = androidx.compose.ui.semantics.Role.Button,
+                                                onClickLabel = "Flash cards",
+                                                onClick = onFlashCards
+                                            )
+                                    ) {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .padding(horizontal = if (phoneLandscape) 10.dp else if (isTablet) 16.dp else 12.dp)
+                                        ) {
+                                            Text(
+                                                text = "Flash cards",
+                                                fontSize = chipTextSize,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = textColor,
+                                                textAlign = TextAlign.Center,
+                                                style = LocalTextStyle.current.copy(
+                                                    lineHeight = chipTextSize,
+                                                    textAlign = TextAlign.Center,
+                                                    platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                                    lineHeightStyle = LineHeightStyle(
+                                                        alignment = LineHeightStyle.Alignment.Center,
+                                                        trim = LineHeightStyle.Trim.Both
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
 
                             Spacer(modifier = Modifier.width(8.dp))
 
@@ -129,14 +194,40 @@ fun StatusBannerSlot(
                                 onClick = onRestart,
                                 colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                                 shape = RoundedCornerShape(if (phoneLandscape) 10.dp else 16.dp),
-                                contentPadding = PaddingValues(horizontal = if (phoneLandscape) 8.dp else if (isTablet) 16.dp else 12.dp, vertical = 2.dp),
+                                contentPadding = PaddingValues(horizontal = if (phoneLandscape) 8.dp else if (isTablet) 16.dp else 12.dp, vertical = 0.dp),
                                 modifier = Modifier.height(buttonHeight)
                             ) {
-                                Text(
-                                    text = "Play Again 🔄",
-                                    fontSize = buttonTextSize,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Text(
+                                            text = "Play Again",
+                                            fontSize = buttonTextSize,
+                                            fontWeight = FontWeight.Bold,
+                                            textAlign = TextAlign.Center,
+                                            style = LocalTextStyle.current.copy(
+                                                lineHeight = buttonTextSize,
+                                                platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                                lineHeightStyle = LineHeightStyle(
+                                                    alignment = LineHeightStyle.Alignment.Center,
+                                                    trim = LineHeightStyle.Trim.Both
+                                                )
+                                            )
+                                        )
+                                        Text(
+                                            text = "🔄",
+                                            fontSize = (buttonTextSize.value * 0.95f).sp,
+                                            style = LocalTextStyle.current.copy(
+                                                platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         }
 

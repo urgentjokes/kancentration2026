@@ -109,7 +109,7 @@ Directly beneath the game board (occupying ~26% of screen height, fixed so the b
 
 ### D. Non-Disruptive Victory / Time-Up Banner
 - Instead of a blocking popup that hides the board, game completion slides in a **Compact Celebration / Summary Banner** in the dedicated status slot above the board showing:
-  - Outcome (`Cleared in 01:18 • 14 Moves!`, `Player 1 Wins (10 – 8)!`, or `Time's Up! 11/18 Pairs Found`).
+  - Outcome (Celebratory "🎉 Victory!" with "Flash cards" review chip, `Player 1 Wins (10 – 8)!`, or `Time's Up! 11/18 Pairs Found`).
   - One-tap **`Play Again`** button, while leaving the board and Kanji Inspector fully interactive below.
 
 ### E. Settings & Customization Sheet

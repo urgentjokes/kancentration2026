@@ -350,8 +350,9 @@
       } else if (state.bannerType === 'victory') {
         el.innerHTML = `
           <div class="w-full h-full rounded-xl bg-[#ECFDF5] border border-[#2A6F4E] px-3 flex items-center justify-between shadow-sm">
-            <div class="text-xs font-bold text-[#14532D]">
-              🎉 Board Cleared in 01:12 (14 Moves)!
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-[#14532D]">🎉 Victory!</span>
+              <span class="px-2 py-0.5 rounded-full bg-white border border-[#2A6F4E]/50 text-[#14532D] text-[10px] font-semibold cursor-pointer">Flash cards</span>
             </div>
             <button onclick="resetDemoBoard()" class="px-2.5 py-1 rounded-full bg-[#2A6F4E] text-white text-xs font-bold hover:opacity-90">
               Play Again ↻

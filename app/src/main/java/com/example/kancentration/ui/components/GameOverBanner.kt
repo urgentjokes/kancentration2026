@@ -18,13 +18,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kancentration.ui.viewmodel.GameUiState
@@ -65,13 +70,50 @@ fun GameOverBanner(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // Main Header Message
-                Text(
-                    text = "$emoji ${uiState.gameOverMessage}",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = titleColor,
-                    maxLines = 1
-                )
+                if (isTimeUp) {
+                    Text(
+                        text = "$emoji ${uiState.gameOverMessage}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = titleColor,
+                        maxLines = 1
+                    )
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = if (uiState.isTwoPlayer) "$emoji ${uiState.gameOverMessage}" else "$emoji Victory!",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor,
+                            maxLines = 1
+                        )
+                        Surface(
+                            shape = RoundedCornerShape(percent = 50),
+                            color = Color.White.copy(alpha = 0.9f),
+                            border = BorderStroke(1.dp, borderColor.copy(alpha = 0.6f))
+                        ) {
+                            Text(
+                                text = "Flash cards",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = titleColor,
+                                textAlign = TextAlign.Center,
+                                style = LocalTextStyle.current.copy(
+                                    lineHeight = 11.sp,
+                                    platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                    lineHeightStyle = LineHeightStyle(
+                                        alignment = LineHeightStyle.Alignment.Center,
+                                        trim = LineHeightStyle.Trim.Both
+                                    )
+                                ),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
+                            )
+                        }
+                    }
+                }
 
                 if (uiState.isTwoPlayer) {
                     Spacer(modifier = Modifier.height(2.dp))
@@ -93,9 +135,34 @@ fun GameOverBanner(
                         onClick = onRestart,
                         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                         shape = RoundedCornerShape(20.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     ) {
-                        Text("Play Again 🔄", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "Play Again",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                style = LocalTextStyle.current.copy(
+                                    lineHeight = 12.sp,
+                                    platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                    lineHeightStyle = LineHeightStyle(
+                                        alignment = LineHeightStyle.Alignment.Center,
+                                        trim = LineHeightStyle.Trim.Both
+                                    )
+                                )
+                            )
+                            Text(
+                                text = "🔄",
+                                fontSize = 11.sp,
+                                style = LocalTextStyle.current.copy(
+                                    platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                )
+                            )
+                        }
                     }
                 }
             }
