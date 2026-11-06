@@ -65,7 +65,7 @@ fun StatusBannerSlot(
     modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
-    val isTablet = configuration.screenWidthDp >= 600 || configuration.smallestScreenWidthDp >= 600
+    val isTablet = configuration.smallestScreenWidthDp >= 600
     val phoneLandscape = isPhoneLandscape || (!isTablet && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
     val isPhone = !isTablet
 
@@ -147,6 +147,7 @@ fun StatusBannerSlot(
                                         fontWeight = FontWeight.Bold,
                                         color = textColor,
                                         maxLines = 1,
+                                        softWrap = false,
                                         overflow = TextOverflow.Ellipsis
                                     )
 
@@ -174,6 +175,8 @@ fun StatusBannerSlot(
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = textColor,
                                                 textAlign = TextAlign.Center,
+                                                maxLines = 1,
+                                                softWrap = false,
                                                 style = LocalTextStyle.current.copy(
                                                     lineHeight = chipTextSize,
                                                     textAlign = TextAlign.Center,
@@ -193,7 +196,10 @@ fun StatusBannerSlot(
 
                             Button(
                                 onClick = onRestart,
-                                colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = buttonColor,
+                                    contentColor = Color.White
+                                ),
                                 shape = RoundedCornerShape(10.dp),
                                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
                                 modifier = Modifier.height(buttonHeight)
@@ -210,7 +216,10 @@ fun StatusBannerSlot(
                                             text = "Play Again",
                                             fontSize = buttonTextSize,
                                             fontWeight = FontWeight.Bold,
+                                            color = Color.White,
                                             textAlign = TextAlign.Center,
+                                            maxLines = 1,
+                                            softWrap = false,
                                             style = LocalTextStyle.current.copy(
                                                 lineHeight = buttonTextSize,
                                                 platformStyle = PlatformTextStyle(includeFontPadding = false),
@@ -296,6 +305,8 @@ fun StatusBannerSlot(
                                                     fontWeight = FontWeight.SemiBold,
                                                     color = textColor,
                                                     textAlign = TextAlign.Center,
+                                                    maxLines = 1,
+                                                    softWrap = false,
                                                     style = LocalTextStyle.current.copy(
                                                         lineHeight = chipTextSize,
                                                         textAlign = TextAlign.Center,
@@ -315,7 +326,10 @@ fun StatusBannerSlot(
 
                                 Button(
                                     onClick = onRestart,
-                                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = buttonColor,
+                                        contentColor = Color.White
+                                    ),
                                     shape = RoundedCornerShape(16.dp),
                                     contentPadding = PaddingValues(horizontal = if (isTablet) 16.dp else 12.dp, vertical = 0.dp),
                                     modifier = Modifier.height(buttonHeight)
@@ -332,7 +346,10 @@ fun StatusBannerSlot(
                                                 text = "Play Again",
                                                 fontSize = buttonTextSize,
                                                 fontWeight = FontWeight.Bold,
+                                                color = Color.White,
                                                 textAlign = TextAlign.Center,
+                                                maxLines = 1,
+                                                softWrap = false,
                                                 style = LocalTextStyle.current.copy(
                                                     lineHeight = buttonTextSize,
                                                     platformStyle = PlatformTextStyle(includeFontPadding = false),

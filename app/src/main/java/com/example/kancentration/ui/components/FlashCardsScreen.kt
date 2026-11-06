@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.PlatformTextStyle
@@ -108,27 +109,33 @@ fun FlashCardsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp)
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val configuration = LocalConfiguration.current
+                    val isTablet = configuration.smallestScreenWidthDp >= 600
+
                     Row(
+                        modifier = Modifier.weight(1f, fill = false),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         OutlinedButton(
                             onClick = onDismiss,
                             modifier = Modifier.height(34.dp),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
                         ) {
-                            Text("← Back", style = MaterialTheme.typography.labelLarge)
+                            Text("← Back", style = MaterialTheme.typography.labelMedium)
                         }
 
                         Text(
                             text = "Flash Cards",
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            softWrap = false
                         )
 
                         Surface(
@@ -136,11 +143,13 @@ fun FlashCardsScreen(
                             color = TakeBamboo.copy(alpha = 0.15f)
                         ) {
                             Text(
-                                text = "${kanjiList.size} Kanji",
-                                fontSize = 12.sp,
+                                text = if (isTablet) "${kanjiList.size} Kanji" else "${kanjiList.size}",
+                                fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TakeBamboo,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                                maxLines = 1,
+                                softWrap = false,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
                         }
                     }
@@ -151,12 +160,14 @@ fun FlashCardsScreen(
                             globalVersion++
                         },
                         modifier = Modifier.height(34.dp),
-                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                     ) {
                         Text(
                             text = if (globalRevealedState) "Hide All" else "Reveal All",
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            softWrap = false
                         )
                     }
                 }

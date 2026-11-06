@@ -1,5 +1,6 @@
 package com.example.kancentration.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,19 +48,20 @@ fun GameHud(
     modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
-    val isTablet = configuration.screenWidthDp >= 600 || configuration.smallestScreenWidthDp >= 600
+    val isTablet = configuration.smallestScreenWidthDp >= 600
+    val isPhoneLandscape = !isTablet && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    val actionButtonSize = if (isTablet) 44.dp else 36.dp
-    val actionIconSize = if (isTablet) 20.sp else 16.sp
-    val row1Height = if (isTablet) 44.dp else 36.dp
+    val actionButtonSize = if (isTablet) 44.dp else 32.dp
+    val actionIconSize = if (isTablet) 20.sp else 15.sp
+    val row1Height = if (isTablet) 44.dp else 34.dp
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = if (isTablet) 6.dp else 4.dp, vertical = 2.dp),
-        verticalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 8.dp)
+            .padding(horizontal = if (isTablet) 6.dp else 2.dp, vertical = 2.dp),
+        verticalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else if (isPhoneLandscape) 6.dp else 8.dp)
     ) {
-        // Row 1: Header (Title, Board-Size Pill, & Action Icons)
+        // Row 1: Header (Title, Board-Size Pill, Pack Badge, & Action Icons)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,24 +70,27 @@ fun GameHud(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
+                modifier = Modifier.weight(1f, fill = false),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 8.dp)
+                horizontalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 6.dp)
             ) {
                 Text(
                     text = "Kancentration",
-                    style = if (isTablet) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge,
+                    style = if (isTablet) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleMedium,
+                    fontSize = if (isTablet) 24.sp else 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
-                    maxLines = 1
+                    maxLines = 1,
+                    softWrap = false
                 )
 
                 // Board-Size Pill (positioned next to the word "Kancentration")
                 Surface(
-                    shape = RoundedCornerShape(if (isTablet) 10.dp else 8.dp),
+                    shape = RoundedCornerShape(if (isTablet) 10.dp else 7.dp),
                     color = MaterialTheme.colorScheme.secondaryContainer,
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
                     modifier = Modifier
-                        .clip(RoundedCornerShape(if (isTablet) 10.dp else 8.dp))
+                        .clip(RoundedCornerShape(if (isTablet) 10.dp else 7.dp))
                         .clickable(
                             role = Role.Button,
                             onClickLabel = "Cycle board dimension",
@@ -94,11 +99,13 @@ fun GameHud(
                 ) {
                     Text(
                         text = "${uiState.settings.dimension.size}×${uiState.settings.dimension.size}",
-                        style = if (isTablet) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelMedium,
+                        style = if (isTablet) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        maxLines = 1,
+                        softWrap = false,
                         modifier = Modifier.padding(
-                            horizontal = if (isTablet) 12.dp else 8.dp,
+                            horizontal = if (isTablet) 12.dp else 7.dp,
                             vertical = if (isTablet) 5.dp else 3.dp
                         )
                     )
@@ -113,15 +120,15 @@ fun GameHud(
                     "grade_4" -> "4th grade"
                     "grade_5" -> "5th grade"
                     "grade_6" -> "6th grade"
-                    else -> uiState.dlcPacks.find { it.id == packId }?.title ?: "Pack"
+                    else -> packId.replace("_", " ").replaceFirstChar { it.uppercase() }
                 }
 
                 Surface(
-                    shape = RoundedCornerShape(if (isTablet) 10.dp else 8.dp),
+                    shape = RoundedCornerShape(if (isTablet) 10.dp else 7.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
                     modifier = Modifier
-                        .clip(RoundedCornerShape(if (isTablet) 10.dp else 8.dp))
+                        .clip(RoundedCornerShape(if (isTablet) 10.dp else 7.dp))
                         .clickable(
                             role = Role.Button,
                             onClickLabel = "Change Kanji card pack in settings",
@@ -134,8 +141,9 @@ fun GameHud(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
+                        softWrap = false,
                         modifier = Modifier.padding(
-                            horizontal = if (isTablet) 10.dp else 7.dp,
+                            horizontal = if (isTablet) 10.dp else 6.dp,
                             vertical = if (isTablet) 5.dp else 3.dp
                         )
                     )
@@ -144,7 +152,7 @@ fun GameHud(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(if (isTablet) 6.dp else 2.dp)
+                horizontalArrangement = Arrangement.spacedBy(if (isTablet) 6.dp else 0.dp)
             ) {
                 // DLC Store Button
                 IconButton(
