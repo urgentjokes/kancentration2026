@@ -136,60 +136,16 @@ fun StatusBannerSlot(
                                     modifier = Modifier.weight(1f)
                                 )
                             } else {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                Text(
+                                    text = if (uiState.isTwoPlayer) "🎉 ${uiState.gameOverMessage.ifEmpty { "Victory!" }}" else "🎉 Victory!",
+                                    fontSize = bannerTextSize,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textColor,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.weight(1f, fill = false)
-                                ) {
-                                    Text(
-                                        text = if (uiState.isTwoPlayer) "🎉 ${uiState.gameOverMessage.ifEmpty { "Victory!" }}" else "🎉 Victory!",
-                                        fontSize = bannerTextSize,
-                                        fontWeight = FontWeight.Bold,
-                                        color = textColor,
-                                        maxLines = 1,
-                                        softWrap = false,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-
-                                    Surface(
-                                        shape = RoundedCornerShape(percent = 50),
-                                        color = Color.White.copy(alpha = 0.9f),
-                                        border = BorderStroke(1.dp, TakeBamboo.copy(alpha = 0.6f)),
-                                        modifier = Modifier
-                                            .height(buttonHeight)
-                                            .clickable(
-                                                role = androidx.compose.ui.semantics.Role.Button,
-                                                onClickLabel = "Flash cards",
-                                                onClick = onFlashCards
-                                            )
-                                    ) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .padding(horizontal = 10.dp)
-                                        ) {
-                                            Text(
-                                                text = "Flash cards",
-                                                fontSize = chipTextSize,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = textColor,
-                                                textAlign = TextAlign.Center,
-                                                maxLines = 1,
-                                                softWrap = false,
-                                                style = LocalTextStyle.current.copy(
-                                                    lineHeight = chipTextSize,
-                                                    textAlign = TextAlign.Center,
-                                                    platformStyle = PlatformTextStyle(includeFontPadding = false),
-                                                    lineHeightStyle = LineHeightStyle(
-                                                        alignment = LineHeightStyle.Alignment.Center,
-                                                        trim = LineHeightStyle.Trim.Both
-                                                    )
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
+                                )
                             }
 
                             Spacer(modifier = Modifier.width(8.dp))
@@ -267,59 +223,15 @@ fun StatusBannerSlot(
                                         modifier = Modifier.weight(1f)
                                     )
                                 } else {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(if (isTablet) 12.dp else 8.dp),
+                                    Text(
+                                        text = if (uiState.isTwoPlayer) "🎉 ${uiState.gameOverMessage.ifEmpty { "Victory!" }}" else "🎉 Victory!",
+                                        fontSize = bannerTextSize,
+                                        fontWeight = FontWeight.Bold,
+                                        color = textColor,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.weight(1f, fill = false)
-                                    ) {
-                                        Text(
-                                            text = if (uiState.isTwoPlayer) "🎉 ${uiState.gameOverMessage.ifEmpty { "Victory!" }}" else "🎉 Victory!",
-                                            fontSize = bannerTextSize,
-                                            fontWeight = FontWeight.Bold,
-                                            color = textColor,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-
-                                        Surface(
-                                            shape = RoundedCornerShape(percent = 50),
-                                            color = Color.White.copy(alpha = 0.9f),
-                                            border = BorderStroke(1.dp, TakeBamboo.copy(alpha = 0.6f)),
-                                            modifier = Modifier
-                                                .height(buttonHeight)
-                                                .clickable(
-                                                    role = androidx.compose.ui.semantics.Role.Button,
-                                                    onClickLabel = "Flash cards",
-                                                    onClick = onFlashCards
-                                                )
-                                        ) {
-                                            Box(
-                                                contentAlignment = Alignment.Center,
-                                                modifier = Modifier
-                                                    .fillMaxHeight()
-                                                    .padding(horizontal = if (isTablet) 16.dp else 12.dp)
-                                            ) {
-                                                Text(
-                                                    text = "Flash cards",
-                                                    fontSize = chipTextSize,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    color = textColor,
-                                                    textAlign = TextAlign.Center,
-                                                    maxLines = 1,
-                                                    softWrap = false,
-                                                    style = LocalTextStyle.current.copy(
-                                                        lineHeight = chipTextSize,
-                                                        textAlign = TextAlign.Center,
-                                                        platformStyle = PlatformTextStyle(includeFontPadding = false),
-                                                        lineHeightStyle = LineHeightStyle(
-                                                            alignment = LineHeightStyle.Alignment.Center,
-                                                            trim = LineHeightStyle.Trim.Both
-                                                        )
-                                                    )
-                                                )
-                                            }
-                                        }
-                                    }
+                                    )
                                 }
 
                                 Spacer(modifier = Modifier.width(8.dp))

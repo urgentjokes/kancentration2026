@@ -79,40 +79,13 @@ fun GameOverBanner(
                         maxLines = 1
                     )
                 } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = if (uiState.isTwoPlayer) "$emoji ${uiState.gameOverMessage}" else "$emoji Victory!",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = titleColor,
-                            maxLines = 1
-                        )
-                        Surface(
-                            shape = RoundedCornerShape(percent = 50),
-                            color = Color.White.copy(alpha = 0.9f),
-                            border = BorderStroke(1.dp, borderColor.copy(alpha = 0.6f))
-                        ) {
-                            Text(
-                                text = "Flash cards",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = titleColor,
-                                textAlign = TextAlign.Center,
-                                style = LocalTextStyle.current.copy(
-                                    lineHeight = 11.sp,
-                                    platformStyle = PlatformTextStyle(includeFontPadding = false),
-                                    lineHeightStyle = LineHeightStyle(
-                                        alignment = LineHeightStyle.Alignment.Center,
-                                        trim = LineHeightStyle.Trim.Both
-                                    )
-                                ),
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
-                            )
-                        }
-                    }
+                    Text(
+                        text = if (uiState.isTwoPlayer) "$emoji ${uiState.gameOverMessage}" else "$emoji Victory!",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = titleColor,
+                        maxLines = 1
+                    )
                 }
 
                 if (uiState.isTwoPlayer) {
