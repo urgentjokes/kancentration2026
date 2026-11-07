@@ -8,5 +8,6 @@ data class BoardCard(
     val isFaceUp: Boolean = false,
     val isMatched: Boolean = false,
     val matchedByPlayer: Int? = null, // 1 or 2
-    val isTwinTrapHighlight: Boolean = false
+    val isTwinTrapHighlight: Boolean = false,
+    val hasBeenExposed: Boolean = false
 )

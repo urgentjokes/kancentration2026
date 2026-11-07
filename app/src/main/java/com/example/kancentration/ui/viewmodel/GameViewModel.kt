@@ -221,7 +221,7 @@ class GameViewModel(
     fun onResumeApp() {
         val state = _uiState.value
         val hasStarted = state.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE
-        if (hasStarted && !state.isGameOver && timerManager.isPaused.value && !state.showSettingsDialog && !state.showDlcStoreDialog && !state.showFlashCardsScreen) {
+        if (hasStarted && !state.isGameOver && timerManager.isPaused.value && !state.showSettingsDialog && !state.showDlcStoreDialog && !state.showFlashCardsScreen && state.selectedTab != GameTab.FLASH_CARDS) {
             timerManager.resume()
         }
     }
@@ -258,7 +258,7 @@ class GameViewModel(
         // Rule 3: Post-game tile reveal & inspection
         if (state.isGameOver) {
             val updatedCards = state.cards.map {
-                if (it.instanceId == cardId) it.copy(isFaceUp = true) else it
+                if (it.instanceId == cardId) it.copy(isFaceUp = true, hasBeenExposed = true) else it
             }
             _uiState.update {
                 it.copy(
@@ -285,7 +285,7 @@ class GameViewModel(
             TurnPhase.IDLE_AWAITING_FIRST_MOVE, TurnPhase.AWAITING_FIRST_CARD -> {
                 // Reveal First Card
                 val updatedCards = state.cards.map {
-                    if (it.instanceId == cardId) it.copy(isFaceUp = true) else it
+                    if (it.instanceId == cardId) it.copy(isFaceUp = true, hasBeenExposed = true) else it
                 }
                 _uiState.update {
                     it.copy(
@@ -307,7 +307,7 @@ class GameViewModel(
 
                 // Reveal Second Card & Transition to EVALUATING_MATCH with input lock
                 val updatedCards = state.cards.map {
-                    if (it.instanceId == cardId) it.copy(isFaceUp = true) else it
+                    if (it.instanceId == cardId) it.copy(isFaceUp = true, hasBeenExposed = true) else it
                 }
                 _uiState.update {
                     it.copy(
@@ -377,6 +377,7 @@ class GameViewModel(
                                 it.copy(
                                     isMatched = true,
                                     isFaceUp = true,
+                                    hasBeenExposed = true,
                                     matchedByPlayer = p,
                                     isTwinTrapHighlight = false
                                 )
@@ -409,7 +410,7 @@ class GameViewModel(
                     is TurnEvaluationResult.TwinTrapMismatch -> {
                         val markedCards = _uiState.value.cards.map {
                             if (it.instanceId == firstId || it.instanceId == secondId) {
-                                it.copy(isTwinTrapHighlight = true)
+                                it.copy(isTwinTrapHighlight = true, hasBeenExposed = true)
                             } else it
                         }
                         _uiState.update {
@@ -508,13 +509,24 @@ class GameViewModel(
         _uiState.update { it.copy(showDlcStoreDialog = show) }
     }
 
-    fun setShowFlashCardsScreen(show: Boolean) {
-        if (show && timerManager.isRunning) {
-            timerManager.pause()
-        } else if (!show && timerManager.isPaused.value && !_uiState.value.isGameOver && _uiState.value.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
+    fun selectTab(tab: GameTab) {
+        if (tab == GameTab.FLASH_CARDS) {
+            if (timerManager.isRunning) {
+                timerManager.pause()
+            }
+        } else if (_uiState.value.selectedTab == GameTab.FLASH_CARDS && timerManager.isPaused.value && !_uiState.value.isGameOver && _uiState.value.turnPhase != TurnPhase.IDLE_AWAITING_FIRST_MOVE && !_uiState.value.showSettingsDialog && !_uiState.value.showDlcStoreDialog) {
             timerManager.resume()
         }
-        _uiState.update { it.copy(showFlashCardsScreen = show) }
+        _uiState.update {
+            it.copy(
+                selectedTab = tab,
+                showFlashCardsScreen = (tab == GameTab.FLASH_CARDS)
+            )
+        }
+    }
+
+    fun setShowFlashCardsScreen(show: Boolean) {
+        selectTab(if (show) GameTab.FLASH_CARDS else GameTab.CURRENT_GAME)
     }
 
     fun downloadDlcPack(pack: DlcPackItem) {

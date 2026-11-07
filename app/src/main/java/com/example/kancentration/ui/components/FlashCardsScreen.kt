@@ -201,27 +201,29 @@ fun FlashCardsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     quadGroups.forEachIndexed { index, pair ->
-                        if (pair.size > 1) {
-                            item(key = "quad_header_$index") {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = if (index > 0) 6.dp else 0.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        item(key = "quad_header_$index") {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = if (index > 0) 6.dp else 0.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Surface(
+                                    shape = RoundedCornerShape(6.dp),
+                                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
                                 ) {
-                                    Surface(
-                                        shape = RoundedCornerShape(6.dp),
-                                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
-                                    ) {
-                                        Text(
-                                            text = "Confusable Pair ${index + 1}: ${pair.joinToString(" & ") { it.character }}",
-                                            fontSize = 11.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                                        )
-                                    }
+                                    Text(
+                                        text = if (pair.size > 1) {
+                                            "Confusable Pair ${index + 1}: ${pair.joinToString(" & ") { it.character }}"
+                                        } else {
+                                            "Confusable Pair ${index + 1}: ${pair.first().character}"
+                                        },
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                    )
                                 }
                             }
                         }
@@ -237,6 +239,150 @@ fun FlashCardsScreen(
                                 onWiktionaryClick = onWiktionaryClick
                             )
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Tab content view for the "Flash cards" tab in GameScreen,
+ * displaying every kanji that has been exposed so far, grouped confusable-pair by confusable-pair.
+ */
+@Composable
+fun FlashCardsTabContent(
+    cards: List<BoardCard>,
+    settings: GameSettings,
+    onWiktionaryClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    val exposedCards = remember(cards) {
+        cards.filter { it.hasBeenExposed || it.isFaceUp || it.isMatched }
+    }
+    val quadGroups = remember(exposedCards) {
+        exposedCards.groupBy { it.quadId }
+            .values
+            .map { group -> group.map { it.kanji }.distinctBy { it.id } }
+            .filter { it.isNotEmpty() }
+    }
+    val kanjiList = remember(quadGroups) {
+        quadGroups.flatten().distinctBy { it.id }
+    }
+
+    var globalRevealedState by rememberSaveable { mutableStateOf(false) }
+    var globalVersion by rememberSaveable { mutableIntStateOf(0) }
+
+    val configuration = LocalConfiguration.current
+    val isTablet = configuration.smallestScreenWidthDp >= 600
+
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Subheader row: Exposed counter on left, Reveal All / Hide All on right
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 800.dp)
+                .padding(horizontal = if (isTablet) 16.dp else 12.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = TakeBamboo.copy(alpha = 0.15f)
+            ) {
+                Text(
+                    text = if (isTablet) "${kanjiList.size} Kanji Exposed" else "${kanjiList.size} Exposed",
+                    fontSize = if (isTablet) 12.sp else 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TakeBamboo,
+                    maxLines = 1,
+                    softWrap = false,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                )
+            }
+
+            if (kanjiList.isNotEmpty()) {
+                TextButton(
+                    onClick = {
+                        globalRevealedState = !globalRevealedState
+                        globalVersion++
+                    },
+                    modifier = Modifier.height(32.dp),
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
+                ) {
+                    Text(
+                        text = if (globalRevealedState) "Hide All" else "Reveal All",
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = if (isTablet) 13.sp else 12.sp
+                    )
+                }
+            }
+        }
+
+        if (kanjiList.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No kanji cards exposed yet in the current game.\nFlip cards on the board to discover them!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .widthIn(max = 800.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                quadGroups.forEachIndexed { index, pair ->
+                    item(key = "tab_quad_header_$index") {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = if (index > 0) 6.dp else 0.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+                            ) {
+                                Text(
+                                    text = if (pair.size > 1) {
+                                        "Confusable Pair ${index + 1}: ${pair.joinToString(" & ") { it.character }}"
+                                    } else {
+                                        "Confusable Pair ${index + 1}: ${pair.first().character}"
+                                    },
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+                    items(
+                        items = pair,
+                        key = { it.id }
+                    ) { kanji ->
+                        FlashCardItem(
+                            kanji = kanji,
+                            settings = settings,
+                            initialRevealed = globalRevealedState,
+                            globalVersion = globalVersion,
+                            onWiktionaryClick = onWiktionaryClick
+                        )
                     }
                 }
             }

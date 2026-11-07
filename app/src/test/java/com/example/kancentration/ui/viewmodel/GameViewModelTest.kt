@@ -572,4 +572,62 @@ class GameViewModelTest {
         viewModel.setShowFlashCardsScreen(false)
         assertFalse(viewModel.uiState.value.showFlashCardsScreen)
     }
+
+    @Test
+    fun testGameTabsAndExposedKanjiTracking() = runTest {
+        val quads = createTestQuads()
+        val kanjiRepo = FakeKanjiRepository(quads)
+        val settingsRepo = InMemorySettingsRepository()
+        val viewModel = GameViewModel(
+            repository = kanjiRepo,
+            settingsRepository = settingsRepo,
+            dlcManager = FakeDlcManager(),
+            soundManager = NoOpSoundPlayer(),
+            coroutineScope = backgroundScope
+        )
+
+        // Default tab is CURRENT_GAME
+        assertEquals(GameTab.CURRENT_GAME, viewModel.uiState.value.selectedTab)
+        assertFalse(viewModel.uiState.value.showFlashCardsScreen)
+
+        // Initially no cards are exposed
+        val initialExposed = viewModel.uiState.value.cards.filter { it.hasBeenExposed || it.isFaceUp || it.isMatched }
+        assertEquals(0, initialExposed.size)
+
+        // Switch tab to FLASH_CARDS
+        viewModel.selectTab(GameTab.FLASH_CARDS)
+        assertEquals(GameTab.FLASH_CARDS, viewModel.uiState.value.selectedTab)
+        assertTrue(viewModel.uiState.value.showFlashCardsScreen)
+
+        // Switch back to CURRENT_GAME
+        viewModel.selectTab(GameTab.CURRENT_GAME)
+        assertEquals(GameTab.CURRENT_GAME, viewModel.uiState.value.selectedTab)
+
+        // Flip card 1
+        val firstCard = viewModel.uiState.value.cards[0]
+        viewModel.onCardClicked(firstCard.instanceId)
+
+        val exposedAfterFirstFlip = viewModel.uiState.value.cards.filter { it.hasBeenExposed || it.isFaceUp || it.isMatched }
+        assertEquals(1, exposedAfterFirstFlip.size)
+        assertEquals(firstCard.kanji.id, exposedAfterFirstFlip[0].kanji.id)
+
+        // Flip card 2 (which is from a different quad, standard mismatch)
+        val mismatchCard = viewModel.uiState.value.cards.first { it.quadId != firstCard.quadId }
+        viewModel.onCardClicked(mismatchCard.instanceId)
+
+        // Advance past mismatch delay
+        advanceTimeBy(viewModel.uiState.value.settings.mismatchDelayMs + 100)
+
+        // Both cards should still be marked as hasBeenExposed even though they flipped face-down
+        val exposedAfterMismatch = viewModel.uiState.value.cards.filter { it.hasBeenExposed || it.isFaceUp || it.isMatched }
+        assertEquals(2, exposedAfterMismatch.size)
+        assertTrue(exposedAfterMismatch.any { it.kanji.id == firstCard.kanji.id })
+        assertTrue(exposedAfterMismatch.any { it.kanji.id == mismatchCard.kanji.id })
+
+        // Check grouping confusable-pair by confusable-pair
+        val quadGroups = exposedAfterMismatch.groupBy { it.quadId }
+            .values
+            .map { group -> group.map { it.kanji }.distinctBy { it.id } }
+        assertEquals(2, quadGroups.size)
+    }
 }

@@ -18,6 +18,14 @@ enum class TurnPhase {
 }
 
 /**
+ * Navigation tabs under the top header row.
+ */
+enum class GameTab {
+    FLASH_CARDS,
+    CURRENT_GAME
+}
+
+/**
  * Immutable single source of truth for the presentation layer conforming to Section 5.4.
  */
 data class GameUiState(
@@ -41,7 +49,8 @@ data class GameUiState(
     val turnPhase: TurnPhase = TurnPhase.IDLE_AWAITING_FIRST_MOVE,
     val showSettingsDialog: Boolean = false,
     val showDlcStoreDialog: Boolean = false,
-    val showFlashCardsScreen: Boolean = false
+    val showFlashCardsScreen: Boolean = false,
+    val selectedTab: GameTab = GameTab.CURRENT_GAME
 ) {
     val totalPairs: Int get() = cards.size / 2
     val isTwoPlayer: Boolean get() = settings.gameType is GameType.TwoPlayer
