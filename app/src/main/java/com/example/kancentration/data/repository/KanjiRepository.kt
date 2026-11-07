@@ -386,8 +386,8 @@ open class AssetAndFileKanjiRepository(
                 )
             ),
             KanjiQuad(
-                id = "quad_06_right_left",
-                category = "Stroke Order & Shape",
+                id = "quad_06_right_stone",
+                category = "Top Stroke Crossing",
                 pairA = KanjiData(
                     id = "kanji_migi_right",
                     character = "右",
@@ -395,18 +395,18 @@ open class AssetAndFileKanjiRepository(
                     onReadings = listOf("ウ", "ユウ"),
                     kunReadings = listOf("みぎ"),
                     strokeCount = 5,
-                    distinctionTip = "First stroke is the downward-left diagonal stroke; contains 口.",
+                    distinctionTip = "Slanted stroke (ノ) is drawn first; the horizontal stroke crosses it, extending noticeably to the left.",
                     wiktionaryUrl = "https://en.wiktionary.org/wiki/%E5%8F%B3"
                 ),
                 pairB = KanjiData(
-                    id = "kanji_hidari_left",
-                    character = "左",
-                    meanings = listOf("left"),
-                    onReadings = listOf("サ"),
-                    kunReadings = listOf("ひだり"),
+                    id = "kanji_ishi_stone",
+                    character = "石",
+                    meanings = listOf("stone"),
+                    onReadings = listOf("セキ", "コク"),
+                    kunReadings = listOf("いし"),
                     strokeCount = 5,
-                    distinctionTip = "First stroke is the horizontal stroke; contains 工.",
-                    wiktionaryUrl = "https://en.wiktionary.org/wiki/%E5%B7%A6"
+                    distinctionTip = "Horizontal stroke is drawn first, forming a cliff (厂) over 口 with no horizontal protrusion to the left.",
+                    wiktionaryUrl = "https://en.wiktionary.org/wiki/%E7%9F%B3"
                 )
             ),
             KanjiQuad(

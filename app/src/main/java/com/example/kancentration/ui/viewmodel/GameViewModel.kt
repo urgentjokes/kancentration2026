@@ -19,6 +19,7 @@ import com.example.kancentration.domain.SoundManager
 import com.example.kancentration.domain.SoundPlayer
 import com.example.kancentration.domain.TimerManager
 import com.example.kancentration.domain.TurnEvaluationResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,6 +81,7 @@ class GameViewModel(
     private var gameSessionJob: CompletableJob = SupervisorJob(rootScope.coroutineContext[Job])
     private var gameSessionScope: CoroutineScope = CoroutineScope(rootScope.coroutineContext + gameSessionJob)
     private var matchEvaluationJob: Job? = null
+    private var pendingEvaluationFinalizer: (() -> Unit)? = null
 
     private val _uiState = MutableStateFlow(
         GameUiState(settings = settingsRepository.loadSettings())
@@ -149,6 +151,7 @@ class GameViewModel(
         // Lifecycle Safety: Cancel all in-flight evaluation jobs and timer collectors from previous session
         matchEvaluationJob?.cancel()
         matchEvaluationJob = null
+        pendingEvaluationFinalizer = null
         gameSessionJob.cancel()
 
         // Create a new bound session job and scope
@@ -227,11 +230,13 @@ class GameViewModel(
     }
 
     /**
-     * Primary event handler tracking TurnPhase transitions and enforcing complete input locking.
+     * Primary event handler tracking TurnPhase transitions and enforcing turn rules.
      *
      * Rules:
-     * 1. If card is already face-up or matched, immediately update inspector and return (inspection only).
-     * 2. If isEvaluatingMatch is true (during the 1,150ms observation delay), immediately ignore the tap.
+     * 1. If currently in mismatch/match observation delay, tapping any tile immediately finalizes the pending
+     *    evaluation. If a face-down tile was tapped, it immediately flips as the first card of the new turn;
+     *    if a face-up/matched tile was tapped, the delay is dismissed and the card is inspected.
+     * 2. If card is already face-up or matched, immediately update inspector and return (inspection only).
      * 3. If game is over, permit post-game inspection and reveal.
      * 4. Lazy-clock initialization triggers exclusively on the first valid face-down flip of a new game.
      */
@@ -239,25 +244,38 @@ class GameViewModel(
         val state = _uiState.value
         val card = state.cards.find { it.instanceId == cardId } ?: return
 
-        // Rule 1: Always allow inspecting cards that are already face-up or matched
-        if (card.isFaceUp || card.isMatched) {
+        val wasEvaluating = state.isEvaluatingMatch || state.turnPhase == TurnPhase.EVALUATING_MATCH
+        val wasFaceUpOrMatched = card.isFaceUp || card.isMatched
+
+        // Rule 1 & Rule 2: User Agency during match/mismatch observation delay
+        if (wasEvaluating) {
+            matchEvaluationJob?.cancel()
+            matchEvaluationJob = null
+            pendingEvaluationFinalizer?.invoke()
+            pendingEvaluationFinalizer = null
+
+            // If user clicked a card that was already face-up or matched,
+            // the delay is now dismissed; update inspector and return (don't re-flip)
+            if (wasFaceUpOrMatched) {
+                _uiState.update { it.copy(selectedKanjiForInspector = card.kanji) }
+                return
+            }
+        } else if (wasFaceUpOrMatched) {
+            // Normal inspection of already face-up or matched cards
             _uiState.update { it.copy(selectedKanjiForInspector = card.kanji) }
             return
         }
 
-        // Rule 2: Complete Input Locking during match evaluation delay
-        if (state.isEvaluatingMatch || state.turnPhase == TurnPhase.EVALUATING_MATCH) {
-            return
-        }
+        val currentState = _uiState.value
 
         // Dismiss Near-Miss pop-up upon user tapping a card
-        if (state.activeTwinTrapBanner != null) {
+        if (currentState.activeTwinTrapBanner != null) {
             _uiState.update { it.copy(activeTwinTrapBanner = null) }
         }
 
         // Rule 3: Post-game tile reveal & inspection
-        if (state.isGameOver) {
-            val updatedCards = state.cards.map {
+        if (currentState.isGameOver) {
+            val updatedCards = currentState.cards.map {
                 if (it.instanceId == cardId) it.copy(isFaceUp = true, hasBeenExposed = true) else it
             }
             _uiState.update {
@@ -271,8 +289,8 @@ class GameViewModel(
         }
 
         // Rule 4: Lazy-clock initialization: Start timer flow exclusively on the very first valid face-down flip
-        if (state.turnPhase == TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
-            if (state.isTimeAttack) {
+        if (currentState.turnPhase == TurnPhase.IDLE_AWAITING_FIRST_MOVE) {
+            if (currentState.isTimeAttack) {
                 timerManager.startCountdown()
             } else {
                 timerManager.startStopwatch()
@@ -281,10 +299,10 @@ class GameViewModel(
 
         soundManager.playFlip()
 
-        when (state.turnPhase) {
+        when (currentState.turnPhase) {
             TurnPhase.IDLE_AWAITING_FIRST_MOVE, TurnPhase.AWAITING_FIRST_CARD -> {
                 // Reveal First Card
-                val updatedCards = state.cards.map {
+                val updatedCards = currentState.cards.map {
                     if (it.instanceId == cardId) it.copy(isFaceUp = true, hasBeenExposed = true) else it
                 }
                 _uiState.update {
@@ -299,14 +317,14 @@ class GameViewModel(
             }
 
             TurnPhase.FIRST_CARD_REVEALED -> {
-                val firstId = state.firstFlippedCardId
+                val firstId = currentState.firstFlippedCardId
                 if (firstId == null || firstId == cardId) {
                     _uiState.update { it.copy(selectedKanjiForInspector = card.kanji) }
                     return
                 }
 
-                // Reveal Second Card & Transition to EVALUATING_MATCH with input lock
-                val updatedCards = state.cards.map {
+                // Reveal Second Card & Transition to EVALUATING_MATCH
+                val updatedCards = currentState.cards.map {
                     if (it.instanceId == cardId) it.copy(isFaceUp = true, hasBeenExposed = true) else it
                 }
                 _uiState.update {
@@ -337,6 +355,19 @@ class GameViewModel(
     }
 
     /**
+     * Dismisses any active observation delay immediately, settling mismatched cards face-down.
+     */
+    fun dismissPendingEvaluation() {
+        val state = _uiState.value
+        if (state.isEvaluatingMatch || state.turnPhase == TurnPhase.EVALUATING_MATCH) {
+            matchEvaluationJob?.cancel()
+            matchEvaluationJob = null
+            pendingEvaluationFinalizer?.invoke()
+            pendingEvaluationFinalizer = null
+        }
+    }
+
+    /**
      * Dismisses the active Near-Miss pop-up / banner upon user tap.
      */
     fun dismissTwinTrapBanner() {
@@ -347,132 +378,154 @@ class GameViewModel(
 
     private fun evaluateMatch(firstId: String, secondId: String) {
         matchEvaluationJob?.cancel()
-        matchEvaluationJob = gameSessionScope.launch {
-            val currentCards = _uiState.value.cards
-            val card1 = currentCards.find { it.instanceId == firstId }
-            val card2 = currentCards.find { it.instanceId == secondId }
+        pendingEvaluationFinalizer = null
 
-            if (card1 != null && card2 != null) {
-                val state = _uiState.value
-                val result = gameEngine.evaluateFlip(
-                    card1 = card1,
-                    card2 = card2,
-                    activePlayer = state.activePlayer,
-                    player1Score = state.player1Score,
-                    player2Score = state.player2Score,
-                    totalMatches = state.totalMatches,
-                    totalPairs = state.totalPairs,
-                    settings = state.settings,
-                    formattedTimer = state.formattedTimer,
-                    totalMoves = state.totalMoves
-                )
+        val currentCards = _uiState.value.cards
+        val card1 = currentCards.find { it.instanceId == firstId }
+        val card2 = currentCards.find { it.instanceId == secondId }
 
-                when (result) {
-                    is TurnEvaluationResult.Match -> {
-                        delay(500L) // Brief delay for match confirmation
-                        soundManager.playMatch()
-                        val p = result.scoringPlayer
-                        val updatedCards = _uiState.value.cards.map {
-                            if (it.instanceId == firstId || it.instanceId == secondId) {
-                                it.copy(
-                                    isMatched = true,
-                                    isFaceUp = true,
-                                    hasBeenExposed = true,
-                                    matchedByPlayer = p,
-                                    isTwinTrapHighlight = false
-                                )
-                            } else it
-                        }
+        if (card1 == null || card2 == null) {
+            return
+        }
 
-                        if (result.isGameOver) {
-                            timerManager.stop()
-                            soundManager.playVictory()
-                        }
+        val state = _uiState.value
+        val result = gameEngine.evaluateFlip(
+            card1 = card1,
+            card2 = card2,
+            activePlayer = state.activePlayer,
+            player1Score = state.player1Score,
+            player2Score = state.player2Score,
+            totalMatches = state.totalMatches,
+            totalPairs = state.totalPairs,
+            settings = state.settings,
+            formattedTimer = state.formattedTimer,
+            totalMoves = state.totalMoves
+        )
 
-                        _uiState.update {
+        val delayMs: Long
+        when (result) {
+            is TurnEvaluationResult.Match -> {
+                delayMs = 500L
+                val finalizer = {
+                    soundManager.playMatch()
+                    val p = result.scoringPlayer
+                    val updatedCards = _uiState.value.cards.map {
+                        if (it.instanceId == firstId || it.instanceId == secondId) {
                             it.copy(
-                                cards = updatedCards,
-                                player1Score = result.newPlayer1Score,
-                                player2Score = result.newPlayer2Score,
-                                totalMatches = result.newTotalMatches,
-                                activePlayer = result.nextPlayer,
-                                isGameOver = result.isGameOver,
-                                gameOverMessage = result.gameOverMessage,
-                                firstFlippedCardId = null,
-                                secondFlippedCardId = null,
-                                isEvaluatingMatch = false,
-                                activeTwinTrapBanner = null,
-                                turnPhase = if (result.isGameOver) TurnPhase.GAME_OVER else TurnPhase.AWAITING_FIRST_CARD
+                                isMatched = true,
+                                isFaceUp = true,
+                                hasBeenExposed = true,
+                                matchedByPlayer = p,
+                                isTwinTrapHighlight = false
                             )
-                        }
+                        } else it
                     }
 
-                    is TurnEvaluationResult.TwinTrapMismatch -> {
-                        val markedCards = _uiState.value.cards.map {
-                            if (it.instanceId == firstId || it.instanceId == secondId) {
-                                it.copy(isTwinTrapHighlight = true, hasBeenExposed = true)
-                            } else it
-                        }
-                        _uiState.update {
-                            it.copy(
-                                cards = markedCards,
-                                activeTwinTrapBanner = result.bannerMessage
-                            )
-                        }
-
-                        // Play distinct Twin-Trap anomaly alert immediately upon detection
-                        soundManager.playTwinTrap()
-
-                        // Configurable failed match exposure delay
-                        delay(state.settings.mismatchDelayMs)
-
-                        val updatedCards = _uiState.value.cards.map {
-                            if (it.instanceId == firstId || it.instanceId == secondId) {
-                                it.copy(isFaceUp = false, isTwinTrapHighlight = false)
-                            } else it
-                        }
-
-                        _uiState.update {
-                            it.copy(
-                                cards = updatedCards,
-                                activePlayer = result.nextPlayer,
-                                firstFlippedCardId = null,
-                                secondFlippedCardId = null,
-                                isEvaluatingMatch = false,
-                                turnPhase = TurnPhase.AWAITING_FIRST_CARD
-                            )
-                        }
+                    if (result.isGameOver) {
+                        timerManager.stop()
+                        soundManager.playVictory()
                     }
 
-                    is TurnEvaluationResult.StandardMismatch -> {
-                        // Configurable failed match exposure delay
-                        delay(state.settings.mismatchDelayMs)
-                        soundManager.playMismatch()
-
-                        val updatedCards = _uiState.value.cards.map {
-                            if (it.instanceId == firstId || it.instanceId == secondId) {
-                                it.copy(isFaceUp = false, isTwinTrapHighlight = false)
-                            } else it
-                        }
-
-                        _uiState.update {
-                            it.copy(
-                                cards = updatedCards,
-                                activePlayer = result.nextPlayer,
-                                firstFlippedCardId = null,
-                                secondFlippedCardId = null,
-                                isEvaluatingMatch = false,
-                                turnPhase = TurnPhase.AWAITING_FIRST_CARD
-                            )
-                        }
+                    _uiState.update {
+                        it.copy(
+                            cards = updatedCards,
+                            player1Score = result.newPlayer1Score,
+                            player2Score = result.newPlayer2Score,
+                            totalMatches = result.newTotalMatches,
+                            activePlayer = result.nextPlayer,
+                            isGameOver = result.isGameOver,
+                            gameOverMessage = result.gameOverMessage,
+                            firstFlippedCardId = null,
+                            secondFlippedCardId = null,
+                            isEvaluatingMatch = false,
+                            activeTwinTrapBanner = null,
+                            turnPhase = if (result.isGameOver) TurnPhase.GAME_OVER else TurnPhase.AWAITING_FIRST_CARD
+                        )
                     }
                 }
+                pendingEvaluationFinalizer = finalizer
+            }
+
+            is TurnEvaluationResult.TwinTrapMismatch -> {
+                delayMs = state.settings.mismatchDelayMs
+                val markedCards = _uiState.value.cards.map {
+                    if (it.instanceId == firstId || it.instanceId == secondId) {
+                        it.copy(isTwinTrapHighlight = true, hasBeenExposed = true)
+                    } else it
+                }
+                _uiState.update {
+                    it.copy(
+                        cards = markedCards,
+                        activeTwinTrapBanner = result.bannerMessage
+                    )
+                }
+
+                // Play distinct Twin-Trap anomaly alert immediately upon detection
+                soundManager.playTwinTrap()
+
+                val finalizer = {
+                    val updatedCards = _uiState.value.cards.map {
+                        if (it.instanceId == firstId || it.instanceId == secondId) {
+                            it.copy(isFaceUp = false, isTwinTrapHighlight = false)
+                        } else it
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            cards = updatedCards,
+                            activePlayer = result.nextPlayer,
+                            firstFlippedCardId = null,
+                            secondFlippedCardId = null,
+                            isEvaluatingMatch = false,
+                            turnPhase = TurnPhase.AWAITING_FIRST_CARD
+                        )
+                    }
+                }
+                pendingEvaluationFinalizer = finalizer
+            }
+
+            is TurnEvaluationResult.StandardMismatch -> {
+                delayMs = state.settings.mismatchDelayMs
+                val finalizer = {
+                    soundManager.playMismatch()
+
+                    val updatedCards = _uiState.value.cards.map {
+                        if (it.instanceId == firstId || it.instanceId == secondId) {
+                            it.copy(isFaceUp = false, isTwinTrapHighlight = false)
+                        } else it
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            cards = updatedCards,
+                            activePlayer = result.nextPlayer,
+                            firstFlippedCardId = null,
+                            secondFlippedCardId = null,
+                            isEvaluatingMatch = false,
+                            turnPhase = TurnPhase.AWAITING_FIRST_CARD
+                        )
+                    }
+                }
+                pendingEvaluationFinalizer = finalizer
+            }
+        }
+
+        matchEvaluationJob = gameSessionScope.launch {
+            try {
+                delay(delayMs)
+                val action = pendingEvaluationFinalizer
+                pendingEvaluationFinalizer = null
+                action?.invoke()
+            } catch (e: CancellationException) {
+                // Cancelled when user tapped or game reset
             }
         }
     }
 
     private fun handleTimeExpired() {
         matchEvaluationJob?.cancel()
+        matchEvaluationJob = null
+        pendingEvaluationFinalizer = null
         soundManager.playMismatch()
         val score = _uiState.value.player1Score
         val total = _uiState.value.totalPairs
@@ -543,6 +596,7 @@ class GameViewModel(
         super.onCleared()
         matchEvaluationJob?.cancel()
         matchEvaluationJob = null
+        pendingEvaluationFinalizer = null
         gameSessionJob.cancel()
         timerManager.dispose()
         soundManager.release()

@@ -1,0 +1,491 @@
+================================================================================
+KANCENTRATION 2026 — KANJI JSON ASSETS AUDIT & DISCREPANCY REPORT
+Audited Directory: /Users/davefriedman2023/developer-stuff/kancentration2026/app/src/main/assets/
+Files Audited:
+  1. grade_1.json (18 quads / 36 characters)
+  2. grade_2.json (18 quads / 36 characters)
+  3. grade_3.json (18 quads / 36 characters)
+  4. grade_4.json (18 quads / 36 characters)
+  5. grade_5.json (18 quads / 36 characters)
+  6. grade_6.json (18 quads / 36 characters)
+  7. kanji_base_pack.json (20 quads / 40 characters)
+Reference Files Cross-Checked:
+  - Grade_1.csv, Grade_2.csv, Grade_3.csv, Grade_4.csv, Grade_5.csv, Grade_6.csv
+  - AGENTS.md (Confusable Kanji Pairing Guidelines)
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+SECTION 1: FACTUAL & STRUCTURAL ERRORS IN KANJI DESCRIPTIONS (distinctionTip & category)
+SECTION 2: MEANING MISTAKES, CONFUSABLE TRAPS, ARCHAISMS & CSV DISCREPANCIES (meanings)
+SECTION 3: BROKEN URLS, WRONG IDS & READING ERRORS (wiktionaryUrl, id, onReadings, kunReadings)
+SECTION 4: OBSCURE / NON-RENDERING UNICODE GLYPHS IN DESCRIPTIONS
+SECTION 5: PACK DESCRIPTION & GRADE-LEVEL PLACEMENT DISCREPANCIES
+SECTION 6: JSON SCHEMA & FORMATTING INCONSISTENCIES ACROSS FILES
+SECTION 7: PAIRING GUIDELINE ISSUES (AGENTS.md) & CROSS-PACK DUPLICATES
+
+
+================================================================================
+SECTION 1: FACTUAL & STRUCTURAL ERRORS IN KANJI DESCRIPTIONS
+           (distinctionTip & category)
+================================================================================
+
+1. [grade_1.json & kanji_base_pack.json] grade1_quad_01_person_enter / quad_03_person_enter — 人 (kanji_hito_person) vs 入 (kanji_iru_enter)
+   - Current distinctionTip for 人: "Left stroke is drawn first and stands taller; right stroke leans against it."
+   - Current distinctionTip for 入: "Right stroke starts higher and sweeps over to the right; left stroke tucks underneath."
+   - Discrepancy: MISLEADING STROKE-ORDER CLAIM. In 入, the left stroke (丿) is ALSO drawn first (Stroke 1 is the shorter left-sweeping stroke 丿, and Stroke 2 is the taller right-sweeping stroke ㇏). Stating "Left stroke is drawn first" as the distinction for 人 falsely implies that in 入 the right stroke is drawn first.
+
+2. [grade_1.json] grade1_quad_04_king_jewel — 王 (kanji_ou_king)
+   - Current distinctionTip: "Three equal horizontal bars joined by a central vertical stroke, with no dot."
+   - Discrepancy: FACTUALLY INCORRECT PROPORTIONS. The three horizontal bars of 王 are NOT equal in length (the bottom bar is longest, the top bar is medium, and the middle bar is shortest).
+
+3. [grade_1.json] grade1_quad_09_power_katakana_ka — カ (katakana_ka)
+   - Current distinctionTip: "Katakana 'ka' (derived from 加); the left-sweeping stroke does NOT pierce through the top, meeting neatly at the top-left vertex."
+   - Discrepancy: FACTUALLY INCORRECT. In Katakana カ, the left-sweeping stroke (ノ) DOES pierce upward through the top horizontal line, just like 力 (it is 刀 or ク where the left stroke does not pierce above the top horizontal bar, NOT カ). カ and 力 differ in overall scale/angularity, not in whether the vertical-left sweep pierces the top horizontal bar.
+
+4. [grade_1.json] grade1_quad_10_nine_round — 丸 (kanji_maru_round)
+   - Current distinctionTip: "Kanji for 'round'; features an extra accent drop dot (丶) inside the upper-right bend of the hooked stroke."
+   - Discrepancy: FACTUALLY INCORRECT POSITION. In 丸, the extra dot stroke (丶) is placed on the LEFT side (crossing the downward-left sweep 丿), NOT "inside the upper-right bend of the hooked stroke".
+
+5. [grade_1.json] grade1_quad_16_evening_katakana_ta — タ (katakana_ta)
+   - Current distinctionTip: "Katakana 'ta' (derived from 多); the crossing horizontal-diagonal stroke breaks distinctly through the left slant."
+   - Discrepancy: FACTUALLY INCORRECT. In Katakana タ, the interior diagonal tick (3rd stroke) starts at the left slant and goes down-right toward the right-hand curved sweep; it does NOT break through the left slant.
+
+6. [grade_2.json & kanji_base_pack.json] grade2_quad_06_arrow_heaven / quad_08_heaven_arrow — 矢 (kanji_ya_arrow) vs 天 (kanji_ten_heaven)
+   - Current category (kanji_base_pack.json): "Head Break-through"
+   - Current distinctionTip for 天: "Central vertical stroke does NOT poke above the top horizontal bar." / "Top horizontal stroke lies cleanly flat without any vertical pierce."
+   - Current distinctionTip for 矢: "Top slanted stroke PIERCES through the top horizontal line." / "Top slanted stroke pierces through the upper horizontal bar."
+   - Discrepancy: FACTUALLY INCORRECT / CONFUSED WITH 夫. In 矢 (5 strokes), the central vertical/sweeping stroke (丿, stroke 4) does NOT pierce above the top horizontal bar either (that is 夫 vs 天 in grade4_quad_04_husband_heaven!). Instead, 矢 begins with a short downward-left diagonal tick (ノ, stroke 1) at the LEFT end of the top horizontal bar (forming 𠂉), and the top horizontal bar starts from the middle of that left slant rather than being pierced through by a vertical/slanted stroke.
+
+7. [grade_2.json] grade2_quad_03_few_small — 少 (kanji_sukunai_few)
+   - Current distinctionTip: "Features a long downward-left sweeping slash piercing through the right side."
+   - Discrepancy: FACTUALLY INCORRECT. The 4th stroke of 少 (ノ) starts below the right dot and sweeps downward to the LEFT underneath the central vertical hook; it does not "pierce through the right side".
+
+8. [grade_2.json] grade2_quad_08_craft_katakana_e — エ (katakana_e)
+   - Current distinctionTip: "Katakana 'e' (derived from 江); clean geometric lines with equal horizontal widths."
+   - Discrepancy: FACTUALLY INCORRECT PROPORTIONS. In Katakana エ (just as in 工), the top and bottom horizontal bars do NOT have equal widths: the bottom horizontal bar is noticeably longer than the top horizontal bar. エ differs from 工 primarily in overall smaller character height/size.
+
+9. [grade_2.json] grade2_quad_10_mother_every — 母 (kanji_haha_mother) & 毎 (kanji_goto_every)
+   - Current distinctionTip for 母: "Frame encloses TWO small separate accent dots vertically arranged."
+   - Current distinctionTip for 毎: "Top is capped with a slanted lid (𠂉) over an internal crossbar."
+   - Discrepancy: INCOMPLETE / MISLEADING DISTINCTION. In modern Japanese Shinjitai, 毎 is not simply 母 with a 𠂉 cap on top: inside the lower frame (毋) of 毎, the two dots of 母 are replaced by a single continuous vertical stroke intersecting the middle horizontal crossbar (whereas 母 ALSO has the internal horizontal crossbar).
+
+10. [grade_2.json] grade2_quad_13_rice_come — 米 (kanji_kome_rice)
+    - Current distinctionTip: "Top consists of two outward diagonal dot strokes sitting on top of the tree."
+    - Discrepancy: WRONG STROKE DIRECTION. The top two dot strokes of 米 (丷) slant INWARD toward the center (left dot slants down-right 丶, right dot slants down-left ノ), not outward.
+
+11. [grade_2.json] grade2_quad_14_father_cross — 父 (kanji_chichi_father)
+    - Current distinctionTip: "Top is open with two separate slanting strokes (八) meeting above 乂."
+    - Discrepancy: CONTRADICTORY DESCRIPTION. The two top strokes of 父 (八) are separate and do NOT meet at the top.
+
+12. [grade_2.json] grade2_quad_17_wide_agency — 広 (kanji_hiro_wide)
+    - Current distinctionTip: "Inside the dotted cliff (广) is private (厶 / triangle-like stroke)."
+    - Discrepancy: WRONG STROKE COUNT DESCRIPTION. 厶 (ム) consists of TWO strokes (an angled turn stroke plus a right-side dot stroke), not a single "triangle-like stroke".
+
+13. [grade_2.json] grade2_quad_18_shape_cedar — 形 (kanji_katachi_shape)
+    - Current distinctionTip: "Left component is 开 (open gates / two vertical pillars crossed by horizontal lines)."
+    - Discrepancy: WRONG COMPONENT MEANING. Glossing 开 as "open gates" confuses the Simplified Chinese character 开 (simplified from 開 "open") with the traditional/Japanese component 开 (two hairpins / level / even, 4 strokes).
+
+14. [grade_3.json] grade3_quad_11_gather_finger — 拾 (kanji_hirowa_gather)
+    - Current distinctionTip: "Right component is 合 (join / combine / roof + mouth) alongside 扌."
+    - Discrepancy: WRONG RADICAL NAME. The top of 合 is NOT a "roof" (宀); it is 亼 (person/gathering 人 + one 一) over 口 (mouth).
+
+15. [grade_4.json] grade4_quad_18_county_flock — 群 (kanji_mure_flock)
+    - Current category: "Component Arrangement"
+    - Current distinctionTip: "Ruler (君) placed directly ABOVE sheep (羊) vertically stacked."
+    - Discrepancy: FACTUALLY INCORRECT. In standard Japanese Jōyō kanji, 群 places 君 on the LEFT and 羊 on the RIGHT side-by-side (horizontal left-right arrangement). Only the unsimplified/variant character 羣 stacks 君 vertically above 羊. Both 郡 (君 + 阝) and 群 (君 + 羊) have 君 on the left and differ by their right-hand component (阝 vs 羊), not by horizontal vs vertical stacking.
+
+16. [grade_4.json] grade4_quad_03_order_now — 今 (kanji_ima_now) & 令 (kanji_rei_order)
+    - Current distinctionTip for 今: "Lower component consists of horizontal turn (乛) and hooked vertical flick (亅)."
+    - Discrepancy (今): FACTUALLY INCORRECT. 今 (4 strokes: 人 [2] + 一 [1] + フ [1]) does NOT have a "hooked vertical flick (亅)". Its bottom stroke is a single horizontal-to-downward-left angle stroke (フ / 乛) with no vertical stem.
+    - Current distinctionTip for 令: "Lower component has a horizontal stroke crossing under the roof, over seal (卩)."
+    - Discrepancy (令): FONT-DEPENDENT / MISLEADING. In Japanese Kyōkashotai (textbook/handwriting standard) and Gothic fonts, 令 is written with a dot (丶) over マ at the bottom, whereas seal (卩) under a horizontal bar only appears in traditional Minchō print typefaces.
+
+17. [grade_4.json] grade4_quad_09_borrow_past — 昔 (kanji_mukashi_past)
+    - Current distinctionTip: "Standalone character: stacks of days (廿) sitting over sun (日)."
+    - Discrepancy: WRONG TOP COMPONENT. The top of 昔 is 龷 (4 strokes: two horizontal bars and two vertical bars), not 廿 (which has only 3 strokes and lacks the upper horizontal bar).
+
+18. [grade_4.json] grade4_quad_10_shallow_remain — 浅 (kanji_asa_shallow) & 残 (kanji_noko_remain)
+    - Current distinctionTip for 浅: "Left radical is three drops of water (氵 / sanzui) alongside 戔."
+    - Current distinctionTip for 残: "Left radical is bare bone / death (歹 / kabane-hen) alongside 戔."
+    - Discrepancy: WRONG GLYPH FORM (KYŪJITAI vs. SHINJITAI). 戔 (8 strokes, two stacked 戈 halberds) is the unsimplified Kyūjitai component used in 淺 and 殘. In modern Japanese Shinjitai 浅 and 残, the right-hand component is 戋 (5 strokes: three horizontal bars crossed by 戈), NOT 戔.
+
+19. [grade_4.json] grade4_quad_14_each_name — 各 (kanji_ono_each)
+    - Current distinctionTip: "Top component is downward-sweeping winter feet (夂) over mouth (口)."
+    - Discrepancy: CONFLATED RADICAL NAME. Calls 夂 "winter feet", mashing up the Japanese radical name fuyugashira ("winter top/crown", from 冬) with the Chinese radical meaning ("go slowly / trailing feet").
+
+20. [grade_4.json] grade4_quad_17_stop_pavilion — 亭 (kanji_chin_pavilion)
+    - Current distinctionTip: "Standalone architecture character: lid (亠) over mouth (口) over nail (丁)."
+    - Discrepancy: MISSING COMPONENT. Omits the crown cover radical (冖 / wakanmuri) between 口 and 丁. 亭 (9 strokes) is 亠 (2) + 口 (3) + 冖 (2) + 丁 (2). Without 冖, 亠 + 口 + 丁 is the 7-stroke character 亨, not 亭.
+
+21. [grade_5.json] grade5_quad_04_examine_danger — 検 (kanji_ken_examine) & 険 (kanji_kewashii_danger)
+    - Current distinctionTip for 検: "Has the tree radical (木) on the left alongside 僉."
+    - Current distinctionTip for 険: "Has the hill pinnacle radical (阝) on the left alongside 僉."
+    - Discrepancy: WRONG GLYPH FORM (KYŪJITAI vs. SHINJITAI). 僉 (13 strokes, featuring TWO mouths 口口 and TWO people 人人) is the unsimplified Kyūjitai component used in 檢 and 險. In modern Japanese Shinjitai 検 and 険, the right-hand component is 㑒 (8 strokes: 人 + 一 + a single 口 + a single 人 piercing through 口), NOT 僉.
+
+22. [grade_5.json] grade5_quad_10_mix_warm — 混 (kanji_mazeru_mix) & 温 (kanji_atatakai_warm)
+    - Current category: "Right Component Variation (昆 Swarm vs 昷 Warmth)"
+    - Discrepancy: INACCURATE COMPONENT GLOSS. 昆 means "descendants / elder brother / same / numerous" (not "Swarm"; in 昆虫 "insect", 虫 is the insect component), and 昷 (U+6637) is an obscure non-Jōyō character.
+
+23. [grade_5.json] grade5_quad_11_thick_origin — 厚 (kanji_atsui_thick)
+    - Current distinctionTip: "Contains 𣅀 and child (子) under the cliff radical (厂)."
+    - Discrepancy: REDUNDANT & CORRUPTED GLYPH. 𣅀 (U+23140, CJK Unified Ideographs Extension B) is an archaic variant glyph of 厚 without 厂 that ALREADY consists of 日 + 子 stacked together. Writing "Contains 𣅀 and child (子)" literally says "Contains [sun+child] and child (子)", and U+23140 fails to render on standard Android fonts. It should say: "Contains sun (日) and child (子) under the cliff radical (厂)."
+
+24. [grade_5.json] grade5_quad_17_longtime_lack — 久 (kanji_hisashii_longtime) & 欠 (kanji_kakeru_lack)
+    - Current distinctionTip for 久: "Three strokes featuring a long sweeping curved diagonal through the center."
+    - Discrepancy (久): MISLEADING GEOMETRY. None of the 3 strokes of 久 pass "through the center" (Stroke 1 is ノ, Stroke 2 is フ, and Stroke 3 ㇏ starts from the middle of Stroke 2's diagonal without crossing through it, unlike 丈 or 父).
+    - Current distinctionTip for 欠: "Four strokes opening up towards the right with a curved hook base (乚)."
+    - Discrepancy (欠): FACTUALLY INCORRECT. 欠 does NOT contain a curved hook base (乚). Its 4 strokes are: (1) top-left diagonal sweep (ノ), (2) top horizontal hook (乛 / ワ-shaped hook), (3) central downward-left sweep (丿), and (4) bottom-right sweeping leg (㇏, as in 人). There is no 乚 stroke in 欠.
+
+25. [grade_6.json] grade6_quad_15_cut_plant_cultivate — 裁 (kanji_sabaku_cut) & 栽 (kanji_sai_plant)
+    - Current category: "Bottom-Right Component (衣 Clothing vs 木 Tree)"
+    - Current distinctionTip for 裁: "Features clothing (衣) at the bottom-right inside 𢦏."
+    - Current distinctionTip for 栽: "Features tree (木) at the bottom-right inside 𢦏."
+    - Discrepancy: FACTUALLY INCORRECT POSITION ("bottom-right" vs "bottom-left") + NON-RENDERING GLYPH. In both 裁 and 栽, the right-hand side is occupied by the sweeping halberd (戈) stroke, while 衣 (in 裁) and 木 (in 栽) sit at the BOTTOM-LEFT (directly beneath the top-left 十), NOT the bottom-right. Additionally, 𢦏 (U+2298F) is a CJK Extension B character that fails to render on standard Android fonts.
+
+26. [grade_6.json] grade6_quad_09_egg_hare — 卵 (kanji_tamago_egg) & 卯 (kanji_u_hare)
+    - Current distinctionTip for 卵: "Contains interior dots and an inner upward hook stroke."
+    - Current distinctionTip for 卯: "Clean open frames without inner dots or hooks."
+    - Discrepancy: FACTUALLY INCORRECT. Both 卵 (7 strokes) and 卯 (5 strokes) have the EXACT SAME outer frame and hooks (the left component ends in an upward-right hook レ, and the right component 卩 has a hooked loop). The ONLY visual difference between 卵 and 卯 is the presence vs. absence of the two interior dots (丶 inside each half). Claiming 卯 has no hooks or that 卵 has an extra hook stroke is false.
+
+27. [grade_6.json] grade6_quad_08_measure_exhaust — 尺 (kanji_shaku_measure)
+    - Current distinctionTip: "Four strokes ending cleanly with a sweeping leg and hook."
+    - Discrepancy: FACTUALLY INCORRECT. The 4th and final stroke of 尺 is a downward-right sweeping stroke (㇏ / migiharai), NOT a hook (hane), and none of the 4 strokes of 尺 have a hook.
+
+28. [grade_6.json] grade6_quad_16_desk_tag — 札 (kanji_fuda_tag)
+    - Current distinctionTip: "Features the hook base stroke (乚) with a slant on the right of tree (木)."
+    - Discrepancy: MISLEADING STROKE DESCRIPTION. The right side of 札 is a SINGLE stroke (乚, vertical line curving right and hooking up; 4 strokes for 木 + 1 stroke for 乚 = 5 strokes total). Saying "with a slant on the right of tree (木)" falsely suggests there is an additional slanted stroke on the right.
+
+29. [grade_6.json] grade6_quad_11_diligence_encourage — 勤 (kanji_tsutomeru_diligence) & 勧 (kanji_susumeru_encourage)
+    - Current category: "Left Component Variation (堇 vs 雚 alongside 力)"
+    - Current distinctionTip for 勤: "Features 堇 on the left alongside power (力)."
+    - Current distinctionTip for 勧: "Features 雚 (with grass 艹 atop) on the left alongside power (力)."
+    - Discrepancy: WRONG GLYPH FORM (KYŪJITAI vs. SHINJITAI). Both 堇 and 雚 are unsimplified Kyūjitai/Chinese components that do NOT match the Japanese Shinjitai characters 勤 and 勧 shown on the cards. In particular, 雚 has grass (艹) + TWO mouths (口口) + bird (隹), whereas Japanese Shinjitai 勧 has a 2-stroke top (𠂉) + horizontal stroke + 隹 (no 口口 at all, and not standard 艹).
+
+30. [grade_6.json] grade6_quad_01_ticket_scroll — 巻 (kanji_maki_scroll)
+    - Current category: "Bottom Radical Variation (刀 Knife vs 己 Self)"
+    - Current distinctionTip: "Bottom component is self/kneeling person (己) beneath 𠔉."
+    - Discrepancy: CONFLATED RADICALS + NON-RENDERING GLYPH. Conflates 己 ("self") with 卩/巳 ("kneeling person / seal", the historical radical of 卷 that became shaped like 己 in 9-stroke Shinjitai 巻), and uses non-rendering Extension B glyph 𠔉 (U+20509).
+
+31. [grade_6.json] grade6_quad_02_inhale_call, grade6_quad_05_region_castle, grade6_quad_10_deliver_yield — Wrong Component Glosses in `category`
+    - grade6_quad_02_inhale_call: "Right Component Variation (及 Reach vs 乎 Call)" — 乎 does NOT mean "Call" (it is a classical interrogative/exclamatory particle; 呼 means "call").
+    - grade6_quad_05_region_castle: "Right Component Variation (或 Spear vs 成 Become)" — 或 does NOT mean "Spear" (戈 is the spear/halberd radical; 或 means "some / region / state").
+    - grade6_quad_10_deliver_yield: "Internal Radical under Corpse (由 Field vs 出 Exit)" — 由 does NOT mean "Field" (田 is "Field"; 由 is "Reason / Sprout").
+
+32. [kanji_base_pack.json] quad_01_sun_say — 日 (kanji_hi_sun) & 曰 (kanji_iwaku_say)
+    - Current distinctionTip for 日: "Tall, narrow vertical rectangle frame (aspect ratio > 1)."
+    - Current distinctionTip for 曰: "Wide, flat horizontal rectangle frame (aspect ratio < 1); flatter frame."
+    - Discrepancy: INVERTED ASPECT RATIO DEFINITION. Standard aspect ratio is width / height (W:H). A tall, narrow vertical rectangle (日) has width < height (aspect ratio < 1), while a wide, flat horizontal rectangle (曰) has width > height (aspect ratio > 1).
+
+
+================================================================================
+SECTION 2: MEANING MISTAKES, CONFUSABLE TRAPS, ARCHAISMS & CSV DISCREPANCIES
+================================================================================
+
+A. Wrong, Confusable-Trap, or Archaic Meanings in JSON
+------------------------------------------------------
+1. [grade_4.json & kanji_base_pack.json] grade4_quad_01_notyet_end / quad_05_end_notyet — 末 (kanji_sue_end)
+   - JSON meanings: ["end", "tip", "future"] (and ["end", "tip", "extremity", "future"] in kanji_base_pack.json)
+   - Grade_4.csv Meaning: "end"
+   - Issue: CONFUSABLE MEANING TRAP WITH 未. In Japanese, "future" (未来 mirai) is written with 未 ("not yet"), NOT 末 ("end")! Listing "future" as a primary meaning of 末 (derived from the secondary compound 行く末 yukusue "one's future fate") in the very quad contrasting 未 and 末 actively misleads learners into associating 末 with "future".
+
+2. [grade_6.json] grade6_quad_17_imperial_steps_stairs — 陛 (kanji_hei_imperial_steps)
+   - JSON meanings: ["highness", "imperial palace steps"]
+   - Grade_6.csv Meaning: "majesty"
+   - Issue: WRONG ROYAL TITLE ("highness" vs "majesty"). In Japanese, 陛 (in 陛下 Heika) means "Majesty" (for an Emperor, Empress, King, or Queen), whereas "Highness" (for a Prince or Princess) is 殿 (in 殿下 Denka).
+
+3. [grade_6.json] grade6_quad_18_pure_settle — 納 (kanji_osameru_settle)
+   - JSON meanings: ["settlement", "obtain", "reap", "pay"]
+   - Grade_6.csv Meaning: "settlement"
+   - Issue: CONFUSED WITH 収 (osameru). 納 means "pay (taxes/fees), supply, deliver, store, accept/settle". It does NOT mean "obtain" or "reap" — those are the meanings of its homophone 収 (as in 収穫 "harvest/reap" and 収得 "obtain", see Grade_6.csv line 25: "859,収,obtain,shū,osa-meru,4").
+
+4. [grade_3.json] grade3_quad_09_ice_water — 氷 (kanji_koori_ice)
+   - JSON meanings: ["ice", "hail"]
+   - Grade_3.csv Meaning: "ice"
+   - Issue: WRONG MEANING ("hail"). 氷 means "ice". "Hail" is 雹 (hyō) or 霰 (arare); KANJIDIC lists "hail" under 氷 only because 氷 was historically used as a phonetic substitute (kakikae) for 雹.
+
+5. [grade_5.json] grade5_quad_14_burn_sort — 然 (kanji_shikari_sort)
+   - JSON meanings: ["sort of thing", "so", "if so"]
+   - Grade_4.csv Meaning: "so, although"
+   - Issue: Leading with "sort of thing" (and naming the quad "grade5_quad_14_burn_sort" and id "kanji_shikari_sort") comes from an obscure KANJIDIC suffix gloss. In standard Japanese, 然 means "so", "thus", "in that way", "natural (自然)", or "however/although".
+
+6. [grade_5.json] grade5_quad_06_weave_discern — 識 (kanji_shiki_discern)
+   - JSON meanings: ["discern", "know", "write"]
+   - Grade_5.csv Meaning: "discriminating"
+   - Issue: "write" is an archaic Classical Chinese meaning of 識 (to record/inscribe), not a modern Japanese meaning. Standard meanings are "knowledge", "awareness", "discern", "discriminate".
+
+7. [grade_5.json] grade5_quad_16_depart_dwell — 往 (kanji_ou_depart)
+   - JSON meanings: ["depart", "journey", "chase"]
+   - Grade_5.csv Meaning: "journey"
+   - Issue: "chase" is not a meaning of 往 (confused with 追). 往 means "go", "journey", "depart", "formerly".
+
+8. [grade_5.json] grade5_quad_15_fathom_side — 側 (kanji_gawa_side) & 測 (kanji_hakaru_fathom)
+   - 側 JSON meanings: ["side", "lean", "oppose"] vs Grade_4.csv: "side" ("oppose" is not a standard Japanese meaning of 側).
+   - 測 JSON meanings: ["fathom", "measure", "plan"] vs Grade_5.csv: "measure" ("plan" is not a standard meaning of 測; 測 means "measure, fathom, survey, conjecture").
+
+9. [grade_5.json] grade5_quad_17_longtime_lack — 久 (kanji_hisashii_longtime)
+   - JSON meanings: ["long time", "old story"]
+   - Grade_5.csv Meaning: "long time"
+   - Issue: "old story" is an odd KANJIDIC artifact; 久 means "long time, long-lasting, old (of time)".
+
+10. [grade_5.json] grade5_quad_03_construct_lecture — 講 (kanji_kou_lecture)
+    - JSON meanings: ["lecture", "club", "study"]
+    - Grade_5.csv Meaning: "lecture"
+    - Issue: "club" refers to a historical religious/mutual-aid association (講), which is obscure for elementary kanji learners compared to "lecture, course, exposition".
+
+11. [grade_1.json] grade1_quad_12_woods_village — 村 (kanji_mura_village)
+    - JSON meanings: ["village", "town"]
+    - Grade_1.csv Meaning: "village"
+    - Issue: In Japanese (and Grade 1 kanji), 村 is specifically "village" whereas 町 is "town" (cf. 市町村 "cities, towns, and villages").
+
+12. [grade_3.json] grade3_quad_15_center_hero — 英 (kanji_ei_heroic)
+    - JSON meanings: ["heroic", "English"]
+    - Grade_4.csv Meaning: "England"
+    - Issue: 英 means "England / British / English" or "brilliant / outstanding / calyx"; "heroic" is derived from the compound 英雄 ("hero") rather than 英 alone.
+
+13. [grade_6.json] grade6_quad_03_space_universe — 宇 (kanji_u_space) & 宙 (kanji_chuu_universe)
+    - 宇 (id: "kanji_u_space"): meanings ["eaves", "roof", "universe"] (does not include "space" despite its ID).
+    - 宙 (id: "kanji_chuu_universe"): meanings ["mid-air", "air", "space", "sky"] (does not include "universe" despite its ID).
+
+14. [grade_6.json] grade6_quad_04_government_office_author — 署 (kanji_sho_government_office) & grade6_quad_08_measure_exhaust — 尺 (kanji_shaku_measure)
+    - 署 lists ["government office", "police station", "sign"] where "sign" means the verb "to sign (one's name)" (署名), easily misread as a noun.
+    - 尺 lists ["shaku (unit of measure)", "scale", "rule"] where "rule" means a measuring ruler/stick, easily misread as a regulation/law.
+
+15. Overlapping / Identical Meanings Shared by Both Kanji Within the Same Quad:
+    - [grade_2.json] grade2_quad_03_few_small: Both 少 (["few", "little"]) and 小 (["small", "little"]) list "little" without distinguishing quantity ("a little") vs. size ("small/little").
+    - [kanji_base_pack.json] quad_10_sword_blade: Both 刀 (["sword", "knife", "saber"]) and 刃 (["blade", "edge", "sword"]) list "sword".
+
+B. Meaning Discrepancies Between JSON Assets and Grade_1.csv–Grade_6.csv
+------------------------------------------------------------------------
+In the following entries, the CSV meaning is either absent from the JSON `meanings` list or phrased differently:
+  - [grade_1.json] 丸 (grade1_quad_10_nine_round): JSON ['round', 'circle', 'curl up'] vs CSV 'circle'
+  - [grade_2.json] 少 (grade2_quad_03_few_small): JSON ['few', 'little'] vs CSV 'a few, a little'
+  - [grade_2.json] 毛 (grade2_quad_07_fur_hand): JSON ['fur', 'hair', 'wool'] vs CSV 'hair'
+  - [grade_2.json] 交 (grade2_quad_14_father_cross): JSON ['mix', 'intersect'] vs CSV 'intersect'
+  - [grade_2.json] 門 (grade2_quad_15_gate_interval): JSON ['gate', 'gateway'] vs CSV 'gates'
+  - [grade_3.json] 役 (grade3_quad_07_duty_throw): JSON ['duty', 'service', 'role'] vs CSV 'role'
+  - [grade_3.json] 酒 (grade3_quad_08_oil_sake): JSON ['sake', 'alcohol'] vs CSV 'liquor' (CSV meaning not in JSON)
+  - [grade_3.json] 回 (grade3_quad_10_face_rotate): JSON ['rotate', 'times', 'revolve'] vs CSV 'number of times, revolve'
+  - [grade_3.json] 指 (grade3_quad_11_gather_finger): JSON ['finger', 'point to'] vs CSV 'finger, point'
+  - [grade_3.json] 秒 (grade3_quad_13_second_autumn): JSON ['second (time)'] vs CSV 'second'
+  - [grade_3.json] 員 (grade3_quad_14_member_buy): JSON ['member', 'employee'] vs CSV 'employee'
+  - [grade_3.json] 英 (grade3_quad_15_center_hero): JSON ['heroic', 'English'] vs CSV 'England' (CSV meaning not in JSON)
+  - [grade_3.json] 畑 (grade3_quad_18_cropland_field): JSON ['cropland', 'farm field'] vs CSV 'farm'
+  - [grade_4.json] 未 (grade4_quad_01_notyet_end): JSON ['not yet', 'un-', 'sign of the ram'] vs CSV 'un-'
+  - [grade_4.json] 士 (grade4_quad_02_scholar_earth): JSON ['scholar', 'gentleman', 'samurai'] vs CSV 'gentleman'
+  - [grade_4.json] 令 (grade4_quad_03_order_now): JSON ['order', 'command', 'decree'] vs CSV 'orders'
+  - [grade_4.json] 科 (grade4_quad_05_material_dept): JSON ['department', 'course', 'science'] vs CSV 'section, grade' (CSV meanings not in JSON)
+  - [grade_4.json] 枚 (grade4_quad_06_pasture_sheet): JSON ['sheet of', 'counter for flat objects'] vs CSV 'sheet of...'
+  - [grade_4.json] 晴 (grade4_quad_07_pure_sunny): JSON ['clear weather', 'sunny'] vs CSV 'clear'
+  - [grade_4.json] 残 (grade4_quad_10_shallow_remain): JSON ['remainder', 'leftover'] vs CSV 'remainder, left'
+  - [grade_4.json] 松 (grade4_quad_12_pine_cedar): JSON ['pine tree'] vs CSV 'pine'
+  - [grade_4.json] 暮 (grade4_quad_13_curtain_evening): JSON ['evening', 'livelihood'] vs CSV 'livelihood'
+  - [grade_4.json] 沿 (grade4_quad_15_cure_along): JSON ['run along', 'follow'] vs CSV 'run alongside'
+  - [grade_4.json] 帯 (grade4_quad_16_belt_stagnate): JSON ['belt', 'zone', 'sash'] vs CSV 'sash'
+  - [grade_5.json] 険 (grade5_quad_04_examine_danger): JSON ['steep', 'danger', 'severe'] vs CSV 'precipitous' (CSV meaning not in JSON)
+  - [grade_5.json] 識 (grade5_quad_06_weave_discern): JSON ['discern', 'know', 'write'] vs CSV 'discriminating' (CSV meaning not in JSON)
+  - [grade_5.json] 堂 (grade5_quad_07_hall_usual): JSON ['hall', 'public room'] vs CSV 'public chamber' (CSV meaning not in JSON)
+  - [grade_5.json] 常 (grade5_quad_07_hall_usual): JSON ['usual', 'ordinary', 'constant'] vs CSV 'normal' (CSV meaning not in JSON)
+  - [grade_5.json] 困 (grade5_quad_09_cause_distress): JSON ['distressed', 'quandary', 'trouble'] vs CSV 'quandary'
+  - [grade_5.json] 原 (grade5_quad_11_thick_origin): JSON ['meadow', 'original', 'primitive'] vs CSV 'meadow, plain' (also misses noun 'origin' despite id 'kanji_hara_origin')
+  - [grade_5.json] 以 (grade5_quad_12_resemble_wherefore): JSON ['by means of', 'because', 'in view of'] vs CSV 'reference point' (CSV meaning not in JSON; id uses 'wherefore')
+  - [grade_5.json] 測 (grade5_quad_15_fathom_side): JSON ['fathom', 'measure', 'plan'] vs CSV 'measure'
+  - [grade_5.json] 河 (grade5_quad_18_river_what): JSON ['river', 'stream'] vs CSV 'stream'
+  - [grade_6.json] 著 (grade6_quad_04_government_office_author): JSON ['author', 'write', 'remarkable'] vs CSV 'renowned' (CSV meaning not in JSON)
+  - [grade_6.json] 域 (grade6_quad_05_region_castle): JSON ['region', 'zone', 'limit'] vs CSV 'range' (CSV meaning not in JSON)
+  - [grade_6.json] 倉 (grade6_quad_07_create_storehouse): JSON ['storehouse', 'godown', 'warehouse'] vs CSV 'storage' (CSV meaning not in JSON)
+  - [grade_6.json] 尺 (grade6_quad_08_measure_exhaust): JSON ['shaku (unit of measure)', 'scale', 'rule'] vs CSV 'measure of length' (CSV meaning not in JSON)
+  - [grade_6.json] 俵 (grade6_quad_13_sack_surface): JSON ['bag', 'bale', 'sack'] vs CSV 'straw bag'
+  - [grade_6.json] 表 (grade6_quad_13_sack_surface): JSON ['surface', 'table', 'express', 'outside'] vs CSV 'express'
+  - [grade_6.json] 裁 (grade6_quad_15_cut_plant_cultivate): JSON ['tailor', 'judge', 'cut out'] vs CSV 'judge'
+  - [grade_6.json] 札 (grade6_quad_16_desk_tag): JSON ['tag', 'paper money', 'placard', 'slip'] vs CSV 'bill, plate, tag'
+  - [grade_6.json] 陛 (grade6_quad_17_imperial_steps_stairs): JSON ['highness', 'imperial palace steps'] vs CSV 'majesty' (CSV meaning not in JSON)
+  - [grade_6.json] 階 (grade6_quad_17_imperial_steps_stairs): JSON ['stairs', 'storey', 'floor', 'grade'] vs CSV 'storey'
+  - [grade_6.json] 純 (grade6_quad_18_pure_settle): JSON ['pure', 'genuine', 'innocent'] vs CSV 'genuine'
+
+
+================================================================================
+SECTION 3: BROKEN URLS, WRONG IDS & READING ERRORS
+           (wiktionaryUrl, id, onReadings, kunReadings)
+================================================================================
+
+1. [grade_6.json] WRONG WIKTIONARY URL — grade6_quad_09_egg_hare (卯, kanji_u_hare)
+   - character: "卯" (U+536F, UTF-8 %E5%8D%AF)
+   - Current wiktionaryUrl: "https://en.wiktionary.org/wiki/%E5%8D%8F"
+   - Discrepancy: %E5%8D%8F decodes to U+534F ("协", Simplified Chinese for 協 "cooperate"), NOT "卯" (%E5%8D%AF). Clicking the Wiktionary link opens the wrong character page.
+
+2. [grade_6.json] WRONG READING IN ID — grade6_quad_12_engrave_impeach (劾)
+   - Current id: "kanji_koku_impeach"
+   - character: "劾", onReadings: ["ガイ"]
+   - Discrepancy: The ID uses "koku" (copied from its pairA partner 刻 [コク]) instead of "gai" ("kanji_gai_impeach").
+
+3. [grade_3.json] WRONG READING IN ID — grade3_quad_15_center_hero (央)
+   - Current id: "kanji_nakaba_center"
+   - character: "央", onReadings: ["オウ"], kunReadings: []
+   - Discrepancy: "nakaba" (なかば) is the kun reading of 半, not a standard Jōyō reading of 央 (should be "kanji_ou_center").
+
+4. [grade_3.json] MISSPELLED READING IN ID — grade3_quad_11_gather_finger (拾)
+   - Current id: "kanji_hirowa_gather"
+   - character: "拾", kunReadings: ["ひろ.う"]
+   - Discrepancy: Uses "hirowa" (from the imperfective stem 拾わ-) instead of dictionary form "hirou" ("kanji_hirou_gather").
+
+5. [grade_4.json & kanji_base_pack.json] NON-JŌYŌ ZODIAC READING IN ID — 未 (kanji_hitsuji_notyet)
+   - Current id: "kanji_hitsuji_notyet" / "kanji_hitsuji_notyet_g4"
+   - character: "未", onReadings: ["ミ", "ビ"], kunReadings: ["いま.だ", "ま.だ"]
+   - Discrepancy: Uses the zodiac earthly-branch reading "hitsuji" in the ID even though "ひつじ" is not in `kunReadings` (or in the Jōyō table for 未).
+
+6. [grade_1.json & grade_2.json] KATAKANA ASSIGNED ON & KUN READINGS
+   - Affected entries:
+     * [grade_1.json] カ (katakana_ka): onReadings: ["カ"], kunReadings: ["か"]
+     * [grade_1.json] ハ (katakana_ha): onReadings: ["ハ"], kunReadings: ["は"]
+     * [grade_1.json] タ (katakana_ta): onReadings: ["タ"], kunReadings: ["た"]
+     * [grade_1.json] ロ (katakana_ro): onReadings: ["ロ"], kunReadings: ["ろ"]
+     * [grade_1.json] ニ (katakana_ni): onReadings: ["ニ"], kunReadings: ["に"]
+     * [grade_2.json] エ (katakana_e):  onReadings: ["エ"], kunReadings: ["え"]
+   - Discrepancy: Katakana characters are phonetic syllabary symbols, not kanji; they do not have On'yomi or Kun'yomi.
+
+7. [grade_5.json & grade_6.json] NON-JŌYŌ (HYŌGAI) OR IRREGULAR READINGS
+   - [grade_5.json] 然 (kanji_shikari_sort): kunReadings lists ["しか・し"]. Standard Jōyō kun readings for 然 are "しか", "しか.り", "しか.し", "さ" (and しかし for "however" is normally written in kana).
+   - [grade_5.json] 検 (kanji_ken_examine): kunReadings lists ["しら・べる"]. In the official Jōyō Kanji table, 検 has only the On reading ケン (しら.べる is the Jōyō kun reading of 調).
+   - [grade_5.json] 識 (kanji_shiki_discern): kunReadings lists ["し・る"]. In the Jōyō table, 識 has only the On reading シキ.
+   - [grade_5.json] 略 (kanji_ryaku_abbreviation): kunReadings lists ["ほぼ"]. In the Jōyō table, 略 has only the On reading リャク.
+   - [grade_5.json] 往 (kanji_ou_depart): kunReadings lists ["い・く"]. In the Jōyō table, 往 has only the On reading オウ.
+   - [grade_6.json] 納 (kanji_osameru_settle): onReadings lists ["ノウ", "ナッ"]. "ナッ" is a geminated sound change (as in 納得 なっとく); the official Jōyō On readings are ノウ, ナ, ナン, トウ, ナツ.
+
+
+================================================================================
+SECTION 4: OBSCURE / NON-RENDERING UNICODE GLYPHS IN DESCRIPTIONS
+================================================================================
+
+Several `distinctionTip` strings embed rare CJK Unified Ideographs Extension A/B or CJK Radical Supplement codepoints that are missing from standard Android system fonts (rendering as blank boxes "□" on screen):
+
+1. [grade_5.json] grade5_quad_11_thick_origin (厚):
+   - Uses `𣅀` (U+23140, CJK Unified Ideographs Extension B) in `"Contains 𣅀 and child (子) under the cliff radical (厂)."`
+2. [grade_6.json] grade6_quad_01_ticket_scroll (券 and 巻):
+   - Uses `𠔉` (U+20509, CJK Unified Ideographs Extension B) in `"Bottom component is knife (刀) beneath 𠔉."` and `"Bottom component is self/kneeling person (己) beneath 𠔉."`
+3. [grade_6.json] grade6_quad_15_cut_plant_cultivate (裁 and 栽):
+   - Uses `𢦏` (U+2298F, CJK Unified Ideographs Extension B) in `"Features clothing (衣) at the bottom-right inside 𢦏."` and `"Features tree (木) at the bottom-right inside 𢦏."`
+4. [grade_5.json] grade5_quad_07_hall_usual (堂 and 常):
+   - Uses `龸` (U+9FB8, CJK Supplement) in `"Ends with earth (土) at the bottom beneath 龸 and 口."` and `"Ends with cloth/towel (巾) at the bottom beneath 龸 and 口."`
+5. [grade_4.json] grade4_quad_15_cure_along (沿):
+   - Uses `㕣` (U+3563, CJK Extension A) in `"Right component is marsh/valley mouth (㕣, 5 strokes) alongside water (氵)."`
+
+
+================================================================================
+SECTION 5: PACK DESCRIPTION & GRADE-LEVEL PLACEMENT DISCREPANCIES
+================================================================================
+
+1. [kanji_base_pack.json] Pack description claims "40 unique Jōyō Kanji":
+   - Current description: "The foundational set of 20 confusable pairs of pairs (40 unique Jōyō Kanji, 80 cards total)."
+   - Discrepancy: `曰` (quad_01_sun_say, kanji_iwaku_say) is a Hyōgaiji (NOT a Jōyō Kanji). Thus the pack contains 39 Jōyō Kanji and 1 non-Jōyō Kanji.
+
+2. [grade_1.json] Pack description claims "18 visually confusable pairs of Kanji learned in Japanese first grade":
+   - Non-Grade-1 characters included:
+     * 丸 (grade1_quad_10_nine_round): Grade 2 kanji (not Grade 1).
+     * カ, ハ, タ, ロ, ニ (quads 09, 15, 16, 17, 18): 5 Katakana characters.
+
+3. [grade_2.json] Pack description claims "18 visually confusable pairs of Kanji learned in Japanese second grade":
+   - Non-Grade-2 characters included (11 of 36 characters are not Grade 2):
+     * 大 (G1), 小 (G1), 天 (G1), 手 (G1), 白 (G1), 休 (G1), 正 (G1) — 7 Grade 1 kanji.
+     * 庁 (grade2_quad_17_wide_agency) — Grade 6 kanji.
+     * 刃 (grade2_quad_05_sword_blade) — Junior High School Jōyō kanji (not taught in elementary school).
+     * 杉 (grade2_quad_18_shape_cedar) — Junior High School Jōyō kanji (not taught in elementary school).
+     * エ (grade2_quad_08_craft_katakana_e) — Katakana character.
+
+4. [grade_3.json] Pack description claims "18 visually confusable pairs of Kanji learned in Japanese third grade":
+   - Non-Grade-3 characters included (12 of 36 characters are not Grade 3):
+     * 水 (G1), 車 (G1), 田 (G1) — 3 Grade 1 kanji.
+     * 鳥 (G2), 回 (G2), 知 (G2), 秋 (G2), 買 (G2) — 5 Grade 2 kanji.
+     * 特 (grade3_quad_01_hold_special), 英 (grade3_quad_15_center_hero) — 2 Grade 4 kanji.
+     * 祖 (grade3_quad_16_god_ancestor) — Grade 5 kanji.
+     * 侍 (grade3_quad_02_wait_samurai) — Junior High School Jōyō kanji.
+
+5. [grade_4.json] Pack description claims "18 visually confusable pairs of Kanji learned in Japanese fourth grade":
+   - Non-Grade-4 characters included (17 of 36 characters are not Grade 4):
+     * 土 (G1), 天 (G1), 名 (G1) — 3 Grade 1 kanji.
+     * 今 (G2), 科 (G2), 晴 (G2) — 3 Grade 2 kanji.
+     * 昔 (G3) — 1 Grade 3 kanji.
+     * 士 (G5), 停 (G5) — 2 Grade 5 kanji.
+     * 枚 (G6), 幕 (G6), 暮 (G6), 沿 (G6) — 4 Grade 6 kanji.
+     * 祈, 杉, 滞, 亭 — 4 Junior High School Jōyō kanji.
+   - Note: In 3 quads of grade_4.json, NEITHER character is a Grade 4 kanji:
+     * grade4_quad_02_scholar_earth: 士 (Grade 5) vs 土 (Grade 1)
+     * grade4_quad_13_curtain_evening: 幕 (Grade 6) vs 暮 (Grade 6)
+     * grade4_quad_17_stop_pavilion: 停 (Grade 5) vs 亭 (Junior High)
+
+6. [grade_5.json] Non-Grade-5 partner kanji included (10 of 36 characters):
+   - 原 (G2), 何 (G2) — 2 Grade 2 kanji.
+   - 温 (G3), 受 (G3), 住 (G3) — 3 Grade 3 kanji.
+   - 以 (G4), 然 (G4), 側 (G4), 欠 (G4) — 4 Grade 4 kanji.
+   - 困 (G6) — 1 Grade 6 kanji.
+
+7. [grade_6.json] Non-Grade-6 partner kanji included (13 of 36 characters):
+   - 表 (G3), 植 (G3), 階 (G3) — 3 Grade 3 kanji.
+   - 城 (G4), 害 (G4), 倉 (G4), 札 (G4) — 4 Grade 4 kanji.
+   - 尽, 屈, 勧, 劾, 栽 — 5 Junior High School Jōyō kanji.
+   - 卯 (grade6_quad_09_egg_hare) — Jinmeiyō (non-Jōyō) kanji.
+
+
+================================================================================
+SECTION 6: JSON SCHEMA & FORMATTING INCONSISTENCIES ACROSS FILES
+================================================================================
+
+1. Top-Level Pack Name Key (`title` vs `packName`):
+   - `kanji_base_pack.json`, `grade_1.json`, `grade_2.json`, `grade_3.json`, and `grade_4.json` use `"title"`.
+   - `grade_5.json` and `grade_6.json` omit `"title"` and use `"packName"` instead.
+
+2. Okurigana Separator in `kunReadings` (`.` vs `・`):
+   - `kanji_base_pack.json`, `grade_1.json`, `grade_2.json`, `grade_3.json`, and `grade_4.json` use a period `.` (e.g., `"まな.ぶ"`, `"ふと.い"`).
+   - `grade_5.json` and `grade_6.json` use a middle dot `・` (e.g., `"かま・える"`, `"ま・く"`).
+
+
+================================================================================
+SECTION 7: PAIRING GUIDELINE ISSUES (AGENTS.md) & CROSS-PACK DUPLICATES
+================================================================================
+
+A. Pairings That Conflict With AGENTS.md Visual Similarity Guidelines
+---------------------------------------------------------------------
+AGENTS.md states: "Avoid non-visual pairings: Do not pair characters based on conceptual/semantic opposites or relationships... simple compositional enclosure without genuine visual confusion (e.g., avoid 夕 vs 名, 中 vs 虫), or differing internal complexity without visual mimicry (e.g., avoid 田 vs 四, 十 vs 千)."
+
+1. Simple Enclosure or Prefix/Suffix Addition (Standalone vs. Compound):
+   - [grade_2.json] grade2_quad_15_gate_interval: 門 (8 strokes, empty gate) vs 間 (12 strokes, gate enclosing 日)
+   - [grade_2.json] grade2_quad_16_bird_cry: 鳥 (11 strokes) vs 鳴 (14 strokes, 口 + 鳥)
+   - [grade_3.json] grade3_quad_17_warehouse_vehicle: 庫 (10 strokes, 广 enclosing 車) vs 車 (7 strokes)
+   - [grade_3.json] grade3_quad_18_cropland_field: 畑 (9 strokes, 火 + 田) vs 田 (5 strokes)
+   - [grade_4.json] grade4_quad_08_health_build: 健 (11 strokes, 亻 + 建) vs 建 (9 strokes)
+   - [grade_4.json] grade4_quad_09_borrow_past: 借 (10 strokes, 亻 + 昔) vs 昔 (8 strokes)
+   - [grade_4.json] grade4_quad_16_belt_stagnate: 帯 (10 strokes) vs 滞 (13 strokes, 氵 + 帯)
+   - [grade_4.json] grade4_quad_17_stop_pavilion: 停 (11 strokes, 亻 + 亭) vs 亭 (9 strokes)
+   - [grade_5.json] grade5_quad_12_resemble_wherefore: 似 (7 strokes, 亻 + 以) vs 以 (5 strokes)
+   - [grade_5.json] grade5_quad_13_instruct_receive: 授 (11 strokes, 扌 + 受) vs 受 (8 strokes)
+   - [grade_5.json] grade5_quad_14_burn_sort: 燃 (16 strokes, 火 + 然) vs 然 (12 strokes)
+   - [grade_6.json] grade6_quad_06_divide_harm: 割 (12 strokes, 害 + 刂) vs 害 (10 strokes)
+   - [grade_6.json] grade6_quad_07_create_storehouse: 創 (12 strokes, 倉 + 刂) vs 倉 (10 strokes)
+   - [grade_6.json] grade6_quad_13_sack_surface: 俵 (10 strokes, 亻 + 表) vs 表 (8 strokes)
+
+2. Shared Left Radical with Visually Dissimilar Right Components:
+   - [grade_3.json] grade3_quad_12_short_know: 短 (矢 + 豆, 12 strokes) vs 知 (矢 + 口, 8 strokes)
+   - [grade_3.json] grade3_quad_13_second_autumn: 秒 (禾 + 少) vs 秋 (禾 + 火)
+   - [grade_4.json] grade4_quad_12_pine_cedar: 松 (木 + 公) vs 杉 (木 + 彡)
+   - [grade_6.json] grade6_quad_18_pure_settle: 純 (糸 + 屯) vs 納 (糸 + 内)
+
+B. Duplicate Kanji & Duplicate Pairs Across Packs
+-------------------------------------------------
+- 15 of the 20 pairs in `kanji_base_pack.json` are duplicated in `grade_1.json`–`grade_4.json`:
+  * 人/入 (base_pack & grade_1)
+  * 木/本 (base_pack & grade_1)
+  * 右/石 (base_pack & grade_1)
+  * 白/百 (base_pack & grade_1)
+  * 貝/見 (base_pack & grade_1)
+  * 牛/午 (base_pack & grade_2)
+  * 刀/刃 (base_pack & grade_2)
+  * 天/矢 (base_pack & grade_2)
+  * 持/特 (base_pack & grade_3)
+  * 待/侍 (base_pack & grade_3)
+  * 鳥/島 (base_pack & grade_3)
+  * 申/由 (base_pack & grade_3)
+  * 買/員 (base_pack & grade_3)
+  * 未/末 (base_pack & grade_4)
+  * 土/士 (base_pack & grade_4)
+- Individual kanji repeated across multiple grade packs (e.g., 杉 appears in both `grade_2.json` [形 vs 杉] and `grade_4.json` [松 vs 杉]; 天 appears in `grade_2.json`, `grade_4.json`, and `kanji_base_pack.json`; 大, 白, 鳥, 間 appear in multiple packs).
+================================================================================

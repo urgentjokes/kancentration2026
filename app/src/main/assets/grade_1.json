@@ -89,8 +89,8 @@
       }
     },
     {
-      "id": "grade1_quad_03_right_left",
-      "category": "Stroke Order & Component",
+      "id": "grade1_quad_03_right_stone",
+      "category": "Top Stroke Crossing (Crossing vs Cliff 厂)",
       "pairA": {
         "id": "kanji_migi_right",
         "character": "右",
@@ -106,26 +106,25 @@
           "みぎ"
         ],
         "strokeCount": 5,
-        "distinctionTip": "First stroke is the downward-left diagonal stroke; contains 口 (mouth) below.",
+        "distinctionTip": "Slanted stroke (ノ) is drawn first; the horizontal stroke crosses it, extending noticeably to the left.",
         "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%8F%B3"
       },
       "pairB": {
-        "id": "kanji_hidari_left",
-        "character": "左",
+        "id": "kanji_ishi_stone",
+        "character": "石",
         "meanings": [
-          "left",
-          "left-hand"
+          "stone"
         ],
         "onReadings": [
-          "サ",
-          "シャ"
+          "セキ",
+          "コク"
         ],
         "kunReadings": [
-          "ひだり"
+          "いし"
         ],
         "strokeCount": 5,
-        "distinctionTip": "First stroke is the horizontal stroke; contains 工 (craft) below.",
-        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E5%B7%A6"
+        "distinctionTip": "Horizontal stroke is drawn first, forming a cliff (厂) over 口 with no horizontal protrusion to the left.",
+        "wiktionaryUrl": "https://en.wiktionary.org/wiki/%E7%9F%B3"
       }
     },
     {

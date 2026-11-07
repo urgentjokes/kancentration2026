@@ -97,7 +97,6 @@ fun CardItem(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                enabled = !card.isMatched && !card.isFaceUp,
                 onClickLabel = "Flip card",
                 onClick = onClick
             ),

@@ -123,7 +123,7 @@ class GameViewModelTest {
     }
 
     @Test
-    fun testRaceConditionPreventionDuringObservationDelay() = runTest {
+    fun testAutoSettlingDuringObservationDelayWhenUserDoesNotTap() = runTest {
         val quads = createTestQuads()
         val kanjiRepo = FakeKanjiRepository(quads)
         val settingsRepo = InMemorySettingsRepository()
@@ -154,22 +154,7 @@ class GameViewModelTest {
         assertEquals(TurnPhase.EVALUATING_MATCH, evaluatingState.turnPhase)
         assertNotNull(evaluatingState.activeTwinTrapBanner)
 
-        // Attempt 1: Click third face-down card during observation window -> must be ignored!
-        viewModel.onCardClicked(thirdCard.instanceId)
-        testScheduler.runCurrent()
-
-        val stateAfterBlockedClick = viewModel.uiState.value
-        val thirdCardState = stateAfterBlockedClick.cards.find { it.instanceId == thirdCard.instanceId }
-        assertFalse("Third card must NOT be flipped during observation delay", thirdCardState?.isFaceUp == true)
-        assertEquals("Total moves must not increment for blocked click", 1, stateAfterBlockedClick.totalMoves)
-
-        // Attempt 2: Click already face-up card (cardMotsu) during observation window -> inspection permitted!
-        viewModel.onCardClicked(cardMotsu.instanceId)
-        testScheduler.runCurrent()
-        assertEquals("持", viewModel.uiState.value.selectedKanjiForInspector?.character)
-        assertTrue("Still evaluating match", viewModel.uiState.value.isEvaluatingMatch)
-
-        // Advance time past the 1,150ms observation delay
+        // Advance time past the 1,150ms observation delay without tapping any tile
         advanceTimeBy(1200L)
         testScheduler.runCurrent()
 
@@ -190,6 +175,103 @@ class GameViewModelTest {
         assertNull("Near-Miss banner must be dismissed upon next card tap", viewModel.uiState.value.activeTwinTrapBanner)
         val thirdCardFlipped = viewModel.uiState.value.cards.find { it.instanceId == thirdCard.instanceId }
         assertTrue("Third card must be flipped", thirdCardFlipped?.isFaceUp == true)
+    }
+
+    @Test
+    fun testClickingExposedCardDuringObservationDelayDismissesDelayAndInspects() = runTest {
+        val quads = createTestQuads()
+        val kanjiRepo = FakeKanjiRepository(quads)
+        val settingsRepo = InMemorySettingsRepository()
+
+        val viewModel = GameViewModel(
+            repository = kanjiRepo,
+            settingsRepository = settingsRepo,
+            dlcManager = FakeDlcManager(),
+            soundManager = NoOpSoundPlayer(),
+            coroutineScope = backgroundScope
+        )
+
+        val initialCards = viewModel.uiState.value.cards
+        val cardMotsu = initialCards.first { it.kanji.character == "持" }
+        val cardToku = initialCards.first { it.kanji.character == "特" }
+
+        // Flip 持 then 特 (Twin-Trap mismatch)
+        viewModel.onCardClicked(cardMotsu.instanceId)
+        viewModel.onCardClicked(cardToku.instanceId)
+        testScheduler.runCurrent()
+
+        assertTrue(viewModel.uiState.value.isEvaluatingMatch)
+
+        // Tapping an already exposed card during observation delay dismisses delay & inspects
+        viewModel.onCardClicked(cardMotsu.instanceId)
+        testScheduler.runCurrent()
+
+        val stateAfterClick = viewModel.uiState.value
+        assertFalse("Observation delay must be dismissed", stateAfterClick.isEvaluatingMatch)
+        assertEquals(TurnPhase.AWAITING_FIRST_CARD, stateAfterClick.turnPhase)
+        assertEquals("持", stateAfterClick.selectedKanjiForInspector?.character)
+
+        // Both cards must now be face-down
+        assertFalse(stateAfterClick.cards.find { it.instanceId == cardMotsu.instanceId }?.isFaceUp == true)
+        assertFalse(stateAfterClick.cards.find { it.instanceId == cardToku.instanceId }?.isFaceUp == true)
+    }
+
+    @Test
+    fun testManualProceedByTappingNextTileDuringObservationDelay() = runTest {
+        val quads = createTestQuads()
+        val kanjiRepo = FakeKanjiRepository(quads)
+        val settingsRepo = InMemorySettingsRepository()
+
+        val viewModel = GameViewModel(
+            repository = kanjiRepo,
+            settingsRepository = settingsRepo,
+            dlcManager = FakeDlcManager(),
+            soundManager = NoOpSoundPlayer(),
+            coroutineScope = backgroundScope
+        )
+
+        val initialCards = viewModel.uiState.value.cards
+        val cardMotsu = initialCards.first { it.kanji.character == "持" }
+        val cardToku = initialCards.first { it.kanji.character == "特" }
+        val thirdCard = initialCards.first { it.kanji.character == "木" }
+
+        // Flip 持 then 特 (Twin-Trap mismatch)
+        viewModel.onCardClicked(cardMotsu.instanceId)
+        viewModel.onCardClicked(cardToku.instanceId)
+        testScheduler.runCurrent()
+
+        assertTrue(viewModel.uiState.value.isEvaluatingMatch)
+        assertEquals(TurnPhase.EVALUATING_MATCH, viewModel.uiState.value.turnPhase)
+        assertNotNull(viewModel.uiState.value.activeTwinTrapBanner)
+
+        // User taps the next face-down tile during the observation window -> proceed immediately!
+        viewModel.onCardClicked(thirdCard.instanceId)
+        testScheduler.runCurrent()
+
+        val stateAfterManualProceed = viewModel.uiState.value
+        assertFalse("Evaluating state must be false after user manually proceeds", stateAfterManualProceed.isEvaluatingMatch)
+        assertEquals(TurnPhase.FIRST_CARD_REVEALED, stateAfterManualProceed.turnPhase)
+        assertEquals(thirdCard.instanceId, stateAfterManualProceed.firstFlippedCardId)
+        assertNull("Banner should be dismissed upon proceeding to new card", stateAfterManualProceed.activeTwinTrapBanner)
+
+        // Previous mismatched cards must be flipped face-down immediately
+        val card1State = stateAfterManualProceed.cards.find { it.instanceId == cardMotsu.instanceId }
+        val card2State = stateAfterManualProceed.cards.find { it.instanceId == cardToku.instanceId }
+        val card3State = stateAfterManualProceed.cards.find { it.instanceId == thirdCard.instanceId }
+        assertFalse("Previous card 1 must be flipped down", card1State?.isFaceUp == true)
+        assertFalse("Previous card 2 must be flipped down", card2State?.isFaceUp == true)
+        assertTrue("Newly tapped card must be flipped face-up", card3State?.isFaceUp == true)
+        assertEquals("木", stateAfterManualProceed.selectedKanjiForInspector?.character)
+
+        // Total moves should remain 1 because thirdCard is only the first card of the new turn
+        assertEquals(1, stateAfterManualProceed.totalMoves)
+
+        // Advancing time past the original delay must not affect the new turn
+        advanceTimeBy(1500L)
+        testScheduler.runCurrent()
+        val stateAfterDelayElapsed = viewModel.uiState.value
+        assertEquals(TurnPhase.FIRST_CARD_REVEALED, stateAfterDelayElapsed.turnPhase)
+        assertTrue(stateAfterDelayElapsed.cards.find { it.instanceId == thirdCard.instanceId }?.isFaceUp == true)
     }
 
     @Test
