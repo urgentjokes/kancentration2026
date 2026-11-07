@@ -1,26 +1,28 @@
 package com.example.kancentration.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -178,8 +180,8 @@ fun GameTopHeaderRow(
 }
 
 /**
- * Tab Row placed directly underneath the top row ("Kancentration..."),
- * containing two tabs: "Flash cards" and "Current game".
+ * Highly visible, colorful tab row placed directly underneath the top row ("Kancentration..."),
+ * containing two styled pill tabs: "Flash cards" and "Current game".
  */
 @Composable
 fun GameTabsRow(
@@ -190,65 +192,122 @@ fun GameTabsRow(
 ) {
     val configuration = LocalConfiguration.current
     val isTablet = configuration.smallestScreenWidthDp >= 600
-    val tabHeight = if (isTablet) 42.dp else 36.dp
+    val tabHeight = if (isTablet) 46.dp else 40.dp
+    val cornerRadius = if (isTablet) 14.dp else 11.dp
+    val innerCornerRadius = if (isTablet) 10.dp else 8.dp
 
-    PrimaryTabRow(
-        selectedTabIndex = if (selectedTab == GameTab.FLASH_CARDS) 0 else 1,
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.primary,
-        divider = {
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
-                thickness = 1.dp
-            )
-        },
+    Surface(
+        shape = RoundedCornerShape(cornerRadius),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.75f),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)),
+        shadowElevation = 1.dp,
         modifier = modifier
             .fillMaxWidth()
             .height(tabHeight)
     ) {
-        Tab(
-            selected = selectedTab == GameTab.FLASH_CARDS,
-            onClick = { onTabSelected(GameTab.FLASH_CARDS) },
-            text = {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(if (isTablet) 4.dp else 3.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (isTablet) 6.dp else 4.dp)
+        ) {
+            // Tab 0: Flash cards
+            val isFlashSelected = selectedTab == GameTab.FLASH_CARDS
+            val flashBgColor by animateColorAsState(
+                targetValue = if (isFlashSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                animationSpec = tween(durationMillis = 200),
+                label = "flashBg"
+            )
+            val flashContentColor by animateColorAsState(
+                targetValue = if (isFlashSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                animationSpec = tween(durationMillis = 200),
+                label = "flashContent"
+            )
+
+            Surface(
+                shape = RoundedCornerShape(innerCornerRadius),
+                color = flashBgColor,
+                shadowElevation = if (isFlashSelected) 3.dp else 0.dp,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(innerCornerRadius))
+                    .clickable(
+                        role = Role.Tab,
+                        onClickLabel = "Select Flash cards tab",
+                        onClick = { onTabSelected(GameTab.FLASH_CARDS) }
+                    )
+            ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Flash cards",
                         style = if (isTablet) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyMedium,
-                        fontWeight = if (selectedTab == GameTab.FLASH_CARDS) FontWeight.Bold else FontWeight.Medium,
-                        color = if (selectedTab == GameTab.FLASH_CARDS) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        fontWeight = if (isFlashSelected) FontWeight.Bold else FontWeight.SemiBold,
+                        color = flashContentColor
                     )
                     if (exposedKanjiCount > 0) {
+                        Spacer(modifier = Modifier.width(6.dp))
                         Surface(
                             shape = RoundedCornerShape(10.dp),
-                            color = if (selectedTab == GameTab.FLASH_CARDS) TakeBamboo.copy(alpha = 0.18f) else MaterialTheme.colorScheme.surfaceVariant
+                            color = if (isFlashSelected) Color.White.copy(alpha = 0.25f) else TakeBamboo.copy(alpha = 0.2f)
                         ) {
                             Text(
                                 text = "$exposedKanjiCount",
                                 fontSize = if (isTablet) 11.sp else 10.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (selectedTab == GameTab.FLASH_CARDS) TakeBamboo else MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = if (isFlashSelected) Color.White else TakeBamboo,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp)
                             )
                         }
                     }
                 }
             }
-        )
-        Tab(
-            selected = selectedTab == GameTab.CURRENT_GAME,
-            onClick = { onTabSelected(GameTab.CURRENT_GAME) },
-            text = {
-                Text(
-                    text = "Current game",
-                    style = if (isTablet) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (selectedTab == GameTab.CURRENT_GAME) FontWeight.Bold else FontWeight.Medium,
-                    color = if (selectedTab == GameTab.CURRENT_GAME) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
+
+            // Tab 1: Current game
+            val isGameSelected = selectedTab == GameTab.CURRENT_GAME
+            val gameBgColor by animateColorAsState(
+                targetValue = if (isGameSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                animationSpec = tween(durationMillis = 200),
+                label = "gameBg"
+            )
+            val gameContentColor by animateColorAsState(
+                targetValue = if (isGameSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                animationSpec = tween(durationMillis = 200),
+                label = "gameContent"
+            )
+
+            Surface(
+                shape = RoundedCornerShape(innerCornerRadius),
+                color = gameBgColor,
+                shadowElevation = if (isGameSelected) 3.dp else 0.dp,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(innerCornerRadius))
+                    .clickable(
+                        role = Role.Tab,
+                        onClickLabel = "Select Current game tab",
+                        onClick = { onTabSelected(GameTab.CURRENT_GAME) }
+                    )
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Current game",
+                        style = if (isTablet) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyMedium,
+                        fontWeight = if (isGameSelected) FontWeight.Bold else FontWeight.SemiBold,
+                        color = gameContentColor
+                    )
+                }
             }
-        )
+        }
     }
 }
 

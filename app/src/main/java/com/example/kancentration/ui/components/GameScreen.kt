@@ -15,13 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import com.example.kancentration.data.model.BoardDimension
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -31,14 +35,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kancentration.ui.viewmodel.GameTab
 import com.example.kancentration.ui.viewmodel.GameViewModel
+import kotlinx.coroutines.launch
 
 /**
  * Main game screen for Kancentration:
  * - Row 1: Top row ("Kancentration", board-size pill, pack badge, 🛒, ⚙️, 🔄)
- * - Row 2: Tabs ("Flash cards" and "Current game")
- * - Below tabs:
- *    - "Current game": The game board stage & sidebar (telemetry, status banner, Kanji inspector)
- *    - "Flash cards": Flash cards for every kanji exposed so far, grouped confusable-pair by confusable-pair
+ * - Row 2: Prominent colored tabs ("Flash cards" and "Current game") with horizontal swipe support
+ * - Pager:
+ *    - Page 0 ("Flash cards"): Flash cards for every kanji exposed so far, grouped confusable-pair by confusable-pair
+ *    - Page 1 ("Current game"): The game board stage & sidebar (telemetry, status banner, Kanji inspector)
  */
 @Composable
 fun GameScreen(
@@ -50,6 +55,7 @@ fun GameScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     // Register formal Android Lifecycle Observer to pause/resume the game clock across app lifecycles
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -67,9 +73,33 @@ fun GameScreen(
         }
     }
 
-    // Android hardware/gesture Back navigation: return from Flash cards tab to Current game
-    BackHandler(enabled = uiState.selectedTab == GameTab.FLASH_CARDS) {
-        viewModel.selectTab(GameTab.CURRENT_GAME)
+    // HorizontalPager state enabling smooth gestures between Flash cards (page 0) and Current game (page 1)
+    val pagerState = rememberPagerState(
+        initialPage = if (uiState.selectedTab == GameTab.FLASH_CARDS) 0 else 1,
+        pageCount = { 2 }
+    )
+
+    // Synchronize programmatic tab changes (e.g., from StatusBanner or Back navigation) with Pager
+    val targetPage = if (uiState.selectedTab == GameTab.FLASH_CARDS) 0 else 1
+    LaunchedEffect(targetPage) {
+        if (pagerState.currentPage != targetPage) {
+            pagerState.animateScrollToPage(targetPage)
+        }
+    }
+
+    // Synchronize user horizontal swipe gestures back to the ViewModel state
+    LaunchedEffect(pagerState.currentPage) {
+        val newTab = if (pagerState.currentPage == 0) GameTab.FLASH_CARDS else GameTab.CURRENT_GAME
+        if (newTab != uiState.selectedTab) {
+            viewModel.selectTab(newTab)
+        }
+    }
+
+    // Android hardware/gesture Back navigation: swipe back from Flash cards to Current game
+    BackHandler(enabled = pagerState.currentPage == 0) {
+        coroutineScope.launch {
+            pagerState.animateScrollToPage(1)
+        }
     }
 
     if (uiState.showSettingsDialog) {
@@ -119,9 +149,11 @@ fun GameScreen(
                 }
 
                 val row1Height = if (isTablet) 44.dp else 34.dp
-                val tabHeight = if (isTablet) 42.dp else 36.dp
-                val spacingBetweenHeader = if (isTablet) 6.dp else 2.dp
+                val tabHeight = if (isTablet) 46.dp else 40.dp
+                val spacingBetweenHeader = if (isTablet) 8.dp else 4.dp
                 val headerTotalHeight = row1Height + tabHeight + spacingBetweenHeader
+
+                val currentActiveTab = if (pagerState.currentPage == 0) GameTab.FLASH_CARDS else GameTab.CURRENT_GAME
 
                 Column(
                     modifier = Modifier
@@ -138,91 +170,163 @@ fun GameScreen(
                         onCycleDimensionClick = { viewModel.cycleBoardDimension() }
                     )
 
-                    // New row: two tabs ("Flash cards" and "Current game")
+                    // Distinct colored tab row ("Flash cards" and "Current game")
                     GameTabsRow(
-                        selectedTab = uiState.selectedTab,
+                        selectedTab = currentActiveTab,
                         exposedKanjiCount = exposedKanjiCount,
-                        onTabSelected = { viewModel.selectTab(it) }
+                        onTabSelected = { tab ->
+                            val page = if (tab == GameTab.FLASH_CARDS) 0 else 1
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(page)
+                            }
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(if (isTablet) 4.dp else 2.dp))
 
-                    // Tab Body
-                    when (uiState.selectedTab) {
-                        GameTab.FLASH_CARDS -> {
-                            FlashCardsTabContent(
-                                cards = uiState.cards,
-                                settings = uiState.settings,
-                                onWiktionaryClick = { viewModel.onOpenWiktionary() },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                        }
+                    // Horizontally swipeable Pager between Flash cards and Current game
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) { page ->
+                        when (page) {
+                            0 -> {
+                                FlashCardsTabContent(
+                                    cards = uiState.cards,
+                                    settings = uiState.settings,
+                                    onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
 
-                        GameTab.CURRENT_GAME -> {
-                            if (isLandscape) {
-                                // Landscape layout: Center Stage Board Grid on Left, Sidebar on Right
-                                val availableHeight = (containerMaxHeight - (screenPaddingV * 2) - headerTotalHeight - 8.dp).coerceAtLeast(0.dp)
-                                val totalWidth = containerMaxWidth - (screenPaddingH * 2)
-                                val minSidebarWidth = if (isTablet) maxOf(380.dp, totalWidth * 0.35f) else 320.dp
-                                val maxBoardWidth = (totalWidth - minSidebarWidth - (if (isTablet) 20.dp else 16.dp)).coerceAtLeast(0.dp)
-                                val boardSize = minOf(availableHeight, maxBoardWidth)
+                            1 -> {
+                                if (isLandscape) {
+                                    // Landscape layout: Center Stage Board Grid on Left, Sidebar on Right
+                                    val availableHeight = (containerMaxHeight - (screenPaddingV * 2) - headerTotalHeight - 8.dp).coerceAtLeast(0.dp)
+                                    val totalWidth = containerMaxWidth - (screenPaddingH * 2)
+                                    val minSidebarWidth = if (isTablet) maxOf(380.dp, totalWidth * 0.35f) else 320.dp
+                                    val maxBoardWidth = (totalWidth - minSidebarWidth - (if (isTablet) 20.dp else 16.dp)).coerceAtLeast(0.dp)
+                                    val boardSize = minOf(availableHeight, maxBoardWidth)
 
-                                val dimension = uiState.settings.dimension
-                                val gridSpacing = when (dimension) {
-                                    BoardDimension.FOUR_BY_FOUR -> 8.dp
-                                    BoardDimension.SIX_BY_SIX -> 5.dp
-                                    BoardDimension.EIGHT_BY_EIGHT -> 3.dp
-                                }
-                                val totalGridSpacing = gridSpacing * (dimension.size - 1)
-                                val cardSize = if (dimension.size > 0) ((boardSize - totalGridSpacing) / dimension.size).coerceAtLeast(0.dp) else 0.dp
-                                val boundaryThirdRowCenter = if (dimension == BoardDimension.FOUR_BY_FOUR) {
-                                    (cardSize * 2.5f) + (gridSpacing * 2f)
-                                } else {
-                                    boardSize * 0.65f
-                                }
-                                val sidebarHeight = if (isTablet) boundaryThirdRowCenter else boardSize
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f),
-                                    horizontalArrangement = Arrangement.spacedBy(if (isTablet) 20.dp else 16.dp),
-                                    verticalAlignment = Alignment.Top
-                                ) {
-                                    // Left: Center Stage Board Grid
-                                    Box(
-                                        modifier = Modifier.size(boardSize),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        BoardGrid(
-                                            cards = uiState.cards,
-                                            dimension = uiState.settings.dimension,
-                                            tileColor = uiState.settings.tileColor,
-                                            kanjiColor = uiState.settings.kanjiColor,
-                                            useSerifFont = uiState.settings.useSerifFont,
-                                            onCardClick = { viewModel.onCardClicked(it) }
-                                        )
+                                    val dimension = uiState.settings.dimension
+                                    val gridSpacing = when (dimension) {
+                                        BoardDimension.FOUR_BY_FOUR -> 8.dp
+                                        BoardDimension.SIX_BY_SIX -> 5.dp
+                                        BoardDimension.EIGHT_BY_EIGHT -> 3.dp
                                     }
+                                    val totalGridSpacing = gridSpacing * (dimension.size - 1)
+                                    val cardSize = if (dimension.size > 0) ((boardSize - totalGridSpacing) / dimension.size).coerceAtLeast(0.dp) else 0.dp
+                                    val boundaryThirdRowCenter = if (dimension == BoardDimension.FOUR_BY_FOUR) {
+                                        (cardSize * 2.5f) + (gridSpacing * 2f)
+                                    } else {
+                                        boardSize * 0.65f
+                                    }
+                                    val sidebarHeight = if (isTablet) boundaryThirdRowCenter else boardSize
 
-                                    // Right: Sidebar containing Telemetry, Status Banner, & Kanji Inspector
-                                    Column(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(sidebarHeight),
-                                        verticalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 6.dp)
+                                    Row(
+                                        modifier = Modifier.fillMaxSize(),
+                                        horizontalArrangement = Arrangement.spacedBy(if (isTablet) 20.dp else 16.dp),
+                                        verticalAlignment = Alignment.Top
                                     ) {
-                                        GameTelemetryRow(uiState = uiState)
+                                        // Left: Center Stage Board Grid
+                                        Box(
+                                            modifier = Modifier.size(boardSize),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            BoardGrid(
+                                                cards = uiState.cards,
+                                                dimension = uiState.settings.dimension,
+                                                tileColor = uiState.settings.tileColor,
+                                                kanjiColor = uiState.settings.kanjiColor,
+                                                useSerifFont = uiState.settings.useSerifFont,
+                                                onCardClick = { viewModel.onCardClicked(it) }
+                                            )
+                                        }
+
+                                        // Right: Sidebar containing Telemetry, Status Banner, & Kanji Inspector
+                                        Column(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(sidebarHeight),
+                                            verticalArrangement = Arrangement.spacedBy(if (isTablet) 10.dp else 6.dp)
+                                        ) {
+                                            GameTelemetryRow(uiState = uiState)
+
+                                            if (uiState.activeTwinTrapBanner != null || uiState.isGameOver) {
+                                                StatusBannerSlot(
+                                                    uiState = uiState,
+                                                    onRestart = { viewModel.startNewGame() },
+                                                    onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
+                                                    onFlashCards = {
+                                                        coroutineScope.launch {
+                                                            pagerState.animateScrollToPage(0)
+                                                        }
+                                                    },
+                                                    onInspectKanji = { viewModel.onKanjiInspected(it) },
+                                                    isPhoneLandscape = !isTablet
+                                                )
+                                            }
+
+                                            KanjiInspector(
+                                                kanji = uiState.selectedKanjiForInspector,
+                                                showRomaji = uiState.settings.showRomaji,
+                                                showStrokeCount = uiState.settings.showStrokeCount,
+                                                useSerifFont = uiState.settings.useSerifFont,
+                                                isPhoneLandscape = !isTablet,
+                                                onWiktionaryClick = { viewModel.onOpenWiktionary() },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    // Portrait layout (Tablet or Phone)
+                                    val availableHeight = (containerMaxHeight - (screenPaddingV * 2) - headerTotalHeight - 8.dp).coerceAtLeast(0.dp)
+                                    val totalWidth = containerMaxWidth - (screenPaddingH * 2)
+                                    val boardSize = minOf(
+                                        totalWidth,
+                                        availableHeight * (if (isTablet) 0.55f else 0.52f)
+                                    ).coerceAtLeast(0.dp)
+
+                                    Column(
+                                        modifier = Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.spacedBy(if (isTablet) 12.dp else 8.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        GameTelemetryRow(
+                                            uiState = uiState,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+
+                                        Box(
+                                            modifier = Modifier.size(boardSize),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            BoardGrid(
+                                                cards = uiState.cards,
+                                                dimension = uiState.settings.dimension,
+                                                tileColor = uiState.settings.tileColor,
+                                                kanjiColor = uiState.settings.kanjiColor,
+                                                useSerifFont = uiState.settings.useSerifFont,
+                                                onCardClick = { viewModel.onCardClicked(it) }
+                                            )
+                                        }
 
                                         if (uiState.activeTwinTrapBanner != null || uiState.isGameOver) {
                                             StatusBannerSlot(
                                                 uiState = uiState,
                                                 onRestart = { viewModel.startNewGame() },
                                                 onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
-                                                onFlashCards = { viewModel.selectTab(GameTab.FLASH_CARDS) },
+                                                onFlashCards = {
+                                                    coroutineScope.launch {
+                                                        pagerState.animateScrollToPage(0)
+                                                    }
+                                                },
                                                 onInspectKanji = { viewModel.onKanjiInspected(it) },
-                                                isPhoneLandscape = !isTablet
+                                                modifier = Modifier.fillMaxWidth()
                                             )
                                         }
 
@@ -231,70 +335,12 @@ fun GameScreen(
                                             showRomaji = uiState.settings.showRomaji,
                                             showStrokeCount = uiState.settings.showStrokeCount,
                                             useSerifFont = uiState.settings.useSerifFont,
-                                            isPhoneLandscape = !isTablet,
                                             onWiktionaryClick = { viewModel.onOpenWiktionary() },
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .weight(1f)
+                                                .then(if (isTablet) Modifier.weight(1f) else Modifier)
                                         )
                                     }
-                                }
-                            } else {
-                                // Portrait layout (Tablet or Phone)
-                                val availableHeight = (containerMaxHeight - (screenPaddingV * 2) - headerTotalHeight - 8.dp).coerceAtLeast(0.dp)
-                                val totalWidth = containerMaxWidth - (screenPaddingH * 2)
-                                val boardSize = minOf(
-                                    totalWidth,
-                                    availableHeight * (if (isTablet) 0.55f else 0.52f)
-                                ).coerceAtLeast(0.dp)
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f),
-                                    verticalArrangement = Arrangement.spacedBy(if (isTablet) 12.dp else 8.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    GameTelemetryRow(
-                                        uiState = uiState,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-
-                                    Box(
-                                        modifier = Modifier.size(boardSize),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        BoardGrid(
-                                            cards = uiState.cards,
-                                            dimension = uiState.settings.dimension,
-                                            tileColor = uiState.settings.tileColor,
-                                            kanjiColor = uiState.settings.kanjiColor,
-                                            useSerifFont = uiState.settings.useSerifFont,
-                                            onCardClick = { viewModel.onCardClicked(it) }
-                                        )
-                                    }
-
-                                    if (uiState.activeTwinTrapBanner != null || uiState.isGameOver) {
-                                        StatusBannerSlot(
-                                            uiState = uiState,
-                                            onRestart = { viewModel.startNewGame() },
-                                            onDismissTwinTrap = { viewModel.dismissTwinTrapBanner() },
-                                            onFlashCards = { viewModel.selectTab(GameTab.FLASH_CARDS) },
-                                            onInspectKanji = { viewModel.onKanjiInspected(it) },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                    }
-
-                                    KanjiInspector(
-                                        kanji = uiState.selectedKanjiForInspector,
-                                        showRomaji = uiState.settings.showRomaji,
-                                        showStrokeCount = uiState.settings.showStrokeCount,
-                                        useSerifFont = uiState.settings.useSerifFont,
-                                        onWiktionaryClick = { viewModel.onOpenWiktionary() },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .then(if (isTablet) Modifier.weight(1f) else Modifier)
-                                    )
                                 }
                             }
                         }
