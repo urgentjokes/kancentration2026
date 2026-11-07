@@ -108,44 +108,6 @@ fun GameTopHeaderRow(
                     )
                 )
             }
-
-            // Active Kanji Pack Badge (tapping opens Settings)
-            val packBadgeLabel = when (val packId = uiState.settings.selectedPackId) {
-                "base_pack" -> "Starter"
-                "grade_1" -> "1st grade"
-                "grade_2" -> "2nd grade"
-                "grade_3" -> "3rd grade"
-                "grade_4" -> "4th grade"
-                "grade_5" -> "5th grade"
-                "grade_6" -> "6th grade"
-                else -> packId.replace("_", " ").replaceFirstChar { it.uppercase() }
-            }
-
-            Surface(
-                shape = RoundedCornerShape(if (isTablet) 10.dp else 7.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(if (isTablet) 10.dp else 7.dp))
-                    .clickable(
-                        role = Role.Button,
-                        onClickLabel = "Change Kanji card pack in settings",
-                        onClick = onSettingsClick
-                    )
-            ) {
-                Text(
-                    text = packBadgeLabel,
-                    style = if (isTablet) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    softWrap = false,
-                    modifier = Modifier.padding(
-                        horizontal = if (isTablet) 10.dp else 6.dp,
-                        vertical = if (isTablet) 5.dp else 3.dp
-                    )
-                )
-            }
         }
 
         Row(
